@@ -1,0 +1,7 @@
+TODOs
+-----
+- Add License file (see http://choosealicense.com/licenses/gpl-2.0/)
+- InputGenerator GTests
+- Add make depend
+- Verify Doxygen comments
+
