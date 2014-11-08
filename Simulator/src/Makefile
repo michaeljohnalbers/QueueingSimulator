@@ -13,13 +13,10 @@ EXE := $(OBJ_DIR)/$(EXE_NAME)
 LIB_NAME := $(ACTOR_LIB_NAME)
 LIB := $(ACTOR_LIB)
 
-LIB_SRCS := Actor.cpp \
-	    ActorGenerator.cpp
+LIB_SRCS := 
 LIB_OBJS := $(addprefix $(OBJ_DIR)/, $(LIB_SRCS:%.cpp=%.o))
 
-EXE_SRCS := CommandLineOptionsProcessor.cpp \
-            SimulatorMain.cpp \
-            World.cpp
+EXE_SRCS := SimulatorMain.cpp
 
 OBJS := $(addprefix $(OBJ_DIR)/, $(EXE_SRCS:%.cpp=%.o))
 
