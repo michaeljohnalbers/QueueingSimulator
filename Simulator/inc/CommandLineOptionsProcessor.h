@@ -55,7 +55,7 @@ class CommandLineOptionsProcessor
    * @throws std::logic_error - If the user is not using the input file input
    *                            method.
    */
-  std::string getInputFile() const throw(std::logic_error);
+  const std::string& getInputFile() const throw(std::logic_error);
 
   /**
    * Returns which type of input options the user decided to use.
@@ -69,7 +69,15 @@ class CommandLineOptionsProcessor
    * @throws std::logic_error - If the user is not using the options input
    *                            method.
    */
-  std::string getNumberActors() const throw(std::logic_error);
+  const std::string& getNumberActors() const throw(std::logic_error);
+
+  /**
+   * Returns the seed used for random number generation.
+   * @return String representation of the seed.
+   * @throws std::logic_error - If the user is not using the options input
+   *                            method.
+   */
+  const std::string& getSeed() const throw(std::logic_error);
 
   /**
    * Returns the world size in the format "XxY", where 'X' is the size of the
@@ -78,7 +86,7 @@ class CommandLineOptionsProcessor
    * @throws std::logic_error - If the user is not using the options input
    *                            method.
    */
-  std::string getWorldSize() const throw(std::logic_error);
+  const std::string& getWorldSize() const throw(std::logic_error);
 
   /**
    * Function used to parse the command line options. This will ignore all
@@ -108,6 +116,8 @@ class CommandLineOptionsProcessor
   InputOption myInputOption;
   /** Value of the number of actors option. */
   std::string myNumberActors;
+  /** Random number generation seed. */
+  std::string mySeed;
   /** Value of the world size option. */
   std::string myWorldSize;
 
