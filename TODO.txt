@@ -1,7 +1,6 @@
 TODOs
 -----
 - Add License file (see http://choosealicense.com/licenses/gpl-2.0/)
-- InputGenerator GTests
 - Verify Doxygen comments
-- Wrap all classes in a QS namespace
-
+- Wrap all classes in a QS namespace, add QS to #ifndef's
+- Turn steering behaviors into a library.

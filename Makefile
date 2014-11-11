@@ -4,7 +4,9 @@
 # Author: Michael Albers
 #************************************************************
 
-QS_BASE_DIR ?= .
+ifeq ($(QS_BASE_DIR), )
+  $(error QueueingSimulator base directory environment variable, QS_BASE_DIR, is not set. Should be directory were this Makefile is located. )
+endif
 
 include $(QS_BASE_DIR)/Common.mk
 

@@ -22,14 +22,18 @@ TARGETS_FILE := $(QS_BASE_DIR)/CommonTargets.mk
 SIMULATOR_LIB_DIR := $(QS_BASE_DIR)/Simulator/lib
 SIMULATOR_INC_DIR := $(QS_BASE_DIR)/Simulator/inc
 
-ACTOR_LIB_NAME := QS_Actor
-ACTOR_LIB := $(SIMULATOR_LIB_DIR)/lib$(ACTOR_LIB_NAME).a
+ifeq ($(QS_EIGEN_BASE_DIR), )
+  $(error Eigen library base directory environment variable, QS_EIGEN_BASE_DIR, is not set. Should be: $$QS_EIGEN_BASE_DIR/eigen)
+endif
+EIGEN_DIR := $(QS_EIGEN_BASE_DIR)/eigen
+
+INC_DIRS := -I$(INC_DIR) -I$(SIMULATOR_INC_DIR) -I$(EIGEN_DIR)
 
 CC := g++
-CFLAGS := --std=c++11 -g -Wall -I$(INC_DIR) -I$(SIMULATOR_INC_DIR)
+CFLAGS := --std=c++11 -g -Wall -pthread -fopenmp $(INC_DIRS)
 
 LD := g++
-LDFLAGS := 
+LDFLAGS := -pthread -fopenmp
 
 AR := /usr/bin/ar
 ARFLAGS := cr

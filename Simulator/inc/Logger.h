@@ -8,11 +8,14 @@
  * @author Michael Albers
  */
 
+#include <condition_variable>
 #include <mutex>
+#include <ostream>
 #include <queue>
 #include <thread>
 
 /**
+ * Provides logging capabilities for the simulator.
  */
 class Logger
 {
@@ -20,6 +23,11 @@ class Logger
   // Public
   // ************************************************************
   public:
+
+  /**
+   * Default constructor.
+   */
+  Logger() = delete;
 
   /**
    * Copy constructor.
@@ -48,28 +56,21 @@ class Logger
   /**
    * Tells the thread to stop running.
    */
-  static void stop();
+  static void terminate();
 
   // ************************************************************
   // Protected
   // ************************************************************
   protected:
 
-  /**
-   * Thread function.
-   */
-  static void run();
-
-  /**
-   * Default constructor.
-   */
-  Logger();
-
   // ************************************************************
   // Private
   // ************************************************************
   private:
 
+  /**
+   * Stores a message to be logged and the time of the message.
+   */
   class Message
   {
     public:
@@ -78,6 +79,12 @@ class Logger
      * Default constructor.
      */
     Message();
+
+    /**
+     * Constructor
+     * @param theMessage Message to log.
+     */
+    Message(const std::string &theMessage);
 
     /**
      * Copy constructor.
@@ -97,16 +104,43 @@ class Logger
      */
     Message& operator=(const Message &theMessage);
 
-    std::string theMessage;
+    /** Message to log. */
+    std::string myMessage;
+
+    /** Origin time of the message. */
     std::chrono::time_point<std::chrono::system_clock> myTime;
   };
 
-  static Logger myLogger;
-  static std::thread myThread;
+  /**
+   * Writes out the log message.
+   * @param theMessage Message to log.
+   */
+  static void log(const Message &theMessage);
+
+  /**
+   * Empties the message queue logging all messages.
+   */
+  static void logAll();
+
+  /**
+   * Thread function.
+   */
+  static void run();
+
+  /** Message queue. All messages to be logged are placed on this queue. */
+  static std::queue<Message> myQueue;
+
+  /** Means to block logging thread until there is a message to log. */
+  static std::condition_variable myNotifier;
+
+  /** Mutex for thread-safing the message queue. */
+  static std::mutex myMutex;
+
+  /** Thread control variable. */
   static bool myRunning;
 
-  static std::queue<Message> myMessages;
-  static std::recursive_mutex myQueueMutex;
+  /** Thread reading from the messages queue. */
+  static std::thread myThread;
 };
 
 #endif

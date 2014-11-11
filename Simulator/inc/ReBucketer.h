@@ -12,6 +12,8 @@ class Bucket;
 class Individual;
 
 /**
+ * Stores an associate between an Individual and a Bucket. This class can
+ * then place the Individual into the Bucket.
  */
 class ReBucketer
 {
@@ -30,7 +32,7 @@ class ReBucketer
    * @param theIndividual Individual to rebucket.
    * @param theBucket Bucket into which to place the individual.
    */
-  ReBucketer(const Individual *theIndividual,
+  ReBucketer(Individual *theIndividual,
              Bucket *theBucket);
 
   /**
@@ -52,6 +54,12 @@ class ReBucketer
   ReBucketer& operator=(const ReBucketer &theReBucketer);
 
   /**
+   * Returns the individual in this Rebucketer.
+   * @return Individual to be rebucketed.
+   */
+  Individual* getIndividual() const;
+
+  /**
    * Places the stored Individual into the stored Bucket.
    */
   void rebucket();
@@ -61,7 +69,7 @@ class ReBucketer
    * @param theIndividual Individual to rebucket.
    * @param theBucket Bucket into which to place the individual.
    */
-  void set(const Individual *theIndividual,
+  void set(Individual *theIndividual,
            Bucket *theBucket);
 
   // ************************************************************
@@ -78,7 +86,7 @@ class ReBucketer
   Bucket *myBucket = nullptr;
 
   /** Individual to rebucket. */
-  const Individual *myIndividual = nullptr;
+  Individual *myIndividual = nullptr;
 };
 
 #endif

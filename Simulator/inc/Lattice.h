@@ -18,7 +18,10 @@ class Bucket;
 class Individual;
 
 /**
- * TODO: fill in
+ * The Lattice class is the primary class for the simulation. It defines and
+ * manages the entire world. This class owns all of the Individuals which
+ * comprise the simulation. It also splits the world into a number of Buckets.
+ * These Buckets allow for parallelization of the simulation.
  */
 class Lattice
 {
@@ -78,6 +81,11 @@ class Lattice
   void createIndividuals();
 
   /**
+   * Determines the number of buckets and the dimension of myBuckets.
+   */
+  void determineLatticeGrid() throw (std::exception);
+
+  /**
    * Updates one frame of the simulation.
    */
   void frameUpdate();
@@ -106,17 +114,53 @@ class Lattice
   // ************************************************************
   private:
 
-  /** All Buckets which comprise the world. */
-  Bucket* myBuckets[];
+  /* World
+    --------------- ^
+    |             | |
+    |             | h
+    |             | e
+    |             | i
+    |             | g
+    |             | h
+    |             | t
+    |             | |
+    |             | v
+    ---------------
+    <--  length -->
+   */
+
+  /** Bucket configuration from config file. */
+  std::string myBucketConfiguration;
+
+  /** All Buckets which comprise the world, in a grid. */
+  Bucket* **myBucketLattice = nullptr;
+
+  /** All Buckets, but in a single dimension array. */
+  Bucket* *myBuckets = nullptr;
 
   /** Name of the configuration file. */
   std::string myConfigFileName;
 
-  /** All Individuals in the world. */
-  Individual* myIndividuals[];
+  /** Time of each frame, seconds. */
+  float myFrameTime = 0.0001;
 
-  /** Length of the world, meters. */
+  /** Height of the world (as though viewed from above), meters. */
+  int32_t myHeight = 0;
+
+  /** All Individuals in the world. */
+  Individual* *myIndividuals;
+
+  /** Number of columns in myBuckets. */
+  int32_t myLatticeColumns = 0;
+
+  /** Number of rows in myBuckets. */
+  int32_t myLatticeRows = 0;
+
+  /** Length of the world (as viewed from above), meters. */
   int32_t myLength = 0;
+
+  /** Number of Buckets in the Lattice. */
+  int32_t myNumberBuckets = 0;
 
   /** Total number of Individuals in the world. */
   int32_t myNumberIndividuals = 0;
@@ -127,8 +171,9 @@ class Lattice
   /** Simulation start time. */
   std::chrono::time_point<std::chrono::system_clock> mySimulationStartTime;
 
-  /** Width of the world, meters. */
-  int32_t myWidth = 0;
+  /** Simulation stop time. */
+  std::chrono::time_point<std::chrono::system_clock> mySimulationStopTime;
+
 };
 
 #endif

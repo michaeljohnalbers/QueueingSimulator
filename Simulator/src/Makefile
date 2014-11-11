@@ -10,13 +10,22 @@ include $(QS_BASE_DIR)/Common.mk
 EXE_NAME := QueueingSimulator
 EXE := $(OBJ_DIR)/$(EXE_NAME)
 
-LIB_NAME := $(ACTOR_LIB_NAME)
-LIB := $(ACTOR_LIB)
+LIB_NAME := 
+LIB := 
 
 LIB_SRCS := 
 LIB_OBJS := $(addprefix $(OBJ_DIR)/, $(LIB_SRCS:%.cpp=%.o))
 
-EXE_SRCS := SimulatorMain.cpp
+EXE_SRCS := Bucket.cpp \
+            EigenHelper.cpp \
+            Exit.cpp \
+            Individual.cpp \
+            Lattice.cpp \
+            Logger.cpp \
+            NearestN.cpp \
+            ReBucketer.cpp \
+            Seek.cpp \
+            SimulatorMain.cpp
 
 OBJS := $(addprefix $(OBJ_DIR)/, $(EXE_SRCS:%.cpp=%.o))
 
@@ -29,7 +38,7 @@ all: $(LIB) $(EXE)
 
 $(EXE): $(OBJS)
 	@echo "Linking $(EXE_NAME)"
-	@$(LD) $(LDFLAGS) -o $(EXE) $(OBJS) -L$(LIB_DIR) -l$(LIB_NAME)
+	@$(LD) $(LDFLAGS) -o $(EXE) $(OBJS)
 
 $(OBJ_DIR)/%.o:%.cpp
 	@echo "Compiling $<"
