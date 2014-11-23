@@ -15,7 +15,7 @@
 //*****************
 // Static Variables
 //*****************
-int32_t NearestN::myN = 1;
+uint32_t NearestN::myN = 1;
 float NearestN::mySearchRadius = 1.0;
 
 //*******************
@@ -41,29 +41,17 @@ std::shared_ptr<NearestN> NearestN::findNeighbors(
 {
   std::shared_ptr<NearestN> neighbors(new NearestN());
 
-  int32_t lowestRank = INT32_MAX;
-
-  neighbors->searchBucket(*theBucket, theIndividual, lowestRank);
+  neighbors->searchBucket(*theBucket, theIndividual);
 
   // TODO: Future enhancement: only search buckets which overlap search radius
   // TODO: Future future enhancement: Have Bucket keep track of Individuals in
   //       overlap area
   for (auto bucket : theBucket->getAdjacentBuckets())
   {
-    neighbors->searchBucket(*bucket, theIndividual, lowestRank);
+    neighbors->searchBucket(*bucket, theIndividual);
   }
 
-  neighbors->myNeighbors.sort(
-    [& theIndividual] (const Individual *a,
-                       const Individual *b)
-    {
-      auto origin = theIndividual->getPosition();
-      float aDistance = EigenHelper::distance(a->getPosition(), origin);
-      float bDistance = EigenHelper::distance(b->getPosition(), origin);
-      return aDistance < bDistance;
-    });
-
-  neighbors->myNeighbors.resize(myN);
+  neighbors->sortAndFindHighestRank(theIndividual);
 
   return neighbors;
 }
@@ -80,15 +68,18 @@ const std::list<const Individual*>& NearestN::getNeighbors() const
 // NearestN::searchBucket
 //***********************
 void NearestN::searchBucket(const Bucket &theBucket,
-                            const Individual *theIndividual,
-                            int32_t &theLowestRank)
+                            const Individual *theIndividual)
 {
   const Eigen::Vector2f &origin = theIndividual->getPosition();
   auto bucketIndividuals = theBucket.getIndividuals();
-  auto bucketSize = bucketIndividuals.size();
+  auto numberIndividuals = bucketIndividuals.size();
 
-# pragma omp parallel for shared(theLowestRank, bucketIndividuals)
-  for (uint32_t ii = 0; ii < bucketSize; ++ii)
+  // This will start off small and increase as the simulation moves along and
+  // more Individuals move into the Bucket containing the exit.
+#ifndef SERIAL
+# pragma omp parallel for shared(bucketIndividuals)
+#endif
+  for (uint32_t ii = 0; ii < numberIndividuals; ++ii)
   {
     Individual *individual = bucketIndividuals[ii];
     if (individual != theIndividual)
@@ -97,16 +88,11 @@ void NearestN::searchBucket(const Bucket &theBucket,
       float distance = EigenHelper::distance(origin, position);
       if (distance <= mySearchRadius)
       {
-        auto rank = individual->getRank();
-
+#ifndef SERIAL
 #       pragma omp critical
+#endif
         {
           myNeighbors.push_back(individual);
-          if (rank < theLowestRank)
-          {
-            myLowestRankedIndividual = individual;
-            theLowestRank = rank;
-          }
         }
       }
     }
@@ -116,7 +102,7 @@ void NearestN::searchBucket(const Bucket &theBucket,
 //***************
 // NearestN::setN
 //***************
-void NearestN::setN(int32_t theN)
+void NearestN::setN(uint32_t theN)
 {
   myN = theN;
 }
@@ -127,4 +113,39 @@ void NearestN::setN(int32_t theN)
 void NearestN::setSearchRadius(float theSearchRadius)
 {
   mySearchRadius = theSearchRadius;
+}
+
+//*********************************
+// NearestN::sortAndFindHighestRank
+//*********************************
+void NearestN::sortAndFindHighestRank(const Individual *theIndividual)
+{
+  myNeighbors.sort(
+    [& theIndividual] (const Individual *a,
+                       const Individual *b)
+    {
+      auto origin = theIndividual->getPosition();
+      float aDistance = EigenHelper::distance(a->getPosition(), origin);
+      float bDistance = EigenHelper::distance(b->getPosition(), origin);
+      return aDistance < bDistance;
+    });
+
+  if (myNeighbors.size() > myN)
+  {
+    myNeighbors.resize(myN);
+  }
+
+  int32_t lowestRank = INT32_MAX;
+  const auto individualRank = theIndividual->getRank();
+  // No real need to parallelize as this will be limited to at most N iterations.
+  // And N shouldn't be very large.
+  for (auto individual : myNeighbors)
+  {
+    auto rank = individual->getRank();
+    if (rank < lowestRank && rank < individualRank)
+    {
+      myLowestRankedIndividual = individual;
+      lowestRank = rank;
+    }
+  }
 }

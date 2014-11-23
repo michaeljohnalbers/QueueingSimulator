@@ -5,37 +5,26 @@
  * @author Michael Albers
  */
 
+#include <Individual.h>
 #include <Seek.h>
 
-#include <Individual.h>
-
-//***********************
-// Seek::
-//***********************
-Seek::Seek()
-{
-}
-
-//***********************
-// Seek::
-//***********************
-Seek::~Seek()
-{
-}
-
-//***********************
-// Seek::
-//***********************
+//*********************
+// Seek::calculateForce
+//*********************
 Eigen::Vector2f Seek::calculateForce(const Individual &theIndividual,
-                                     const NearestN *theNeighbors,
                                      const Eigen::Vector2f *theTarget)
 {
-  Eigen::Vector2f desiredVelocity(*theTarget - theIndividual.getPosition());
-  desiredVelocity.normalize();
-  desiredVelocity *= theIndividual.getMaximumSpeed();
+  Eigen::Vector2f desiredForce(*theTarget - theIndividual.getPosition());
+  desiredForce.normalize();
+  // Reynolds' version of seek uses max speed to determine the desired
+  // direction/speed vector (which he called desired velocity). I changed this
+  // to force to line up with the physics/math of the calculations. Which
+  // means, of course, that steering force is actually a force.
+  desiredForce *= theIndividual.getMaximumForce();
 
+  // Having said that above, this technically isn't correct. But it works.
   Eigen::Vector2f steeringForce(
-    desiredVelocity - theIndividual.getCurrentVelocity());
+    desiredForce - theIndividual.getVelocity());
 
   return steeringForce;
 }

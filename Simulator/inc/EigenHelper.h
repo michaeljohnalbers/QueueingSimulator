@@ -13,6 +13,11 @@
 
 #include <Eigen/Core>
 
+/**
+ * This class provides a few helper functions to make using the Eigen library
+ * (http://eigen.tuxfamily.org/) easier. It also makes up for a few functions
+ * which would have been nice to have from Eigen directly.
+ */
 class EigenHelper
 {
   // ************************************************************
@@ -38,12 +43,12 @@ class EigenHelper
    * Ensures the given vector's magnitude is not larger than the
    * given magnitude. If so returns a vector scaled down to that magnitude.
    * @param theVector Vector to truncate
-   * @param theMaximumMagnitude Maximum magnitude for theVector
+   * @param theMaximumLength Maximum length to truncate to
    * @return Scaled vector (If magnitude is less than theMaximumMagnitude
    * the vector will not be scaled.)
    */
   static Eigen::Vector2f truncate(const Eigen::Vector2f &theVector,
-                                  float theMaximumMagnitude);
+                                  float theMaximumLength);
 
   // ************************************************************
   // Protected

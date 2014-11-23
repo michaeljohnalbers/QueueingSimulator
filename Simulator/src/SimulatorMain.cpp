@@ -31,8 +31,6 @@ int main(int argc, char **argv)
   glbProgramName = argv[0];
   std::atexit(Logger::terminate);
 
-  // TODO: signal handler
-
   while (true)
   {
     enum
@@ -84,16 +82,38 @@ int main(int argc, char **argv)
 
 void help()
 {
-  std::cout << "Usage: " << glbProgramName << " [OPTIONS]... "
-	    << "[CONFIGURATION FILE]" << std::endl
-	    << std::endl
-	    << "OPTIONS"
-	    << std::endl
-	    << "--help               Print this help and exit."
-	    << std::endl << std::endl
-	    << "CONFIGURATION FIle" << std::endl
-	    << "File containing configuration data. Format:"
-    // TODO: fill in
-	    << std::endl
-	    << std::endl;
+  std::cout << "Usage: " << glbProgramName << " [OPTIONS...] "
+            << "[CONFIGURATION FILE]"
+            << std::endl << std::endl
+            << "OPTIONS"
+            << std::endl
+            << "--help    Print this help and exit."
+            << std::endl << std::endl
+            << "CONFIGURATION FILE" << std::endl
+            << "File containing configuration data. Format:" << std::endl
+            << "<number individuals, int>" << std::endl
+            << "<world length, int, meters> <world height, int, meters>"
+            << std::endl
+            << "<number of buckets, see below>" << std::endl
+            << "<Neighbor search radius, float, meters>" << std::endl
+            << "<Number of neighbors to find, int>" << std::endl
+            << "<Random number seed, int>" << std::endl
+            << "<Run Configuration, see below>" << std::endl
+            << std::endl
+            << "Number of Buckets:" << std::endl
+            << "Can be one of the following: " << std::endl
+            << " 1) An integer multiple of 2 or 3" << std::endl
+            << " 2) \"auto\", matches buckets to HW concurrency" << std::endl
+            << " 3) \"yx\", where y is an integer, " << std::endl
+            << "    creates buckets equal to y * HW concurrency, " << std::endl
+            << "    example: \"3x\"" << std::endl
+            << std::endl
+            << "Run Configuration:" << std::endl
+            << "Can be one of:" << std::endl
+            << " 1) \"simulation\" - Runs an actual simulation." << std::endl
+            << " 2) \"benchmark\" - Runs in a mode to gauge how" << std::endl
+            << "    well the local machine can handle the given" << std::endl
+            << "    number of individuals."
+            << std::endl
+            << std::endl;
 }

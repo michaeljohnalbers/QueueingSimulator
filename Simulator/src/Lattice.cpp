@@ -5,6 +5,8 @@
  * @author Michael Albers
  */
 
+#include <cctype>
+#include <cfloat>
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -20,6 +22,9 @@
 #include <Lattice.h>
 #include <Logger.h>
 #include <NearestN.h>
+
+// Terrible design, but its small enough to let slide.
+int32_t glbIndividualsLeft = 0;
 
 //*****************
 // Lattice::Lattice
@@ -57,6 +62,48 @@ Lattice::~Lattice()
     }
     delete [] myIndividuals;
   }
+}
+//*************************
+// Lattice::configureOpenMP
+//*************************
+void Lattice::configureOpenMP()
+{
+  Logger::log("OpenMP Configuration");
+
+#ifndef SERIAL
+  int openMPMaxThreads = omp_get_max_threads();
+  Logger::log("  Maximum Size of Thread Team: " +
+              std::to_string(openMPMaxThreads));
+
+  Logger::log("  Process Thread Limit: " +
+              std::to_string(omp_get_thread_limit()));
+
+  // If nesting is disabled the omp_get_level will still return the number of
+  // parallel regions around the omp_get_level call. Use the
+  // omp_get_active_level to see what the actual nesting level is.
+  bool nestedParallelismEnabled = omp_get_nested();
+  if (! nestedParallelismEnabled)
+  {
+    omp_set_nested(true);
+  }
+
+  Logger::log("  Nested Parallelism Enabled: " +
+              std::string(omp_get_nested() ? "true" : "false"));
+
+  const int MAX_DESIRED_LEVELS = 5;
+  int maxLevels = omp_get_max_active_levels();
+  if (maxLevels < MAX_DESIRED_LEVELS)
+  {
+    omp_set_max_active_levels(5);
+    Logger::log("  Setting Maximum Nesting Depth to: " +
+                std::to_string(MAX_DESIRED_LEVELS));
+  }
+
+  Logger::log("  Nesting Depth: " +
+              std::to_string(omp_get_max_active_levels()));
+#else
+  Logger::log("  Compile-time -DSERIAL defined, no parallelism.");
+#endif
 }
 
 //***********************
@@ -98,8 +145,9 @@ void Lattice::createBuckets() throw (std::exception)
   }
 
   Eigen::Vector2f exitPosition(0.0, myHeight / 2.0);
-  Logger::log("Placing exit at " + EigenHelper::print(exitPosition));
   Exit::setPosition(exitPosition);
+  Logger::log("Placing exit at " + EigenHelper::print(Exit::getPosition()) +
+              ", radius: " + std::to_string(Exit::getRadius()) + ".");
 
   auto bucketLength = myLength / myLatticeColumns;
 
@@ -116,7 +164,8 @@ void Lattice::createBuckets() throw (std::exception)
     for (auto col = 0; col < myLatticeColumns; ++col)
     {
       Eigen::Vector2f origin(col * bucketLength, row * bucketHeight);
-      Bucket *newBucket = new Bucket(origin, bucketHeight, bucketLength);
+      Bucket *newBucket = new Bucket(origin, bucketHeight, bucketLength,
+                                     myNumberIndividuals, myRunConfiguration);
       myBucketLattice[row][col] = newBucket;
       myBuckets[ii++] = newBucket;
     }
@@ -161,6 +210,13 @@ void Lattice::createIndividuals()
   std::uniform_real_distribution<float> massGen(45.352, 90.718);
   std::uniform_real_distribution<float> orientationGen(0, 1.0);
 
+  // Rough approximation of force generator. Scaled down from what Usain Bolt
+  // does (surprisingly, this was the best (simple) information I could find
+  // online). In Newtons. Refer to:
+  // http://www.gizmag.com/usain-bolt-fastest-man-physics-analysis/28457/
+  // TODO: using this was catastophic, need to make it work though
+  std::uniform_real_distribution<float> forceGen(600.0, 750.0);
+
   // Keep this serial to maintain consistency with random number generators
   // across runs of the simulator.
   for (auto ii = 0; ii < myNumberIndividuals; ++ii)
@@ -168,6 +224,7 @@ void Lattice::createIndividuals()
     float maximumSpeed = maxSpeedGen(myRandomEngine);
     float mass = massGen(myRandomEngine);
     float orientation = orientationGen(myRandomEngine);
+    float maximumAcceleration = 10.0;
 
     bool goodPosition = false;
     Eigen::Vector2f position;
@@ -177,10 +234,12 @@ void Lattice::createIndividuals()
       float y = yCoordinateGen(myRandomEngine);
       position[0] = x;
       position[1] = y;
-      Individual testIndividual(mass, 0, 0, 0, position, 0);
+      Individual testIndividual(mass, 0, 0, 0, position, 0, myRunConfiguration);
 
       goodPosition = true;
+#ifndef SERIAL
 #     pragma omp parallel for shared(goodPosition)
+#endif
       for (auto jj = 0; jj < ii; ++jj)
       {
         if (myIndividuals[jj]->collision(&testIndividual))
@@ -190,13 +249,19 @@ void Lattice::createIndividuals()
       }
     }
 
-    Logger::log("Generated person " + std::to_string(ii+1) + " at position " +
-                EigenHelper::print(position) + ".");
+    myIndividuals[ii] = new Individual(mass, maximumSpeed, maximumAcceleration,
+                                       orientation, position, ii+1,
+                                       myRunConfiguration);
 
-    myIndividuals[ii] = new Individual(
-      mass, maximumSpeed, 10.0, orientation, position, ii+1);
+    float distance = EigenHelper::distance(position, Exit::getPosition());
+    Logger::log("Generated person " + std::to_string(ii+1) + " " +
+                 + " at position " + EigenHelper::print(position) +
+                " (distance: " + std::to_string(distance) + ").\n" +
+                myIndividuals[ii]->getBasicData());
 
+#ifndef SERIAL
 #   pragma omp parallel for
+#endif
     for (auto bucket = 0; bucket < myNumberBuckets; ++bucket)
     {
       if (myBuckets[bucket]->containsPoint(myIndividuals[ii]->getPosition()))
@@ -221,7 +286,7 @@ void Lattice::determineLatticeGrid() throw (std::exception)
   std::regex numberRegex("[0-9]+", std::regex::basic);
   std::regex multipleRegex("x[0-9]+", std::regex::extended);
 
-  auto concurrency = std::thread::hardware_concurrency();
+  auto concurrency = omp_get_max_threads();
 
   if ("auto" == myBucketConfiguration)
   {
@@ -312,7 +377,9 @@ void Lattice::frameUpdate()
 {
   auto frameStart = std::chrono::system_clock::now();
 
+#ifndef SERIAL
 # pragma omp parallel for
+#endif
   for (auto ii = 0; ii < myNumberBuckets; ++ii)
   {
     myBuckets[ii]->frameUpdate(myFrameTime);
@@ -321,7 +388,7 @@ void Lattice::frameUpdate()
   // This must be done serially. Underlying functions are not thread-safe.
   for (auto ii = 0; ii < myNumberBuckets; ++ii)
   {
-    myBuckets[ii]->rebucketIndividuals();
+    myBuckets[ii]->postFrameUpdateAdjustments();
   }
 
   auto frameDuration = std::chrono::system_clock::now() - frameStart;
@@ -330,6 +397,8 @@ void Lattice::frameUpdate()
     static_cast<float>(std::chrono::system_clock::period::den);
 
   myFrameTime = static_cast<float>(frameDuration.count()) * period;
+
+  ++myTotalNumberFrames;
 }
 
 //************************
@@ -339,23 +408,120 @@ void Lattice::generateReport()
 {
   std::chrono::duration<double> runTime =
     mySimulationStopTime - mySimulationStartTime;
+  double totalTime = runTime.count();
 
   Logger::log("");
   Logger::log("========== Simulation Report ==========");
-  Logger::log("Run time: " + std::to_string(runTime.count()) + "s.");
+  Logger::log("Run time: " + std::to_string(totalTime) + "s");
+  Logger::log("Number Frames: " + std::to_string(myTotalNumberFrames));
+  Logger::log("Average Frame Time: " +
+              std::to_string(totalTime / myTotalNumberFrames) + "s");
   Logger::log("");
-  Logger::log("Individual Data");
+  Logger::log("========== Individual Data ==========");
+
+  typedef struct
+  {
+    float averageDelta = 0.0;
+    int32_t count = 0;
+    void average()
+    {
+      if (count != 0)
+      {
+        averageDelta /= count;
+      }
+    }
+    std::string print()
+    {
+      std::string data =
+        "        Count: " + std::to_string(count) + "\n"
+        "Average Delta: " + std::to_string(averageDelta) + "s";
+      return data;
+    }
+
+  } ErrorData;
+  ErrorData overIdeal, underIdeal;
+
+  float maxActualTime = 0.0;
+  float maxErrorDelta = 0.0;
+  float minActualTime = FLT_MAX;
+  float minErrorDelta = FLT_MAX;
+
   for (int32_t ii = 0; ii < myNumberIndividuals; ++ii)
   {
     auto individual = myIndividuals[ii];
-
-    Logger::log("Individual " + std::to_string(ii+1));
     runTime = individual->getExitTime() - mySimulationStartTime;
-    Logger::log("       Time in Simulation: " +
-                std::to_string(runTime.count()) + "s.");
-    Logger::log("  Total Distance Traveled: " +
-                std::to_string(individual->getDistanceTraveled()) + "m.");
+    float actualTime = runTime.count();
+
+    if (QS::Benchmark == myRunConfiguration)
+    {
+      if (actualTime > maxActualTime)
+      {
+        maxActualTime = actualTime;
+      }
+
+      if (actualTime < minActualTime)
+      {
+        minActualTime = actualTime;
+      }
+
+
+      float idealTime = individual->getIdealStraightLineTime();
+      float delta = actualTime - idealTime;
+      ErrorData *data = &overIdeal;
+      if (delta < 0)
+      {
+        data = &underIdeal;
+      }
+
+      if (delta > maxErrorDelta)
+      {
+        maxErrorDelta = delta;
+      }
+
+      if (delta < minErrorDelta)
+      {
+        minErrorDelta = delta;
+      }
+
+      data->averageDelta += delta;
+      data->count++;
+
+      Logger::log("Individual " + std::to_string(ii+1) + ", Max Speed: " +
+                  std::to_string(individual->getMaximumSpeed()) +
+                  "m/s, Original Position: " +
+                  EigenHelper::print(individual->getOriginalPosition()));
+      Logger::log("          Time in Simulation: " +
+                  std::to_string(actualTime) + "s");
+      Logger::log("     Total Distance Traveled: " +
+                  std::to_string(individual->getDistanceTraveled()) + "m");
+      Logger::log("    Ideal Straight Line Time: " +
+                  std::to_string(idealTime) + "s");
+      Logger::log("      Delta (Actual - Ideal): " +
+                  std::to_string(delta) + "s");
+    }
+    else
+    {
+       Logger::log("Individual " + std::to_string(ii+1));
+       Logger::log("     Time in Simulation: " +
+                   std::to_string(actualTime) + "s");
+       Logger::log("Total Distance Traveled: " +
+                   std::to_string(individual->getDistanceTraveled()) + "m");
+    }
   }
+
+  if (QS::Benchmark == myRunConfiguration)
+  {
+    underIdeal.average();
+    overIdeal.average();
+    Logger::log("========== Group Data ==========");
+    Logger::log("Minimum Actual Time: " + std::to_string(minActualTime) + "s");
+    Logger::log("Maximum Actual Time: " + std::to_string(maxActualTime) + "s");
+    Logger::log("Minimum Error Delta: " + std::to_string(minErrorDelta) + "s");
+    Logger::log("Maximum Error Delta: " + std::to_string(maxErrorDelta) + "s");
+    Logger::log("Over Ideal Time\n" + overIdeal.print());
+    Logger::log("Under Ideal Time\n" + underIdeal.print());
+  }
+
   Logger::log("========== End Report ==========");
 }
 
@@ -376,18 +542,40 @@ void Lattice::loadConfigFile() throw (std::exception)
   configFile >> n;
   int32_t randomNumberEngineSeed;
   configFile >> randomNumberEngineSeed;
+  std::string benchmarkOrSim;
+  configFile >> benchmarkOrSim;
+  std::transform(benchmarkOrSim.begin(), benchmarkOrSim.end(),
+                 benchmarkOrSim.begin(), ::tolower);
 
-  Logger::log("Configuration Data");
+  if ("benchmark" == benchmarkOrSim)
+  {
+    myRunConfiguration = QS::Benchmark;
+  }
+  else if ("simulation" == benchmarkOrSim)
+  {
+    myRunConfiguration = QS::Simulation;
+  }
+  else
+  {
+    throw std::logic_error("Invalid benchmark/simulation option given, \"" +
+                           benchmarkOrSim + "\". Must be either " +
+                           "\"benchmark\" or \"simulation\".");
+  }
+
+  Logger::log("Simulation Configuration Data");
+  Logger::log("  Run Configuration: " + benchmarkOrSim);
   Logger::log("  Number of Individuals: " +
               std::to_string(myNumberIndividuals));
   Logger::log("  World Size (length x height): " + std::to_string(myLength)
               + "m x " + std::to_string(myHeight) + "m");
-  Logger::log("  Bucket configuration: " + myBucketConfiguration);
-  Logger::log("  Search Radius (m): " + std::to_string(searchRadius));
+  Logger::log("  Bucket Configuration: " + myBucketConfiguration);
+  Logger::log("  Neighbor Search Radius (m): " + std::to_string(searchRadius));
   Logger::log("  N (# neighbors): " + std::to_string(n));
-  Logger::log("  Random Number Engine seed: " +
+  Logger::log("  Random Number Engine Seed: " +
               std::to_string(randomNumberEngineSeed));
 
+  glbIndividualsLeft = myNumberIndividuals;
+  Exit::setRunConfiguration(myRunConfiguration);
   NearestN::setN(n);
   NearestN::setSearchRadius(searchRadius);
   myRandomEngine.seed(randomNumberEngineSeed);
@@ -400,10 +588,11 @@ void Lattice::runSimulation()
 {
   try
   {
-    Logger::log("Initializing simulation from config file: " +
+    Logger::log("Initializing simulation from configuration file: " +
                 myConfigFileName);
 
     loadConfigFile();
+    configureOpenMP();
     determineLatticeGrid();
     createBuckets();
     createIndividuals();

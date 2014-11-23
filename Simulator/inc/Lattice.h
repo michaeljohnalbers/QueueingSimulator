@@ -14,6 +14,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <SimulatorTypedef.h>
+
 class Bucket;
 class Individual;
 
@@ -43,9 +45,9 @@ class Lattice
 
   /**
    * Copy constructor.
-   * @param Object to copy.
+   * @param theObjectToCopy Object to copy.
    */
-  Lattice(const Lattice&) = delete;
+  Lattice(const Lattice &theObjectToCopy) = delete;
 
   /**
    * Destructor.
@@ -54,10 +56,10 @@ class Lattice
 
   /**
    * Assignment operator.
-   * @param Object to copy.
+   * @param theRHS Object to copy.
    * @return This object.
    */
-  Lattice& operator=(const Lattice&) = delete;
+  Lattice& operator=(const Lattice &theRHS) = delete;
 
   /**
    * Runs the entire simulation. Does all setup/teardown work needed.
@@ -68,6 +70,11 @@ class Lattice
   // Protected
   // ************************************************************
   protected:
+
+  /**
+   * Configures OpenMP.
+   */
+  void configureOpenMP();
 
   /**
    * Creates the Buckets which make up the world.
@@ -148,7 +155,7 @@ class Lattice
   int32_t myHeight = 0;
 
   /** All Individuals in the world. */
-  Individual* *myIndividuals;
+  Individual* *myIndividuals = nullptr;
 
   /** Number of columns in myBuckets. */
   int32_t myLatticeColumns = 0;
@@ -168,12 +175,17 @@ class Lattice
   /** Engine for generating pseudo-random numbers. */
   std::default_random_engine myRandomEngine;
 
+  /** Type of run. */
+  QS::RunConfiguration myRunConfiguration;
+
   /** Simulation start time. */
   std::chrono::time_point<std::chrono::system_clock> mySimulationStartTime;
 
   /** Simulation stop time. */
   std::chrono::time_point<std::chrono::system_clock> mySimulationStopTime;
 
+  /** Total number of frame updates. */
+  uint64_t myTotalNumberFrames = 0;
 };
 
 #endif

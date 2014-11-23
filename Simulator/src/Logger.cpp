@@ -6,6 +6,7 @@
  */
 
 #include <chrono>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 
@@ -35,11 +36,14 @@ void Logger::log(const std::string &theMessage)
 //************
 void Logger::log(const Message &theMessage)
 {
+  static const uint32_t fractionSecondsWidth = 6;
+
   auto messageTime = theMessage.myTime;
   std::time_t time = std::chrono::system_clock::to_time_t(messageTime);
   std::tm *tmTime = std::localtime(&time);
   char timeBuffer[24];
   std::strftime(timeBuffer, sizeof timeBuffer, "%FT%T", tmTime);
+  std::size_t timeStampLen = std::strlen(timeBuffer);
 
   std::chrono::microseconds ms =
     std::chrono::duration_cast<std::chrono::microseconds>(
@@ -47,9 +51,21 @@ void Logger::log(const Message &theMessage)
 
   std::size_t fractionalSeconds = ms.count() % 1000000;
 
+  // 4 is for the "." and " - " in the logged message.
+  timeStampLen += fractionSecondsWidth + 4;
+
+  std::string message = theMessage.myMessage;
+  for (std::string::size_type ii = 0; ii < message.size(); ++ii)
+  {
+    if (message[ii] == '\n')
+    {
+      message.insert(ii+1, timeStampLen, ' ');
+    }
+  }
+
   std::cout << timeBuffer << "."
-            << std::setfill('0') << std::setw(6) << fractionalSeconds << " - "
-            << theMessage.myMessage << std::endl;
+            << std::setfill('0') << std::setw(fractionSecondsWidth)
+            << fractionalSeconds << " - " << message << std::endl;
 }
 
 //***************

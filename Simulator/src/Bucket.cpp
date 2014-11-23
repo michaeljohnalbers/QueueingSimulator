@@ -12,16 +12,31 @@
 #include <Logger.h>
 #include <NearestN.h>
 
+extern int32_t glbIndividualsLeft;
+
 //***************
 // Bucket::Bucket
 //***************
 Bucket::Bucket(const Eigen::Vector2f &theOrigin,
                int32_t theHeight,
-               int32_t theLength) :
+               int32_t theLength,
+               int32_t theMaximumNumberIndividuals,
+               QS::RunConfiguration theRunConfiguration) :
   myHeight(theHeight),
+  myIndividuals(theMaximumNumberIndividuals, nullptr),
+  myIndividualsToRemove(theMaximumNumberIndividuals, -1),
   myLength(theLength),
-  myOrigin(theOrigin)
+  myOrigin(theOrigin),
+  myRebucketedIndividuals(theMaximumNumberIndividuals),
+  myRunConfiguration(theRunConfiguration)
 {
+  // In order to avoid simultaneous memory allocation by the std::vectors
+  // the initial capacity/size is set on contruction. These clear calls set
+  // the size back to zero.
+  myIndividuals.clear();
+  myIndividualsToRemove.clear();
+  myRebucketedIndividuals.clear();
+
   for (uint32_t row = 0; row < myAdjacentBuckets.size(); ++row)
   {
     for (uint32_t col = 0; col < myAdjacentBuckets[row].size(); ++col)
@@ -52,6 +67,36 @@ void Bucket::addAdjacentBucket(Bucket *theBucket,
   }
 }
 
+//******************************
+// Bucket::adjustIndividualsList
+//******************************
+void Bucket::adjustIndividualsList()
+{
+  auto iter = myIndividualsToRemove.begin();
+  while (iter != myIndividualsToRemove.end())
+  {
+    int32_t index = *iter;
+    //    Logger::log("nulling " + std::to_string(index) + " of " +
+    //                std::to_string(myIndividuals.size()));
+    myIndividuals[index] = nullptr;
+    ++iter;
+  }
+  myIndividualsToRemove.clear();
+
+  auto iter2 = myIndividuals.begin();
+  while (iter2 != myIndividuals.end())
+  {
+    if (nullptr == *iter2)
+    {
+      iter2 = myIndividuals.erase(iter2);
+    }
+    else
+    {
+      ++iter2;
+    }
+  }
+}
+
 //**********************
 // Bucket::containsPoint
 //**********************
@@ -69,11 +114,14 @@ bool Bucket::containsPoint(const Eigen::Vector2f &thePosition) const
 //********************
 void Bucket::frameUpdate(float theFrameTime)
 {
-  // TODO: parallelize
-  auto iter = myIndividuals.begin();
-  while (iter != myIndividuals.end())
+  int32_t numberIndividuals = myIndividuals.size();
+#ifndef SERIAL
+# pragma omp parallel for
+#endif
+  for (int32_t ii = 0; ii < numberIndividuals; ++ii)
   {
-    Individual *individual = *iter;
+    Individual *individual = myIndividuals[ii];
+    bool removeIndividual = false;
 
     auto neighbors = NearestN::findNeighbors(individual, this);
     individual->frameUpdate(neighbors, theFrameTime);
@@ -81,31 +129,60 @@ void Bucket::frameUpdate(float theFrameTime)
 
     if (individual->getExited())
     {
-      Logger::log("Individual with rank " +
-                  std::to_string(individual->getRank()) + " has exited.");
-      iter = myIndividuals.erase(iter);
-      continue;
+#ifndef SERIAL
+#     pragma omp critical (glbIndividualsLeft)
+#endif
+      {
+        --glbIndividualsLeft;
+      }
+      if (QS::Benchmark == myRunConfiguration)
+      {
+        Logger::log("Individual with rank " +
+                    std::to_string(individual->getRank()) +
+                    " has exited. Individuals remaining: " +
+                    std::to_string(glbIndividualsLeft));
+      }
+      else
+      {
+        Logger::log("Individual with rank " +
+                    std::to_string(individual->getRank()) +
+                    " has exited.");
+      }
+      removeIndividual = true;
     }
-
-    if (! containsPoint(newPosition))
+    else if (! containsPoint(newPosition))
     {
       auto numberAdjacentBuckets = myAdjacentBucketList.size();
+#ifndef SERIAL
 #     pragma omp parallel for
+#endif
       for (uint32_t ii = 0; ii < numberAdjacentBuckets; ++ii)
       {
         Bucket *adjacentBucket = myAdjacentBucketList[ii];
         if (adjacentBucket != nullptr &&
             adjacentBucket->containsPoint(newPosition))
         {
-          // No critical section needed here. The new point can only fall
-          // into one adjacent bucket.
-          ReBucketer rebucketer(individual, adjacentBucket);
-          myRebucketedIndividuals.push_back(rebucketer);
+#ifndef SERIAL
+#         pragma omp critical
+#endif
+          {
+            ReBucketer rebucketer(individual, adjacentBucket);
+            myRebucketedIndividuals.push_back(rebucketer);
+            removeIndividual = true;
+          }
         }
       }
     }
 
-    ++iter;
+    if (removeIndividual)
+    {
+#ifndef SERIAL
+#     pragma omp critical
+#endif
+      {
+        myIndividualsToRemove.push_back(ii);
+      }
+    }
   }
 }
 
@@ -125,6 +202,15 @@ const std::vector<Individual*>& Bucket::getIndividuals() const
   return myIndividuals;
 }
 
+//***********************************
+// Bucket::postFrameUpdateAdjustments
+//***********************************
+void Bucket::postFrameUpdateAdjustments()
+{
+  rebucketIndividuals();
+  adjustIndividualsList();
+}
+
 //****************************
 // Bucket::rebucketIndividuals
 //****************************
@@ -132,10 +218,6 @@ void Bucket::rebucketIndividuals()
 {
   for (auto &rebucketer : myRebucketedIndividuals)
   {
-    auto iter = std::find(myIndividuals.begin(),
-                          myIndividuals.end(),
-                          rebucketer.getIndividual());
-    myIndividuals.erase(iter);
     rebucketer.rebucket();
   }
   myRebucketedIndividuals.clear();

@@ -13,8 +13,15 @@
 
 #include <Eigen/Core>
 
+#include <SimulatorTypedef.h>
+
 class Individual;
 
+/**
+ * This class defines the exit point of the world. All Individuals are
+ * attempting to move towards this point. This class also tracks the
+ * rank of the Individual which can currently exit.
+ */
 class Exit
 {
   // ************************************************************
@@ -24,7 +31,7 @@ class Exit
 
   /**
    * Default constructor.
-   */ 
+   */
   Exit() = delete;
 
   /**
@@ -42,6 +49,12 @@ class Exit
   static const Eigen::Vector2f& getPosition();
 
   /**
+   * Returns the exit radius.
+   * @return Exit radius (m).
+   */
+  static float getRadius();
+
+  /**
    * Returns the rank of the next Individual which can exit
    * @return Rank of individual which can exit.
    */
@@ -53,6 +66,12 @@ class Exit
    */
   static void setPosition(const Eigen::Vector2f &theExit);
 
+  /**
+   * Sets the run configuration.
+   * @param theRunConfiguration Run configuration.
+   */
+  static void setRunConfiguration(QS::RunConfiguration theRunConfiguration);
+
   // ************************************************************
   // Protected
   // ************************************************************
@@ -63,10 +82,17 @@ class Exit
   // ************************************************************
   private:
 
+  /** Radius of the exit area. */
   static constexpr float EXIT_RADIUS = 1.0;
 
+  /** Position of the exit. */
   static Eigen::Vector2f myExit;
+
+  /** Rank of the Individual which can exit. */
   static int32_t myRankToExit;
+
+  /** Configuration of this simulation run. */
+  static QS::RunConfiguration myRunConfiguration;
 };
 
 #endif

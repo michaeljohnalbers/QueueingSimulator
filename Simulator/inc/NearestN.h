@@ -34,16 +34,16 @@ class NearestN
 
   /**
    * Copy constructor.
-   * @param Object to copy.
+   * @param theObjectToCopy Object to copy.
    */
-  NearestN(const NearestN&) = delete;
+  NearestN(const NearestN &theObjectToCopy) = delete;
 
   /**
    * Assignment operator.
-   * @param Object to copy.
+   * @param theRHS Object to copy.
    * @return This object.
    */
-  NearestN& operator=(const NearestN&) = delete;
+  NearestN& operator=(const NearestN &theRHS) = delete;
 
   /**
    * Finds the nearest N neighbors of the given Individual and returns an
@@ -66,7 +66,7 @@ class NearestN
    * Sets the maximum number of neighbors to find.
    * @param theN Maximu number of neighbors to find.
    */
-  static void setN(int32_t theN);
+  static void setN(uint32_t theN);
 
   /**
    * Sets the search radius.
@@ -80,20 +80,25 @@ class NearestN
   protected:
 
   /**
-   * Finds all individuals from the given Bucket that fall within
-   * the search radius.
-   * @param theBucket Bucket to search
-   * @param theIndivdual Individual at center of search circle
-   * @param theLowestRank Currently seen lowest (numerically) ranked Individual
-   */
-  void searchBucket(const Bucket &theBucket,
-                    const Individual *theIndividual,
-                    int32_t &theLowestRank);
-
-  /**
    * Default constructor.
    */
   NearestN();
+
+  /**
+   * Finds all individuals from the given Bucket that fall within
+   * the search radius.
+   * @param theBucket Bucket to search
+   * @param theIndividual Individual at center of search circle
+   */
+  void searchBucket(const Bucket &theBucket,
+                    const Individual *theIndividual);
+
+  /**
+   * Sorts the list, truncates it to N then find the Individual wih highest
+   * rank (above the individual around which the search in centered.)
+   * @param theIndividual Individual at center of search circle
+   */ 
+  void sortAndFindHighestRank(const Individual *theIndividual);
 
   // ************************************************************
   // Private
@@ -107,7 +112,7 @@ class NearestN
   const Individual *myLowestRankedIndividual = nullptr;
 
   /** Maximum number of neighbors to find. */
-  static int32_t myN;
+  static uint32_t myN;
 
   /** Search radius, in meters. */
   static float mySearchRadius;

@@ -31,9 +31,9 @@ class Logger
 
   /**
    * Copy constructor.
-   * @param Object to copy.
+   * @param theObjectToCopy Object to copy.
    */
-  Logger(const Logger&) = delete;
+  Logger(const Logger &theObjectToCopy) = delete;
 
   /**
    * Destructor.
@@ -42,10 +42,10 @@ class Logger
 
   /**
    * Assignment operator.
-   * @param Object to copy.
+   * @param theRHS Object to copy.
    * @return This object.
    */
-  Logger& operator=(const Logger&) = delete;
+  Logger& operator=(const Logger &theRHS) = delete;
 
   /**
    * Logs a message.

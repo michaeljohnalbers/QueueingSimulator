@@ -9,12 +9,13 @@
  */
 
 #include <Eigen/Core>
-#include <SteeringBehavior.h>
-
 
 /**
+ * This class defines the 'Seek' steering behavior. This behavior
+ * simply causes the Individual to move to a specific point.
+ * Typically this is a fixed point in space.
  */
-class Seek : public SteeringBehavior
+class Seek
 {
   // ************************************************************
   // Public
@@ -24,23 +25,21 @@ class Seek : public SteeringBehavior
   /**
    * Default constructor.
    */
-  Seek();
+  Seek() = delete;
 
   /**
    * Destructor.
    */
-  virtual ~Seek();
+  ~Seek() = delete;
 
   /**
    * Drives an Individual towards a fixed point in space.
    * @param theIndividual Individual being steered.
-   * @param theNeighbors Not needed, ignored.
    * @param theTarget Target being seeked.
    * @return Force vector
    */
-  virtual Eigen::Vector2f calculateForce(const Individual &theIndividual,
-                                         const NearestN *theNeighbors,
-                                         const Eigen::Vector2f *theTarget);
+  static Eigen::Vector2f calculateForce(const Individual &theIndividual,
+                                        const Eigen::Vector2f *theTarget);
 
   // ************************************************************
   // Protected

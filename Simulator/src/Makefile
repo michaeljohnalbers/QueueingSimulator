@@ -7,6 +7,8 @@ LOCAL_DIR = Simulator
 
 include $(QS_BASE_DIR)/Common.mk
 
+QS_SERIAL := 
+
 EXE_NAME := QueueingSimulator
 EXE := $(OBJ_DIR)/$(EXE_NAME)
 
@@ -17,6 +19,7 @@ LIB_SRCS :=
 LIB_OBJS := $(addprefix $(OBJ_DIR)/, $(LIB_SRCS:%.cpp=%.o))
 
 EXE_SRCS := Bucket.cpp \
+            CollisionAvoidance.cpp \
             EigenHelper.cpp \
             Exit.cpp \
             Individual.cpp \
@@ -42,7 +45,7 @@ $(EXE): $(OBJS)
 
 $(OBJ_DIR)/%.o:%.cpp
 	@echo "Compiling $<"
-	@$(CC) $(CFLAGS) -o $@ -c $<
+	@$(CC) $(CFLAGS) $(QS_SERIAL) -o $@ -c $<
 
 $(LIB): $(LIB_OBJS)
 	@echo "Building library $(LIB_NAME)"

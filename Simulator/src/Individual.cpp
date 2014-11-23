@@ -5,6 +5,9 @@
  * @author Michael Albers
  */
 
+#include <iomanip>
+#include <sstream>
+
 #include <EigenHelper.h>
 #include <Exit.h>
 #include <Individual.h>
@@ -19,16 +22,22 @@ Individual::Individual(float theMass,
                        float theMaximumAcceleration,
                        float theOrientation,
                        const Eigen::Vector2f &thePosition,
-                       int32_t theRank) :
+                       int32_t theRank,
+                       QS::RunConfiguration &theRunConfiguration) :
   myBodyRadius(theMass * 0.005), // Rough approximation
   myMass(theMass),
   myMaximumAcceleration(theMaximumAcceleration),
   myMaximumForce(225),
   myMaximumSpeed(theMaximumSpeed),
   myOrientation(theOrientation),
+  myOriginalPosition(thePosition),
   myPosition(thePosition),
-  myRank(theRank)
+  myRank(theRank),
+  myRunConfiguration(theRunConfiguration)
 {
+  int32_t idealDistance =
+    EigenHelper::distance(myPosition, Exit::getPosition()) - Exit::getRadius();
+  myIdealStraightLineTime = idealDistance / myMaximumSpeed;
   // TODO: caclcuate maximum force from mass & max speed?
   // See http://www.ccohs.ca/oshanswers/ergonomics/push1.html
   // See http://msis.jsc.nasa.gov/sections/section04.htm#_4.9_STRENGTH
@@ -56,35 +65,84 @@ bool Individual::collision(const Individual *theIndividual)
 //************************
 // Individual::frameUpdate
 //************************
-// TODO: remvoe frame time & just run as fast as possible?
 void Individual::frameUpdate(std::shared_ptr<NearestN> theNeighbors,
                              float theFrameTime)
 {
-  Seek seek;
+  Eigen::Vector2f steeringForce;
 
-  Eigen::Vector2f steeringForce(
-    seek.calculateForce(*this, nullptr, &Exit::getPosition()));
-  Eigen::Vector2f steeringForce2(steeringForce);
-  // TODO: don't forget to truncate steering force, max force
-  //  steeringForce /= myMass;
+  if (QS::Benchmark == myRunConfiguration)
+  {
+    steeringForce = Seek::calculateForce(*this, &Exit::getPosition());
+  }
+  else
+  {
+    // TODO: change to RankedLeaderFollow when it's ready
+    steeringForce = Seek::calculateForce(*this, &Exit::getPosition());
+  }
 
-  myCurrentVelocity = EigenHelper::truncate(myCurrentVelocity + steeringForce,
-                                            myMaximumSpeed);
+  // The nearest I can figure, Reynolds appears to use this operation to
+  // turn the "force" returned from the steering behavior(s) (which is usually
+  // the result of some number of velocity vectors added together) into
+  // an actual force (i.e. Newtons).
+  Eigen::Vector2f force(EigenHelper::truncate(steeringForce, myMaximumForce));
 
-  auto adjustment = myCurrentVelocity * theFrameTime;
+  Eigen::Vector2f acceleration(force / myMass);
 
-  // TODO: this might be a little off.
-  myDistanceTraveled += adjustment.norm();
+  Eigen::Vector2f newVelocity(myVelocity + (acceleration * theFrameTime));
+  myVelocity = EigenHelper::truncate(newVelocity, myMaximumSpeed);
 
-  myPosition += adjustment;
+  auto timeCorrectedVelocity = myVelocity * theFrameTime;
 
-  //  Logger::log(EigenHelper::print(myPosition));
+  // norm() returns the vector's magnitude
+  myDistanceTraveled += timeCorrectedVelocity.norm();
+
+  // Forward Euler integration.
+  myPosition += timeCorrectedVelocity;
+
+  // Just in case the Individual wanders out of the world. This can happen
+  // if the frame time gets large enough. That can happen when the simulator
+  // has more individuals than it can handle.
+  // TODO: need to make sure it doesn't pass max world value
+  if (myPosition[0] < 0.0)
+  {
+    myPosition[0] = 0.0;
+  }
+  if (myPosition[1] < 0.0)
+  {
+    myPosition[1] = 0.0;
+  }
+
+  // Uncomment for debugging.
+  // if (10000 == myRank) // For output filtering
+  // {
+  //   Logger::log("------");
+  //   Logger::log("      Rank: " + std::to_string(myRank));
+  //   Logger::log("  Position: " + EigenHelper::print(myPosition));
+  //   Logger::log("  Velocity: " + EigenHelper::print(timeCorrectedVelocity));
+  //   Logger::log("Frame time: " + std::to_string(theFrameTime));
+  //   Logger::log("------");
+  // }
 
   myExited = Exit::canExit(*this);
   if (myExited)
   {
     myExitTime = std::chrono::system_clock::now();
   }
+}
+
+//*************************
+// Individual::getBasicData
+//*************************
+std::string Individual::getBasicData() const
+{
+  std::ostringstream basicData;
+  basicData << "Rank: " << myRank
+            << ", Mass: " << std::setprecision(4) << myMass
+            << ", Radius: " << std::setprecision(2) << myBodyRadius
+            << ", Max Accel: " << std::setprecision(4) << myMaximumAcceleration
+            << ", Max Force: " << std::setprecision(3) << myMaximumForce
+            << ", Max Speed: " << std::setprecision(2) << myMaximumSpeed;
+  return basicData.str();
 }
 
 //**************************
@@ -98,9 +156,9 @@ float Individual::getBodyRadius() const
 //*******************************
 // Individual::getCurrentVelocity
 //*******************************
-const Eigen::Vector2f& Individual::getCurrentVelocity() const
+const Eigen::Vector2f& Individual::getVelocity() const
 {
-  return myCurrentVelocity;
+  return myVelocity;
 }
 
 //********************************
@@ -126,6 +184,14 @@ const std::chrono::time_point<std::chrono::system_clock>&
 Individual::getExitTime() const
 {
   return myExitTime;
+}
+
+//****************************************
+// Individual::getIdealStraightLineTime
+//****************************************
+float Individual::getIdealStraightLineTime() const
+{
+  return myIdealStraightLineTime;
 }
 
 //***********************************
@@ -158,6 +224,14 @@ float Individual::getMaximumSpeed() const
 float Individual::getOrientation() const
 {
   return myOrientation;
+}
+
+//********************************
+// Individual::getOriginalPosition
+//********************************
+const Eigen::Vector2f Individual::getOriginalPosition() const
+{
+  return myOriginalPosition;
 }
 
 //************************

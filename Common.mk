@@ -13,6 +13,7 @@ BIN_DIR = $(PROJECT_DIR)/bin
 
 MAKEFLAGS := --no-print-directory
 
+CP := /bin/cp
 RM := /bin/rm -f
 
 DEPEND_FILE := $(SRC_DIR)/.dependlist

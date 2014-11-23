@@ -16,6 +16,7 @@
 #include <Eigen/Core>
 
 #include <ReBucketer.h>
+#include <SimulatorTypedef.h>
 
 /**
  * The total simulation world is broken down into Buckets for the purpose of
@@ -24,6 +25,8 @@
  *
  * Each Bucket is in charge of updating each Individual within the Bucket for
  * each frame.
+ *
+ * This class is not designed to be used by different threads simultaneously.
  */
 class Bucket
 {
@@ -42,16 +45,21 @@ class Bucket
    * @param theOrigin Origin point of the Bucket.
    * @param theHeight Bucket height.
    * @param theLength Bucket length.
+   * @param theMaximumNumberIndividuals Maximum number of Individuals in this
+   *        Bucket.
+   * @param theRunConfiguration Simulator run configuration.
    */
   Bucket(const Eigen::Vector2f &theOrigin,
          int32_t theHeight,
-         int32_t theLength);
+         int32_t theLength,
+         int32_t theMaximumNumberIndividuals,
+         QS::RunConfiguration theRunConfiguration);
 
   /**
    * Copy constructor.
-   * @param Object to copy.
+   * @param theObjectToCopy Object to copy.
    */
-  Bucket(const Bucket&) = delete;
+  Bucket(const Bucket &theObjectToCopy) = delete;
 
   /**
    * Destructor.
@@ -60,13 +68,14 @@ class Bucket
 
   /**
    * Assignment operator
-   * @param Object to copy.
+   * @param theRHS Object to copy.
    * @return This object.
    */
-  Bucket& operator=(const Bucket&) = delete;
+  Bucket& operator=(const Bucket &theRHS) = delete;
 
   /**
-   * Informs this Bucket that the given Bucket is adjacent to it.
+   * Informs this Bucket that the given Bucket is adjacent to it. Not
+   * thread-safe.
    * @param theBucket Adjacent Bucket.
    * @param theRowOffset Row offset from this Bucket (-1 to 1)
    * @param theColumnOffset Column offset from this Bucket (-1 to 1)
@@ -102,10 +111,13 @@ class Bucket
   const std::vector<Individual*>& getIndividuals() const;
 
   /**
-   * Takes all individual which have moved out of this Bucket and gives them
-   * to their new Bucket.
+   * Performs clean up/adjustment actions after each frame. This should be
+   * called by the owner of this object after calling the frame update
+   * function.
+   *
+   * Note: This function is not thread-safe.
    */
-  void rebucketIndividuals();
+  void postFrameUpdateAdjustments();
 
   /**
    * Means to place an Individual into this Bucket.
@@ -117,6 +129,18 @@ class Bucket
   // Protected
   // ************************************************************
   protected:
+
+  /**
+   * Removes any Individuals from this Bucket which are no longer in this
+   * Bucket.
+   */
+  void adjustIndividualsList();
+
+  /**
+   * Takes all individual which have moved out of this Bucket and gives them
+   * to their new Bucket. Not thread-safe.
+   */
+  void rebucketIndividuals();
 
   // ************************************************************
   // Private
@@ -141,6 +165,12 @@ class Bucket
   /** All Individual in this Bucket. */
   std::vector<Individual*> myIndividuals;
 
+  /**
+   * List of indeces into myIndividuals. Each entry will be removed after a
+   * frame update.
+   */
+  std::vector<int32_t> myIndividualsToRemove;
+
   /** Length of the Bucket. */
   int32_t myLength = 0;
 
@@ -152,6 +182,9 @@ class Bucket
    * a frame update.
    */
   std::vector<ReBucketer> myRebucketedIndividuals;
+
+  /** Run configuration. */
+  const QS::RunConfiguration myRunConfiguration;
 };
 
 #endif
