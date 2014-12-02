@@ -6,6 +6,7 @@
  */
 
 #include <cmath>
+#include <omp.h>
 
 #include <EigenHelper.h>
 #include <Exit.h>
@@ -33,7 +34,12 @@ bool Exit::canExit(const Individual &theIndividual)
     if (distance <= EXIT_RADIUS)
     {
       canExit = true;
-      ++myRankToExit;
+#ifndef SERIAL
+#     pragma omp critical
+#endif
+      {
+        ++myRankToExit;
+      }
     }
   }
   return canExit;

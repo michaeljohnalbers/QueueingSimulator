@@ -51,9 +51,17 @@ std::shared_ptr<NearestN> NearestN::findNeighbors(
     neighbors->searchBucket(*bucket, theIndividual);
   }
 
-  neighbors->sortAndFindHighestRank(theIndividual);
+  neighbors->sortAndFindClosestRank(theIndividual);
 
   return neighbors;
+}
+
+//***********************************
+// NearestN::getClosestRankedNeighbor
+//***********************************
+const Individual* NearestN::getClosestRankedNeighbor() const
+{
+  return myClosestRankedIndividual;
 }
 
 //***********************
@@ -116,9 +124,9 @@ void NearestN::setSearchRadius(float theSearchRadius)
 }
 
 //*********************************
-// NearestN::sortAndFindHighestRank
+// NearestN::sortAndFindClosestRank
 //*********************************
-void NearestN::sortAndFindHighestRank(const Individual *theIndividual)
+void NearestN::sortAndFindClosestRank(const Individual *theIndividual)
 {
   myNeighbors.sort(
     [& theIndividual] (const Individual *a,
@@ -135,17 +143,21 @@ void NearestN::sortAndFindHighestRank(const Individual *theIndividual)
     myNeighbors.resize(myN);
   }
 
-  int32_t lowestRank = INT32_MAX;
+  /* This will find the Individual with the closest numerically, not proximity,
+   * higher (remember higher rank means lower number) rank. This is Individual
+   * which is closest to this Individual, but still ahead in the queue.
+   */
+  int32_t lowestRankDifference = INT32_MAX;
   const auto individualRank = theIndividual->getRank();
-  // No real need to parallelize as this will be limited to at most N iterations.
-  // And N shouldn't be very large.
+
   for (auto individual : myNeighbors)
   {
     auto rank = individual->getRank();
-    if (rank < lowestRank && rank < individualRank)
+    int32_t rankDifference = individualRank - rank;
+    if (rank < individualRank && rankDifference < lowestRankDifference)
     {
-      myLowestRankedIndividual = individual;
-      lowestRank = rank;
+      lowestRankDifference = rankDifference;
+      myClosestRankedIndividual = individual;
     }
   }
 }

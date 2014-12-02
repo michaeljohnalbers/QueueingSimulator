@@ -184,6 +184,9 @@ class Lattice
   /** Simulation stop time. */
   std::chrono::time_point<std::chrono::system_clock> mySimulationStopTime;
 
+  /** Nesting level for OpenMP threads (for benchmarking). */
+  int32_t myThreadNestingLevel = 0;
+
   /** Total number of frame updates. */
   uint64_t myTotalNumberFrames = 0;
 };

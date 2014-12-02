@@ -57,6 +57,13 @@ class NearestN
     const Bucket *theBucket);
 
   /**
+   * Returns the Individual with the closest numerically higher rank. If no
+   * such Individual exists in the group of neighbors nullptr is returned.
+   * @return Individual with closest numerically higher rank or nullptr.
+   */
+  const Individual* getClosestRankedNeighbor() const;
+
+  /**
    * Returns all of the found neighbors.
    * @return Nearst N neighbors.
    */
@@ -94,11 +101,11 @@ class NearestN
                     const Individual *theIndividual);
 
   /**
-   * Sorts the list, truncates it to N then find the Individual wih highest
-   * rank (above the individual around which the search in centered.)
+   * Sorts the list, truncates it to N then find the Individual with the
+   * closest rank (above the individual around which the search in centered.)
    * @param theIndividual Individual at center of search circle
    */ 
-  void sortAndFindHighestRank(const Individual *theIndividual);
+  void sortAndFindClosestRank(const Individual *theIndividual);
 
   // ************************************************************
   // Private
@@ -108,8 +115,8 @@ class NearestN
   /** (Up to) N neighbors of an Indivdual. */
   std::list<const Individual*> myNeighbors;
 
-  /** Lowest (numerically) ranked individual. */
-  const Individual *myLowestRankedIndividual = nullptr;
+  /** Individual with the closest numerically higher rank. */
+  const Individual *myClosestRankedIndividual = nullptr;
 
   /** Maximum number of neighbors to find. */
   static uint32_t myN;

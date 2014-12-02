@@ -5,6 +5,7 @@
  * @author Michael Albers
  */
 
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 
@@ -12,6 +13,7 @@
 #include <Exit.h>
 #include <Individual.h>
 #include <Logger.h>
+#include <RankedLeaderFollow.h>
 #include <Seek.h>
 
 //***********************
@@ -72,12 +74,25 @@ void Individual::frameUpdate(std::shared_ptr<NearestN> theNeighbors,
 
   if (QS::Benchmark == myRunConfiguration)
   {
-    steeringForce = Seek::calculateForce(*this, &Exit::getPosition());
+    steeringForce = Seek::calculateForce(*this, Exit::getPosition());
   }
   else
   {
-    // TODO: change to RankedLeaderFollow when it's ready
-    steeringForce = Seek::calculateForce(*this, &Exit::getPosition());
+    steeringForce = RankedLeaderFollow::calculateForce(*this, *theNeighbors);
+  }
+
+  // Sometimes the steering force will have a nan component. This can happen
+  // with Seek and the position of the Individual is exactly the same as the
+  // target position. Each steering force should make sure it doesn't return
+  // nan. However, that is error prone (it would be easy to miss a condition
+  // which causes nan or forget to check altogether). So the check is being
+  // made here.
+  for (int32_t ii = 0; ii < 2; ++ii)
+  {
+    if (std::isnan(steeringForce[ii]))
+    {
+      steeringForce[ii] = 0.0;
+    }
   }
 
   // The nearest I can figure, Reynolds appears to use this operation to
@@ -113,13 +128,19 @@ void Individual::frameUpdate(std::shared_ptr<NearestN> theNeighbors,
   }
 
   // Uncomment for debugging.
-  // if (10000 == myRank) // For output filtering
+  // static int count[3] = {0,0,0};
+  // if (myRank < 3 && ++count[myRank] % 10000 == 0) // For output filtering
   // {
+  //   count[myRank] = 0;
   //   Logger::log("------");
   //   Logger::log("      Rank: " + std::to_string(myRank));
   //   Logger::log("  Position: " + EigenHelper::print(myPosition));
   //   Logger::log("  Velocity: " + EigenHelper::print(timeCorrectedVelocity));
+  //   Logger::log(" Max Speed: " + std::to_string(myMaximumSpeed));
+  //   Logger::log("  Distance: " + std::to_string(
+  //                 EigenHelper::distance(myPosition, Exit::getPosition())));
   //   Logger::log("Frame time: " + std::to_string(theFrameTime));
+  //   Logger::log("Steering Force: " + EigenHelper::print(steeringForce));
   //   Logger::log("------");
   // }
 

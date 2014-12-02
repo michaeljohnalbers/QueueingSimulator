@@ -1,20 +1,26 @@
-#ifndef _Seek_h_
-#define _Seek_h_
+#ifndef _Evade_h_
+#define _Evade_h_
 
 /**
- * @file Seek.h
- * @brief Defines the Seek steering behavior.
+ * @file Evade.h
+ * @brief Defines the Evade steering behavior.
  *
  * @author Michael Albers
  */
 
 #include <Eigen/Core>
 
+class Individual;
+
 /**
- * This class defines the 'Seek' steering behavior. This behavior
- * simply causes the Individual to move to a specific point.
+ * This class defines the 'Evade' steering behavior. This behavior is
+ * a predictive version of 'Flee'. It makes an educated guess as to
+ * where an Individual is going to be and moves the away from that
+ * spot.
+ * Based off of description at:
+ * http://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-pursuit-and-evade--gamedev-2946
  */
-class Seek
+class Evade
 {
   // ************************************************************
   // Public
@@ -24,21 +30,21 @@ class Seek
   /**
    * Default constructor.
    */
-  Seek() = delete;
+  Evade() = delete;
 
   /**
    * Destructor.
    */
-  ~Seek() = delete;
+  ~Evade() = delete;
 
   /**
-   * Drives an Individual towards a fixed point in space.
+   * Drives an Individual away from another Individual.
    * @param theIndividual Individual being steered.
-   * @param theTarget Target being seeked.
+   * @param theIndividualEvaded Individual being evaded.
    * @return Force vector
    */
   static Eigen::Vector2f calculateForce(const Individual &theIndividual,
-                                        const Eigen::Vector2f &theTarget);
+                                        const Individual &theIndividualEvaded);
 
   // ************************************************************
   // Protected

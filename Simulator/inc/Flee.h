@@ -1,9 +1,9 @@
-#ifndef _Seek_h_
-#define _Seek_h_
+#ifndef _Flee_h_
+#define _Flee_h_
 
 /**
- * @file Seek.h
- * @brief Defines the Seek steering behavior.
+ * @file Flee.h
+ * @brief Defines the Flee steering behavior.
  *
  * @author Michael Albers
  */
@@ -11,10 +11,12 @@
 #include <Eigen/Core>
 
 /**
- * This class defines the 'Seek' steering behavior. This behavior
- * simply causes the Individual to move to a specific point.
+ * This class defines the 'Flee' steering behavior. This behavior
+ * simply causes the Individual to move away from a specific point.
+ * Based off of description at:
+ * http://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-flee-and-arrival--gamedev-1303
  */
-class Seek
+class Flee
 {
   // ************************************************************
   // Public
@@ -24,15 +26,15 @@ class Seek
   /**
    * Default constructor.
    */
-  Seek() = delete;
+  Flee() = delete;
 
   /**
    * Destructor.
    */
-  ~Seek() = delete;
+  ~Flee() = delete;
 
   /**
-   * Drives an Individual towards a fixed point in space.
+   * Drives an Individual away from a point in space.
    * @param theIndividual Individual being steered.
    * @param theTarget Target being seeked.
    * @return Force vector

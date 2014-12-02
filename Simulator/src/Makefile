@@ -7,49 +7,56 @@ LOCAL_DIR = Simulator
 
 include $(QS_BASE_DIR)/Common.mk
 
-QS_SERIAL := 
+EXE_BASE := QueueingSimulator
 
-EXE_NAME := QueueingSimulator
-EXE := $(OBJ_DIR)/$(EXE_NAME)
+EXE_NAME := $(EXE_BASE)
+EXE := $(BIN_DIR)/$(EXE_NAME)
 
-LIB_NAME := 
-LIB := 
+OBJ_DIR_SERIAL := $(OBJ_DIR)/serial
+EXE_NAME_SERIAL := $(EXE_BASE)_serial
+EXE_SERIAL := $(BIN_DIR)/$(EXE_NAME_SERIAL)
 
-LIB_SRCS := 
-LIB_OBJS := $(addprefix $(OBJ_DIR)/, $(LIB_SRCS:%.cpp=%.o))
-
-EXE_SRCS := Bucket.cpp \
+EXE_SRCS := Arrive.cpp \
+            Bucket.cpp \
             CollisionAvoidance.cpp \
             EigenHelper.cpp \
+            Evade.cpp \
             Exit.cpp \
+            Flee.cpp \
             Individual.cpp \
             Lattice.cpp \
             Logger.cpp \
             NearestN.cpp \
+            RankedLeaderFollow.cpp \
             ReBucketer.cpp \
             Seek.cpp \
             SimulatorMain.cpp
 
 OBJS := $(addprefix $(OBJ_DIR)/, $(EXE_SRCS:%.cpp=%.o))
+OBJS_SERIAL := $(addprefix $(OBJ_DIR_SERIAL)/, $(EXE_SRCS:%.cpp=%.o))
 
-ALL_EXES := $(EXE)
-ALL_LIBS := $(LIB)
-ALL_OBJS := $(LIB_OBJS) $(OBJS)
+ALL_EXES := $(EXE) $(EXE_SERIAL)
+ALL_OBJS := $(LIB_OBJS) $(OBJS) $(OBJS_SERIAL)
 ALL_SRCS := $(LIB_SRCS) $(EXE_SRCS)
 
-all: $(LIB) $(EXE)
+all: $(EXE) $(EXE_SERIAL)
 
 $(EXE): $(OBJS)
 	@echo "Linking $(EXE_NAME)"
 	@$(LD) $(LDFLAGS) -o $(EXE) $(OBJS)
+	@echo "" # Just for spacing in the console
+
+$(EXE_SERIAL): $(OBJS_SERIAL)
+	@echo "Linking $(EXE_NAME_SERIAL)"
+	@$(LD) $(LDFLAGS) -o $(EXE_SERIAL) $(OBJS_SERIAL)
 
 $(OBJ_DIR)/%.o:%.cpp
 	@echo "Compiling $<"
-	@$(CC) $(CFLAGS) $(QS_SERIAL) -o $@ -c $<
+	@$(CC) $(CFLAGS) -o $@ -c $<
 
-$(LIB): $(LIB_OBJS)
-	@echo "Building library $(LIB_NAME)"
-	@$(AR) $(ARFLAGS) $(LIB) $(LIB_OBJS)
+$(OBJ_DIR_SERIAL)/%.o:%.cpp
+	@echo "Compiling $< (serial)"
+	@$(CC) $(CFLAGS) -DSERIAL -o $@ -c $<
 
 include $(TARGETS_FILE)
 -include $(DEPEND_FILE)

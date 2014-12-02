@@ -1,20 +1,20 @@
 /**
- * @file Seek.cpp
- * @brief Implementation of the Seek class.
+ * @file Flee.cpp
+ * @brief Implementation of the Flee class.
  *
  * @author Michael Albers
  */
 
 #include <Individual.h>
-#include <Seek.h>
+#include <Flee.h>
 
 //*********************
-// Seek::calculateForce
+// Flee::calculateForce
 //*********************
-Eigen::Vector2f Seek::calculateForce(const Individual &theIndividual,
+Eigen::Vector2f Flee::calculateForce(const Individual &theIndividual,
                                      const Eigen::Vector2f &theTarget)
 {
-  Eigen::Vector2f desiredForce(theTarget - theIndividual.getPosition());
+  Eigen::Vector2f desiredForce(theIndividual.getPosition() - theTarget);
   desiredForce.normalize();
   // Reynolds' version of seek uses max speed to determine the desired
   // direction/speed vector (which he called desired velocity). I changed this

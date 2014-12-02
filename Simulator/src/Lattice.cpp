@@ -90,16 +90,12 @@ void Lattice::configureOpenMP()
   Logger::log("  Nested Parallelism Enabled: " +
               std::string(omp_get_nested() ? "true" : "false"));
 
-  const int MAX_DESIRED_LEVELS = 5;
-  int maxLevels = omp_get_max_active_levels();
-  if (maxLevels < MAX_DESIRED_LEVELS)
+  if (0 != myThreadNestingLevel)
   {
-    omp_set_max_active_levels(5);
-    Logger::log("  Setting Maximum Nesting Depth to: " +
-                std::to_string(MAX_DESIRED_LEVELS));
+    omp_set_max_active_levels(myThreadNestingLevel);
   }
 
-  Logger::log("  Nesting Depth: " +
+  Logger::log("  Maximum Nesting Depth: " +
               std::to_string(omp_get_max_active_levels()));
 #else
   Logger::log("  Compile-time -DSERIAL defined, no parallelism.");
@@ -377,6 +373,18 @@ void Lattice::frameUpdate()
 {
   auto frameStart = std::chrono::system_clock::now();
 
+  // Weirdest code I've ever written. The simulation runs very poorly if the
+  // frame time is too short. Individuals simply take too long to exit as
+  // the time correction of the steering force shrinks the acceleration &
+  // velocity vectors to infintesimal magnitude. This really only seems to
+  // happen when using a serial build and very small numbers (i.e., 1)
+  // of Individuals. The sleep time was determined empirically on my laptop.
+  if (myFrameTime < 0.001)
+  {
+    static const std::chrono::microseconds sleepTime(10);
+    std::this_thread::sleep_for(sleepTime);
+  }
+
 #ifndef SERIAL
 # pragma omp parallel for
 #endif
@@ -410,14 +418,11 @@ void Lattice::generateReport()
     mySimulationStopTime - mySimulationStartTime;
   double totalTime = runTime.count();
 
+  Logger::log("=======================================");
+  Logger::log("           Simulation Report           ");
+  Logger::log("=======================================");
   Logger::log("");
-  Logger::log("========== Simulation Report ==========");
-  Logger::log("Run time: " + std::to_string(totalTime) + "s");
-  Logger::log("Number Frames: " + std::to_string(myTotalNumberFrames));
-  Logger::log("Average Frame Time: " +
-              std::to_string(totalTime / myTotalNumberFrames) + "s");
-  Logger::log("");
-  Logger::log("========== Individual Data ==========");
+  Logger::log("---------- Individual Data ----------");
 
   typedef struct
   {
@@ -445,10 +450,19 @@ void Lattice::generateReport()
   float maxErrorDelta = 0.0;
   float minActualTime = FLT_MAX;
   float minErrorDelta = FLT_MAX;
+  float expectedTotalRunTime = 0.0;
 
   for (int32_t ii = 0; ii < myNumberIndividuals; ++ii)
   {
     auto individual = myIndividuals[ii];
+
+    const auto idealStraightLineTime = individual->getIdealStraightLineTime();
+
+    if (idealStraightLineTime > expectedTotalRunTime)
+    {
+      expectedTotalRunTime = idealStraightLineTime;
+    }
+
     runTime = individual->getExitTime() - mySimulationStartTime;
     float actualTime = runTime.count();
 
@@ -465,8 +479,7 @@ void Lattice::generateReport()
       }
 
 
-      float idealTime = individual->getIdealStraightLineTime();
-      float delta = actualTime - idealTime;
+      float delta = actualTime - idealStraightLineTime;
       ErrorData *data = &overIdeal;
       if (delta < 0)
       {
@@ -490,13 +503,13 @@ void Lattice::generateReport()
                   std::to_string(individual->getMaximumSpeed()) +
                   "m/s, Original Position: " +
                   EigenHelper::print(individual->getOriginalPosition()));
-      Logger::log("          Time in Simulation: " +
+      Logger::log("        Time in Simulation: " +
                   std::to_string(actualTime) + "s");
-      Logger::log("     Total Distance Traveled: " +
+      Logger::log("   Total Distance Traveled: " +
                   std::to_string(individual->getDistanceTraveled()) + "m");
-      Logger::log("    Ideal Straight Line Time: " +
-                  std::to_string(idealTime) + "s");
-      Logger::log("      Delta (Actual - Ideal): " +
+      Logger::log("  Ideal Straight Line Time: " +
+                  std::to_string(idealStraightLineTime) + "s");
+      Logger::log("    Delta (Actual - Ideal): " +
                   std::to_string(delta) + "s");
     }
     else
@@ -511,9 +524,19 @@ void Lattice::generateReport()
 
   if (QS::Benchmark == myRunConfiguration)
   {
+    Logger::log("");
+    Logger::log("---------- Run Time Data ----------");
+    Logger::log("Run Time: " + std::to_string(totalTime) + "s");
+    Logger::log("Expected Run Time: " + std::to_string(expectedTotalRunTime));
+    Logger::log("Delta Run Time (actual - expected): " +
+                std::to_string(totalTime - expectedTotalRunTime));
+    Logger::log("Number Frames: " + std::to_string(myTotalNumberFrames));
+    Logger::log("Average Frame Time: " +
+                std::to_string(totalTime / myTotalNumberFrames) + "s");
+    Logger::log("");
     underIdeal.average();
     overIdeal.average();
-    Logger::log("========== Group Data ==========");
+    Logger::log("---------- Group Data ----------");
     Logger::log("Minimum Actual Time: " + std::to_string(minActualTime) + "s");
     Logger::log("Maximum Actual Time: " + std::to_string(maxActualTime) + "s");
     Logger::log("Minimum Error Delta: " + std::to_string(minErrorDelta) + "s");
@@ -522,7 +545,7 @@ void Lattice::generateReport()
     Logger::log("Under Ideal Time\n" + underIdeal.print());
   }
 
-  Logger::log("========== End Report ==========");
+  Logger::log("---------- End Report ----------");
 }
 
 //************************
@@ -550,6 +573,7 @@ void Lattice::loadConfigFile() throw (std::exception)
   if ("benchmark" == benchmarkOrSim)
   {
     myRunConfiguration = QS::Benchmark;
+    configFile >> myThreadNestingLevel;
   }
   else if ("simulation" == benchmarkOrSim)
   {

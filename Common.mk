@@ -4,6 +4,10 @@
 #
 # Author: Michael Albers
 #************************************************************
+ifeq ($(QS_EIGEN_BASE_DIR), )
+  $(error Eigen library base directory environment variable, QS_EIGEN_BASE_DIR, is not set. Should be: <some path>/eigen-eigen-1306d75b4a21)
+endif
+
 PROJECT_DIR=$(QS_BASE_DIR)/$(LOCAL_DIR)
 INC_DIR = $(PROJECT_DIR)/inc
 OBJ_DIR = $(PROJECT_DIR)/obj
@@ -23,12 +27,7 @@ TARGETS_FILE := $(QS_BASE_DIR)/CommonTargets.mk
 SIMULATOR_LIB_DIR := $(QS_BASE_DIR)/Simulator/lib
 SIMULATOR_INC_DIR := $(QS_BASE_DIR)/Simulator/inc
 
-ifeq ($(QS_EIGEN_BASE_DIR), )
-  $(error Eigen library base directory environment variable, QS_EIGEN_BASE_DIR, is not set. Should be: $$QS_EIGEN_BASE_DIR/eigen)
-endif
-EIGEN_DIR := $(QS_EIGEN_BASE_DIR)/eigen
-
-INC_DIRS := -I$(INC_DIR) -I$(SIMULATOR_INC_DIR) -I$(EIGEN_DIR)
+INC_DIRS := -I$(INC_DIR) -I$(SIMULATOR_INC_DIR) -I$(QS_EIGEN_BASE_DIR)
 
 CC := g++
 CFLAGS := --std=c++11 -g -Wall -pthread -fopenmp $(INC_DIRS)
@@ -38,4 +37,3 @@ LDFLAGS := -pthread -fopenmp
 
 AR := /usr/bin/ar
 ARFLAGS := cr
-

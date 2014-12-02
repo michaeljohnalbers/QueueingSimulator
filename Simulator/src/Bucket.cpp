@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include <Bucket.h>
+#include <Exit.h>
 #include <Individual.h>
 #include <Logger.h>
 #include <NearestN.h>
@@ -140,7 +141,8 @@ void Bucket::frameUpdate(float theFrameTime)
         Logger::log("Individual with rank " +
                     std::to_string(individual->getRank()) +
                     " has exited. Individuals remaining: " +
-                    std::to_string(glbIndividualsLeft));
+                    std::to_string(glbIndividualsLeft) +
+                    ". Exit Rank: " + std::to_string(Exit::getRankToExit()));
       }
       else
       {
