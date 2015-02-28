@@ -84,9 +84,6 @@ void NearestN::searchBucket(const Bucket &theBucket,
 
   // This will start off small and increase as the simulation moves along and
   // more Individuals move into the Bucket containing the exit.
-#ifndef SERIAL
-# pragma omp parallel for shared(bucketIndividuals)
-#endif
   for (uint32_t ii = 0; ii < numberIndividuals; ++ii)
   {
     Individual *individual = bucketIndividuals[ii];
@@ -96,12 +93,7 @@ void NearestN::searchBucket(const Bucket &theBucket,
       float distance = EigenHelper::distance(origin, position);
       if (distance <= mySearchRadius)
       {
-#ifndef SERIAL
-#       pragma omp critical
-#endif
-        {
-          myNeighbors.push_back(individual);
-        }
+        myNeighbors.push_back(individual);
       }
     }
   }

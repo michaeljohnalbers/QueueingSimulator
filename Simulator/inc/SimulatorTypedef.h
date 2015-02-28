@@ -13,16 +13,6 @@
  */
 namespace QS
 {
-  /**
-   * Overall run configurations.
-   */
-  typedef enum
-  {
-    /** Run to produce code benchmark data. */
-    Benchmark,
-    /** Run an actual simulation. */
-    Simulation,
-  } RunConfiguration;
 };
 
 #endif

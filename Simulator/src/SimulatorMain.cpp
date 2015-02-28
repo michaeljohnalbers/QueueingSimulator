@@ -62,7 +62,6 @@ int main(int argc, char **argv)
         return 0;
         break;
     }
-
   }
 
   if (argc - optind == 1)
@@ -98,22 +97,5 @@ void help()
             << "<Neighbor search radius, float, meters>" << std::endl
             << "<Number of neighbors to find, int>" << std::endl
             << "<Random number seed, int>" << std::endl
-            << "<Run Configuration, see below>" << std::endl
-            << std::endl
-            << "Number of Buckets:" << std::endl
-            << "Can be one of the following: " << std::endl
-            << " 1) An integer multiple of 2 or 3" << std::endl
-            << " 2) \"auto\", matches buckets to HW concurrency" << std::endl
-            << " 3) \"yx\", where y is an integer, " << std::endl
-            << "    creates buckets equal to y * HW concurrency, " << std::endl
-            << "    example: \"3x\"" << std::endl
-            << std::endl
-            << "Run Configuration:" << std::endl
-            << "Can be one of:" << std::endl
-            << " 1) \"simulation\" - Runs an actual simulation." << std::endl
-            << " 2) \"benchmark\" - Runs in a mode to gauge how" << std::endl
-            << "    well the local machine can handle the given" << std::endl
-            << "    number of individuals."
-            << std::endl
             << std::endl;
 }

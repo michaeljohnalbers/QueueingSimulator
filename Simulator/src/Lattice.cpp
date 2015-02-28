@@ -23,9 +23,6 @@
 #include <Logger.h>
 #include <NearestN.h>
 
-// Terrible design, but its small enough to let slide.
-int32_t glbIndividualsLeft = 0;
-
 //*****************
 // Lattice::Lattice
 //*****************
@@ -89,11 +86,6 @@ void Lattice::configureOpenMP()
 
   Logger::log("  Nested Parallelism Enabled: " +
               std::string(omp_get_nested() ? "true" : "false"));
-
-  if (0 != myThreadNestingLevel)
-  {
-    omp_set_max_active_levels(myThreadNestingLevel);
-  }
 
   Logger::log("  Maximum Nesting Depth: " +
               std::to_string(omp_get_max_active_levels()));
@@ -161,7 +153,7 @@ void Lattice::createBuckets() throw (std::exception)
     {
       Eigen::Vector2f origin(col * bucketLength, row * bucketHeight);
       Bucket *newBucket = new Bucket(origin, bucketHeight, bucketLength,
-                                     myNumberIndividuals, myRunConfiguration);
+                                     myNumberIndividuals);
       myBucketLattice[row][col] = newBucket;
       myBuckets[ii++] = newBucket;
     }
@@ -230,7 +222,7 @@ void Lattice::createIndividuals()
       float y = yCoordinateGen(myRandomEngine);
       position[0] = x;
       position[1] = y;
-      Individual testIndividual(mass, 0, 0, 0, position, 0, myRunConfiguration);
+      Individual testIndividual(mass, 0, 0, 0, position, 0);
 
       goodPosition = true;
 #ifndef SERIAL
@@ -246,8 +238,7 @@ void Lattice::createIndividuals()
     }
 
     myIndividuals[ii] = new Individual(mass, maximumSpeed, maximumAcceleration,
-                                       orientation, position, ii+1,
-                                       myRunConfiguration);
+                                       orientation, position, ii+1);
 
     float distance = EigenHelper::distance(position, Exit::getPosition());
     Logger::log("Generated person " + std::to_string(ii+1) + " " +
@@ -416,136 +407,38 @@ void Lattice::generateReport()
 {
   std::chrono::duration<double> runTime =
     mySimulationStopTime - mySimulationStartTime;
-  double totalTime = runTime.count();
+  float totalTime = runTime.count();
 
   Logger::log("=======================================");
   Logger::log("           Simulation Report           ");
   Logger::log("=======================================");
   Logger::log("");
+
+  Logger::log("---------- General Data ----------");
+  Logger::log("          Run Time: " + std::to_string(totalTime) + "s");
+  Logger::log("     Number Frames: " + std::to_string(myTotalNumberFrames));
+  Logger::log("Average Frame Time: " +
+              std::to_string(totalTime / myTotalNumberFrames) + "s");
+  Logger::log("     Frames/Second: " +
+              std::to_string(myTotalNumberFrames / totalTime));
+  Logger::log("");
+
   Logger::log("---------- Individual Data ----------");
-
-  typedef struct
-  {
-    float averageDelta = 0.0;
-    int32_t count = 0;
-    void average()
-    {
-      if (count != 0)
-      {
-        averageDelta /= count;
-      }
-    }
-    std::string print()
-    {
-      std::string data =
-        "        Count: " + std::to_string(count) + "\n"
-        "Average Delta: " + std::to_string(averageDelta) + "s";
-      return data;
-    }
-
-  } ErrorData;
-  ErrorData overIdeal, underIdeal;
-
-  float maxActualTime = 0.0;
-  float maxErrorDelta = 0.0;
-  float minActualTime = FLT_MAX;
-  float minErrorDelta = FLT_MAX;
-  float expectedTotalRunTime = 0.0;
-
   for (int32_t ii = 0; ii < myNumberIndividuals; ++ii)
   {
     auto individual = myIndividuals[ii];
 
-    const auto idealStraightLineTime = individual->getIdealStraightLineTime();
-
-    if (idealStraightLineTime > expectedTotalRunTime)
-    {
-      expectedTotalRunTime = idealStraightLineTime;
-    }
-
     runTime = individual->getExitTime() - mySimulationStartTime;
-    float actualTime = runTime.count();
+    float timeInSimulation = runTime.count();
 
-    if (QS::Benchmark == myRunConfiguration)
-    {
-      if (actualTime > maxActualTime)
-      {
-        maxActualTime = actualTime;
-      }
-
-      if (actualTime < minActualTime)
-      {
-        minActualTime = actualTime;
-      }
-
-
-      float delta = actualTime - idealStraightLineTime;
-      ErrorData *data = &overIdeal;
-      if (delta < 0)
-      {
-        data = &underIdeal;
-      }
-
-      if (delta > maxErrorDelta)
-      {
-        maxErrorDelta = delta;
-      }
-
-      if (delta < minErrorDelta)
-      {
-        minErrorDelta = delta;
-      }
-
-      data->averageDelta += delta;
-      data->count++;
-
-      Logger::log("Individual " + std::to_string(ii+1) + ", Max Speed: " +
-                  std::to_string(individual->getMaximumSpeed()) +
-                  "m/s, Original Position: " +
-                  EigenHelper::print(individual->getOriginalPosition()));
-      Logger::log("        Time in Simulation: " +
-                  std::to_string(actualTime) + "s");
-      Logger::log("   Total Distance Traveled: " +
-                  std::to_string(individual->getDistanceTraveled()) + "m");
-      Logger::log("  Ideal Straight Line Time: " +
-                  std::to_string(idealStraightLineTime) + "s");
-      Logger::log("    Delta (Actual - Ideal): " +
-                  std::to_string(delta) + "s");
-    }
-    else
-    {
-       Logger::log("Individual " + std::to_string(ii+1));
-       Logger::log("     Time in Simulation: " +
-                   std::to_string(actualTime) + "s");
-       Logger::log("Total Distance Traveled: " +
-                   std::to_string(individual->getDistanceTraveled()) + "m");
-    }
+    Logger::log("Individual " + std::to_string(ii+1));
+    Logger::log("     Time in Simulation: " +
+                std::to_string(timeInSimulation) + "s");
+    Logger::log("Total Distance Traveled: " +
+                std::to_string(individual->getDistanceTraveled()) + "m");
   }
 
-  if (QS::Benchmark == myRunConfiguration)
-  {
-    Logger::log("");
-    Logger::log("---------- Run Time Data ----------");
-    Logger::log("Run Time: " + std::to_string(totalTime) + "s");
-    Logger::log("Expected Run Time: " + std::to_string(expectedTotalRunTime));
-    Logger::log("Delta Run Time (actual - expected): " +
-                std::to_string(totalTime - expectedTotalRunTime));
-    Logger::log("Number Frames: " + std::to_string(myTotalNumberFrames));
-    Logger::log("Average Frame Time: " +
-                std::to_string(totalTime / myTotalNumberFrames) + "s");
-    Logger::log("");
-    underIdeal.average();
-    overIdeal.average();
-    Logger::log("---------- Group Data ----------");
-    Logger::log("Minimum Actual Time: " + std::to_string(minActualTime) + "s");
-    Logger::log("Maximum Actual Time: " + std::to_string(maxActualTime) + "s");
-    Logger::log("Minimum Error Delta: " + std::to_string(minErrorDelta) + "s");
-    Logger::log("Maximum Error Delta: " + std::to_string(maxErrorDelta) + "s");
-    Logger::log("Over Ideal Time\n" + overIdeal.print());
-    Logger::log("Under Ideal Time\n" + underIdeal.print());
-  }
-
-  Logger::log("---------- End Report ----------");
+  Logger::log("========== End Report ==========");
 }
 
 //************************
@@ -565,29 +458,8 @@ void Lattice::loadConfigFile() throw (std::exception)
   configFile >> n;
   int32_t randomNumberEngineSeed;
   configFile >> randomNumberEngineSeed;
-  std::string benchmarkOrSim;
-  configFile >> benchmarkOrSim;
-  std::transform(benchmarkOrSim.begin(), benchmarkOrSim.end(),
-                 benchmarkOrSim.begin(), ::tolower);
-
-  if ("benchmark" == benchmarkOrSim)
-  {
-    myRunConfiguration = QS::Benchmark;
-    configFile >> myThreadNestingLevel;
-  }
-  else if ("simulation" == benchmarkOrSim)
-  {
-    myRunConfiguration = QS::Simulation;
-  }
-  else
-  {
-    throw std::logic_error("Invalid benchmark/simulation option given, \"" +
-                           benchmarkOrSim + "\". Must be either " +
-                           "\"benchmark\" or \"simulation\".");
-  }
 
   Logger::log("Simulation Configuration Data");
-  Logger::log("  Run Configuration: " + benchmarkOrSim);
   Logger::log("  Number of Individuals: " +
               std::to_string(myNumberIndividuals));
   Logger::log("  World Size (length x height): " + std::to_string(myLength)
@@ -598,8 +470,6 @@ void Lattice::loadConfigFile() throw (std::exception)
   Logger::log("  Random Number Engine Seed: " +
               std::to_string(randomNumberEngineSeed));
 
-  glbIndividualsLeft = myNumberIndividuals;
-  Exit::setRunConfiguration(myRunConfiguration);
   NearestN::setN(n);
   NearestN::setSearchRadius(searchRadius);
   myRandomEngine.seed(randomNumberEngineSeed);

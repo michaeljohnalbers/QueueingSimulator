@@ -13,8 +13,6 @@
 
 #include <Eigen/Core>
 
-#include <SimulatorTypedef.h>
-
 class Individual;
 
 /**
@@ -66,12 +64,6 @@ class Exit
    */
   static void setPosition(const Eigen::Vector2f &theExit);
 
-  /**
-   * Sets the run configuration.
-   * @param theRunConfiguration Run configuration.
-   */
-  static void setRunConfiguration(QS::RunConfiguration theRunConfiguration);
-
   // ************************************************************
   // Protected
   // ************************************************************
@@ -90,9 +82,6 @@ class Exit
 
   /** Rank of the Individual which can exit. */
   static int32_t myRankToExit;
-
-  /** Configuration of this simulation run. */
-  static QS::RunConfiguration myRunConfiguration;
 };
 
 #endif

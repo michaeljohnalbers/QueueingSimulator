@@ -24,8 +24,7 @@ Individual::Individual(float theMass,
                        float theMaximumAcceleration,
                        float theOrientation,
                        const Eigen::Vector2f &thePosition,
-                       int32_t theRank,
-                       QS::RunConfiguration &theRunConfiguration) :
+                       int32_t theRank) :
   myBodyRadius(theMass * 0.005), // Rough approximation
   myMass(theMass),
   myMaximumAcceleration(theMaximumAcceleration),
@@ -34,12 +33,8 @@ Individual::Individual(float theMass,
   myOrientation(theOrientation),
   myOriginalPosition(thePosition),
   myPosition(thePosition),
-  myRank(theRank),
-  myRunConfiguration(theRunConfiguration)
+  myRank(theRank)
 {
-  int32_t idealDistance =
-    EigenHelper::distance(myPosition, Exit::getPosition()) - Exit::getRadius();
-  myIdealStraightLineTime = idealDistance / myMaximumSpeed;
   // TODO: caclcuate maximum force from mass & max speed?
   // See http://www.ccohs.ca/oshanswers/ergonomics/push1.html
   // See http://msis.jsc.nasa.gov/sections/section04.htm#_4.9_STRENGTH
@@ -70,16 +65,8 @@ bool Individual::collision(const Individual *theIndividual)
 void Individual::frameUpdate(std::shared_ptr<NearestN> theNeighbors,
                              float theFrameTime)
 {
-  Eigen::Vector2f steeringForce;
-
-  if (QS::Benchmark == myRunConfiguration)
-  {
-    steeringForce = Seek::calculateForce(*this, Exit::getPosition());
-  }
-  else
-  {
-    steeringForce = RankedLeaderFollow::calculateForce(*this, *theNeighbors);
-  }
+  Eigen::Vector2f steeringForce(
+    RankedLeaderFollow::calculateForce(*this, *theNeighbors));
 
   // Sometimes the steering force will have a nan component. This can happen
   // with Seek and the position of the Individual is exactly the same as the
@@ -205,14 +192,6 @@ const std::chrono::time_point<std::chrono::system_clock>&
 Individual::getExitTime() const
 {
   return myExitTime;
-}
-
-//****************************************
-// Individual::getIdealStraightLineTime
-//****************************************
-float Individual::getIdealStraightLineTime() const
-{
-  return myIdealStraightLineTime;
 }
 
 //***********************************
