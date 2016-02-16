@@ -13,23 +13,19 @@
 #include <Logger.h>
 #include <NearestN.h>
 
-extern int32_t glbIndividualsLeft;
-
 //***************
 // Bucket::Bucket
 //***************
 Bucket::Bucket(const Eigen::Vector2f &theOrigin,
                int32_t theHeight,
                int32_t theLength,
-               int32_t theMaximumNumberIndividuals,
-               QS::RunConfiguration theRunConfiguration) :
+               int32_t theMaximumNumberIndividuals) :
   myHeight(theHeight),
   myIndividuals(theMaximumNumberIndividuals, nullptr),
   myIndividualsToRemove(theMaximumNumberIndividuals, -1),
   myLength(theLength),
   myOrigin(theOrigin),
-  myRebucketedIndividuals(theMaximumNumberIndividuals),
-  myRunConfiguration(theRunConfiguration)
+  myRebucketedIndividuals(theMaximumNumberIndividuals)
 {
   // In order to avoid simultaneous memory allocation by the std::vectors
   // the initial capacity/size is set on contruction. These clear calls set
@@ -77,8 +73,6 @@ void Bucket::adjustIndividualsList()
   while (iter != myIndividualsToRemove.end())
   {
     int32_t index = *iter;
-    //    Logger::log("nulling " + std::to_string(index) + " of " +
-    //                std::to_string(myIndividuals.size()));
     myIndividuals[index] = nullptr;
     ++iter;
   }
@@ -116,9 +110,6 @@ bool Bucket::containsPoint(const Eigen::Vector2f &thePosition) const
 void Bucket::frameUpdate(float theFrameTime)
 {
   int32_t numberIndividuals = myIndividuals.size();
-#ifndef SERIAL
-# pragma omp parallel for
-#endif
   for (int32_t ii = 0; ii < numberIndividuals; ++ii)
   {
     Individual *individual = myIndividuals[ii];
@@ -130,60 +121,32 @@ void Bucket::frameUpdate(float theFrameTime)
 
     if (individual->getExited())
     {
-#ifndef SERIAL
-#     pragma omp critical (glbIndividualsLeft)
-#endif
-      {
-        --glbIndividualsLeft;
-      }
-      if (QS::Benchmark == myRunConfiguration)
-      {
-        Logger::log("Individual with rank " +
-                    std::to_string(individual->getRank()) +
-                    " has exited. Individuals remaining: " +
-                    std::to_string(glbIndividualsLeft) +
-                    ". Exit Rank: " + std::to_string(Exit::getRankToExit()));
-      }
-      else
-      {
-        Logger::log("Individual with rank " +
-                    std::to_string(individual->getRank()) +
-                    " has exited.");
-      }
+      Logger::log("Individual with rank " +
+                  std::to_string(individual->getRank()) +
+                  " has exited.");
+
       removeIndividual = true;
     }
     else if (! containsPoint(newPosition))
     {
       auto numberAdjacentBuckets = myAdjacentBucketList.size();
-#ifndef SERIAL
-#     pragma omp parallel for
-#endif
+
       for (uint32_t ii = 0; ii < numberAdjacentBuckets; ++ii)
       {
         Bucket *adjacentBucket = myAdjacentBucketList[ii];
         if (adjacentBucket != nullptr &&
             adjacentBucket->containsPoint(newPosition))
         {
-#ifndef SERIAL
-#         pragma omp critical
-#endif
-          {
-            ReBucketer rebucketer(individual, adjacentBucket);
-            myRebucketedIndividuals.push_back(rebucketer);
-            removeIndividual = true;
-          }
+          ReBucketer rebucketer(individual, adjacentBucket);
+          myRebucketedIndividuals.push_back(rebucketer);
+          removeIndividual = true;
         }
       }
     }
 
     if (removeIndividual)
     {
-#ifndef SERIAL
-#     pragma omp critical
-#endif
-      {
-        myIndividualsToRemove.push_back(ii);
-      }
+      myIndividualsToRemove.push_back(ii);
     }
   }
 }

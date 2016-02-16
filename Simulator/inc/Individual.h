@@ -13,7 +13,6 @@
 #include <memory>
 
 #include <Eigen/Core>
-#include <SimulatorTypedef.h>
 
 class NearestN;
 
@@ -47,15 +46,13 @@ class Individual
    *        polar coordinate.
    * @param thePosition Initial position of Individual.
    * @param theRank Exit order.
-   * @param theRunConfiguration Configuration of this run of the simulator.
    */
   Individual(float theMass,
              float theMaximumSpeed,
              float theMaximumAcceleration,
              float theOrientation,
              const Eigen::Vector2f &thePosition,
-             int32_t theRank,
-             QS::RunConfiguration &theRunConfiguration);
+             int32_t theRank);
 
   /**
    * Copy constructor.
@@ -120,14 +117,6 @@ class Individual
    * @return Exit time.
    */
   const std::chrono::time_point<std::chrono::system_clock>& getExitTime() const;
-
-  /**
-   * Returns the ideal time it will take to reach exit point moving in a
-   * straight line if no other Individuals were in the way. (i.e., distance /
-   * max speed)
-   * @return Ideal straight line time (seconds).
-   */
-  float getIdealStraightLineTime() const;
 
   /**
    * Returns the maximum allowable acceleration.
@@ -213,12 +202,6 @@ class Individual
   /** Time Individual exited the world. */
   std::chrono::time_point<std::chrono::system_clock> myExitTime;
 
-  /**
-   *  Ideal time it will take to reach exit point moving in a straight line
-   *  if no other Individuals were in the way. (i.e., distance / max speed)
-   */
-  float myIdealStraightLineTime;
-
   /** Individual's mass, kg.*/
   const float myMass;
 
@@ -247,9 +230,6 @@ class Individual
 
   /** Rank of Individual. */
   const int32_t myRank;
-
-  /** Configuration of this simulation run. */
-  const QS::RunConfiguration myRunConfiguration;
 
   /** Current speed in meters/second. */
   float mySpeed = 0.0;

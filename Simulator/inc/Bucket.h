@@ -16,7 +16,6 @@
 #include <Eigen/Core>
 
 #include <ReBucketer.h>
-#include <SimulatorTypedef.h>
 
 /**
  * The total simulation world is broken down into Buckets for the purpose of
@@ -47,13 +46,11 @@ class Bucket
    * @param theLength Bucket length.
    * @param theMaximumNumberIndividuals Maximum number of Individuals in this
    *        Bucket.
-   * @param theRunConfiguration Simulator run configuration.
    */
   Bucket(const Eigen::Vector2f &theOrigin,
          int32_t theHeight,
          int32_t theLength,
-         int32_t theMaximumNumberIndividuals,
-         QS::RunConfiguration theRunConfiguration);
+         int32_t theMaximumNumberIndividuals);
 
   /**
    * Copy constructor.
@@ -182,9 +179,6 @@ class Bucket
    * a frame update.
    */
   std::vector<ReBucketer> myRebucketedIndividuals;
-
-  /** Run configuration. */
-  const QS::RunConfiguration myRunConfiguration;
 };
 
 #endif

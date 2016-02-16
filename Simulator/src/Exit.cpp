@@ -17,7 +17,6 @@
 //*****************
 Eigen::Vector2f Exit::myExit(0.0, 0.0);
 int32_t Exit::myRankToExit = 1;
-QS::RunConfiguration Exit::myRunConfiguration = QS::Simulation;
 
 //******************
 // Exit::canExit
@@ -25,8 +24,7 @@ QS::RunConfiguration Exit::myRunConfiguration = QS::Simulation;
 bool Exit::canExit(const Individual &theIndividual)
 {
   bool canExit = false;
-  if (QS::Benchmark == myRunConfiguration ||
-      theIndividual.getRank() == myRankToExit)
+  if (theIndividual.getRank() == myRankToExit)
   {
     const Eigen::Vector2f &position = theIndividual.getPosition();
     float distance = EigenHelper::distance(position, myExit);
@@ -75,12 +73,4 @@ int32_t Exit::getRankToExit()
 void Exit::setPosition(const Eigen::Vector2f &theExit)
 {
   myExit = theExit;
-}
-
-//**************************
-// Exit::setRunConfiguration
-//**************************
-void Exit::setRunConfiguration(QS::RunConfiguration theRunConfiguration)
-{
-  myRunConfiguration = theRunConfiguration;
 }
