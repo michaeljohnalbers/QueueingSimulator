@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+    
+  This is an example of a simulation definition file. It isn't necessarily
+  absolutely correct. Instead it is to serve as a reference or guide of what
+  simulation definition files should look like.
+-->
+
+<!-- Defines a single simulation. It includes all plugins needed, excepting the
+     Basic plugin, as well as all the Actors and their initial states. -->
+<simulation>
+  <!-- Random number engine seed. -->
+  <seed>12345</seed>
+
+  <!-- List of plugins used. Names match with the plugin name in each plugin
+       definition file. As many as are neede can be specified. Each plugin that
+       is required must be specified. -->
+  <plugin>Football</plugin>
+
+  <!-- Size of the world. Units are meters. Width is the x axis, length is the
+       y axis. Origin is in the lower left corner. -->
+  <world width="40" length="120" />
+
+  <!-- Each individual Actor in the simulation is listed here. -->
+  <actors>
+    <!-- Specific actor. This will cause this Actor to be added to the
+	 simulation. The source must be from one of the listed plugins (if no
+         source is specified the Basic plugin is assumed). The type must match
+         one of the Actor types listed in the source plugin. -->
+    <actor type="Quarterback" source="Football">
+      <!-- Defines the initial value of each property of the Actor. Refer to
+	   the individual Actor class definition in the plugin for full list of
+	   properties. A few properties are inherited from the basic Actor type.
+           -->
+      <property name="mass" value="114" />
+      <property name="skill" value="0.7" />
+      <!-- TODO: need to add randomly generated property values -->
+      <!-- TODO: need to add a means to place a target on Actors -->
+    </actor>
+  </actors>
+
+  <!-- Fixed place targets in the world. -->
+  <targets>
+    <!-- List of targets goes here. Location positions are in meters relative
+	 to (0,0) in the world. Radius is in meters. -->
+    <target name="GoalLine1" x="0" y="10" radius="0" />
+    <target name="GoalLine2" x="0" y="110" radius="0" />
+  </targets>
+</simulation>
+

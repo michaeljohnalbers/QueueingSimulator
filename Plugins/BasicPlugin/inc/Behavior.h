@@ -1,8 +1,8 @@
 #pragma once
 
 /**
- * @file SteeringBehavior.h
- * @brief Base class for all steering behaviors.
+ * @file Behavior.h
+ * @brief Base class for all behaviors.
  *
  * @author Michael Albers
  */
@@ -14,14 +14,16 @@
 
 namespace QS
 {
+  class Sensor;
+
   /**
-   * A steering behavior is a class which takes sensory input from the
-   * simulation world and calculates a motion vector for a single Actor. The
-   * steering behavior calculates this motion vector as though it were the only
-   * behavior acting upon the Actor. In other words, the motion vector should
-   * the ideal vector that the behavior can create. Likely this vector is going
-   * to be mixed in with other vectors from other behaviors to create a final
-   * vector that is applied to the Actor.
+   * A behavior is a class which takes sensory input from the simulation world
+   * and calculates a motion vector for a single Actor. The behavior calculates
+   * this motion vector as though it were the only behavior acting upon the
+   * Actor. In other words, the motion vector should be the ideal vector that
+   * the behavior can create. Likely this vector is going to be mixed in with
+   * other vectors from other behaviors to create a final vector that is
+   * applied to the Actor.
    *
    * Sensory input comes from a set of Sensor objects. Each behavior defines
    * the sensors that it needs to calculate the motion vector. The Queueing
@@ -33,14 +35,14 @@ namespace QS
    * faster the simulation will run. However, there should be no parallelism
    * used in this function. The Queueing Simulator handles all parallelism.
    */
-  class SteeringBehavior
+  class Behavior
   {
     public:
 
     /**
      * Default constructor.
      */
-    SteeringBehavior() = delete;
+    Behavior() = delete;
 
     /**
      * Constructor.
@@ -49,12 +51,22 @@ namespace QS
      *          list of the names of sensors which are used as inputs to this
      *          behavior
      */
-    SteeringBehavior(const std::vector<std::string> &theInputSensorTypes);
+    Behavior(const std::vector<std::string> &theInputSensorTypes);
+
+    /**
+     * Copy constructor.
+     */
+    Behavior(const Behavior&) = delete;
+
+    /**
+     * Move constructor.
+     */
+    Behavior(Behavior&&) = delete;
 
     /**
      * Destructor.
      */
-    virtual ~SteeringBehavior() = default;
+    virtual ~Behavior() = default;
 
     /**
      * Evaluates the steering behavior from the list of input sensors. Each
@@ -74,6 +86,16 @@ namespace QS
      * @return list of input sensor types
      */
     std::vector<std::string> getInputSensorTypes() const;
+
+    /**
+     * Copy assignment operator.
+     */
+    Behavior& operator=(const Behavior&) = delete;
+
+    /**
+     * Move assignment operator.
+     */
+    Behavior& operator=(Behavior&&) = delete;
 
     protected:
 
