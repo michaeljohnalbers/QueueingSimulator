@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+    
+  This is an example of a plugin definition file. It isn't necessarily
+  absolutely correct. Instead it is to serve as a reference or guide of what
+  plugin definition files should look like.
+-->
+
+<!-- Plugin defintion. The name must be unique among plugins used by Queueing
+     Simulator. -->
+<plugin name="Football">
+  <!-- Name of the library that houses the classed listed below. -->
+  <library>libQSFootball-1.0.so</library>
+
+  <!-- Most comprising elements (i.e., BehaviorSet with Actor) can have an
+       optional 'source' attribute. When specified that means that element is
+       found in the specified plugin. -->
+
+  <!-- This section defines all of the Actors that are in this plugin. The
+       creator and destructor functions are used to create instances of these
+       Actors. -->
+  <Actors creator="actorCreator" destructor="actorDestructor">
+    <!-- Each Actor need only define the behavior sets that it uses. Specific
+	 traits for each Actor are listed in the simulation defition file. -->
+    <Actor type="Quarterback">
+      <BehaviorSet name="HandOff"/>
+      <BehaviorSet name="DropBack"/>
+      <BehaviorSet name="Scramble"/>
+    </Actor>
+    <Actor type="LineBacker">
+      <BehaviorSet name="SpyQB"/>
+      <BehaviorSet name="TargetBall"/>
+      <BehaviorSet name="Celebrate"/>
+    </Actor>
+    <!-- No limitation on the number Actors that can be defined. -->
+  </Actors>
+
+  <!-- BehaviorSets combine individual behaviors to create more complex
+       behaviors. -->
+  <BehaviorSets creator="behaviorSetCreator" destructor="behaviorSetDestructor">
+    <BehaviorSet name="Scramble">
+      <Behavior name="Wander" source="BasicPlugin" />
+      <Behavior name="Slide" />
+    </BehaviorSet>
+  </BehaviorSets>
+
+  <!-- Behaviors are basic, modular classes which define a single objective for
+       motion. Many fundamental behaviors can be found in the Basic Plugin.-->
+  <Behaviors creator="behaviorCreator" destructor="behaviorDestructor">
+    <Behavior name="Slide">
+      <!-- Defines what sensor(s) are used as input for this behavior. -->
+      <SensorInput name="NearestN" source="BasicPlugin" />
+    </Behavior>
+  </Behaviors>
+
+  <!-- Sensors allow for observation of the sensable objects/entities within
+       the world. All sensors use the 'Sensable' objects as input. They then
+       pull out the relevant information for use by behaviors. -->
+  <Sensors creator="sensorCreator" destructor="sensorDestructor">
+    <!-- No source is used for Sensors since they don't use anything
+	 user-definable. -->
+    <Sensor name="WRFinder" />
+    <Sensor name="QBFinder" />
+  </Sensors>
+</plugin>

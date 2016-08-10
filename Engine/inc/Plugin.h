@@ -2,7 +2,7 @@
 
 /**
  * @file Plugin.h
- * @brief Contains all the information for a single plugin.
+ * @brief Encapsulates a single plugin at run-time.
  *
  * @author Michael Albers
  */
@@ -10,20 +10,16 @@
 #include <string>
 #include <utility>
 
-#include "ActorDefinition.h"
-#include "BehaviorDefinition.h"
-#include "SensorDefinition.h"
-
-class Actor;
-class Behavior;
-class Sensor;
-
 namespace QS
 {
+  class Actor;
+  class Behavior;
+  class Sensor;
+
   /**
-   * Encapsulates all data for a single plugin. A plugin can define any subset
-   * of the following: Actors, Behaviors and Sensors. Plugins allow
-   * user-defined extensions to Queueing Simulator.
+   * Run-time interface for a single plugin. This function manages loading the
+   * plugin's shared object library and provides functions for creation and
+   * destruction of the pieces of the plugin.
    */
   class Plugin
   {
@@ -31,7 +27,7 @@ namespace QS
 
     /**
      * Definition of a creator function. This function must be able to create
-     * all types of T's, which do not use attributes, that are defined in the
+     * all types of T's, which do not use properties, that are defined in the
      * plugin.
      */
     template<class T>
@@ -39,12 +35,12 @@ namespace QS
 
     /**
      * Definition of a creator function. This function must be able to create
-     * all types of T's, which use attributes, that are defined in the plugin.
+     * all types of T's, which use properties, that are defined in the plugin.
      */
     template<class T>
-    using CreatorAttributesFunction = T*(*)(
+    using CreatorPropertiesFunction = T*(*)(
       const std::string &theType,
-      const std::map<std::string, std::string> &theAttributes);
+      const std::map<std::string, std::string> &theProperties);
 
     /**
      * Definition of a destructor function. This function must be able to
@@ -60,21 +56,13 @@ namespace QS
 
     /** Pair to hold the creator and destructor functions. */
     template <class T>
-    using CreatorDestructorAttributes = std::pair<CreatorAttributesFunction<T>,
+    using CreatorDestructorProperties = std::pair<CreatorPropertiesFunction<T>,
                                                   DestructorFunction<T>>;
 
     /**
      * Default constructor.
      */
     Plugin() = delete;
-
-    /**
-     * Constructor.
-     *
-     * @param theName
-     *          plugin's name
-     */
-    Plugin(const std::string &theName);
 
     /**
      * Copy constructor.
@@ -87,95 +75,78 @@ namespace QS
     Plugin(Plugin&&) = delete;
 
     /**
+     * Constructor. Constructs the plugin from the given definition. The shared library
+     * is also loaded here.
+     *
+     * @throw std::runtime_error On problems loading the shared library.
+     */
+    Plugin(const PluginDefinition &theDefinition);
+
+    /**
      * Destructor.
      */
-    ~Plugin() = default;
+    ~Plugin();
 
     /**
-     * Adds a new actor definition to this plugin.
+     * Creates an actor of the given type with the given properties. The caller owns
+     * the pointer, but must use destroyActor to destroy the returned object.
      *
-     * @param theActorDefinition
-     *          actor definition to add
-     * @throws std::invalid_argument
-     *           if another definition with the same type name already exists
+     * @param theType
+     *          actor type name
+     * @param theProperties
+     *          key/value pairs of properties specific to the type of actor being
+     *          created.
+     * @throw std::invalid_argument On invalid actor type
      */
-    void addActorDefinition(const ActorDefinition &theActorDefinition);
+    Actor* createActor(const std::string &theType,
+                       const std::map<std::string, std::string> &theProperties);
 
     /**
-     * Adds a new behavior definition to this plugin.
+     * Creates the behavior with the given name. The caller owns the pointer, but must
+     * use destroyBehavior to destroy the returned object.
      *
-     * @param theBehaviorDefinition
-     *          behavior definition to add
-     * @throws std::invalid_argument
-     *           if another definition with the same type name already exists
+     * @param theBehavior
+     *          name of the behavior
+     * @throw std::invalid_argument On invalid behavior name
      */
-    void addBehaviorDefinition(const BehaviorDefinition &theBehaviorDefinition);
+    Behavior* createBehavior(const std::string &theBehavior);
 
     /**
-     * Adds a new sensor definition to this plugin.
+     * Creates the sensor with the given name. The caller owns the pointer, but must
+     * use destroySensor to destroy the returned object.
      *
-     * @param theSensorDefinition
-     *          sensor definition to add
-     * @throws std::invalid_argument
-     *           if another definition with the same type name already exists
+     * @param theSensor
+     *          name of the sensor
+     * @throw std::invalid_argument On invalid sensor name
      */
-    void addSensorDefinition(const SensorDefinition &theSensorDefinition);
+    Sensor* createSensor(const std::string &theSensor);
 
     /**
-     * Returns the creator/destructor functions for Actors.
+     * Destroys actors created from createActor.
      *
-     * @return creator/destructor functions
+     * @param theActor
+     *          actor to destroy
      */
-    CreatorDestructorAttributes<Actor> getActorCreatorDestructor()
-      const noexcept;
+    void destroyActor(Actor *theActor) const;
 
     /**
-     * Returns the list of all Actors defined in this plugin.
+     * Destroys the behavior from createBehavior.
      *
-     * @return custom actors
+     * @param theBehavior
+     *          behavior to destroy
      */
-    std::vector<ActorDefinition> getActorDefinitions() const noexcept;
+    void destroyBehavior(Behavior *theBehavior) const;
 
     /**
-     * Returns the creator/destructor functions for Behaviors.
+     * Destroys the sensor from createSensor.
      *
-     * @return creator/destructor functions
+     * @param theSensor
+     *          sensor to destroy
      */
-    CreatorDestructorAttributes<Behavior> getBehaviorCreatorDestructor()
-      const noexcept;
+    void destroySensor(Sensor *theSensor) const;
 
     /**
-     * Returns the list of all Behaviors defined in this plugin.
-     *
-     * @return custom behaviors
-     */
-    std::vector<BehaviorDefinition> getBehaviorDefinitions() const noexcept;
-
-    /**
-     * Returns the creator/destructor functions for Sensors.
-     *
-     * @return creator/destructor functions
-     */
-    CreatorDestructor<Sensor> getSensorCreatorDestructor() const noexcept;
-
-    /**
-     * Returns the list of all Sensors defined in this plugin.
-     *
-     * @return custom sensors
-     */
-    std::vector<SensorDefinition> getSensorDefinitions() const noexcept;
-
-    /**
-     * Returns the name of the library which implements this plugin.
-     *
-     * @return library name
-     */
-    std::string getLibrary() const noexcept;
-
-    /**
-     * Returns the name of this plugin.
-     *
-     * @return plugin name
+     * Returns the plugin name.
      */
     std::string getName() const noexcept;
 
@@ -189,75 +160,23 @@ namespace QS
      */
     Plugin& operator=(Plugin&&) = delete;
 
-    /**
-     * Sets the creator/destructor functions for Actors.
-     *
-     * @param theCreator
-     *          creator function
-     * @param theDestructor
-     *          destructor
-     */
-    void setActorCreatorDestructor(CreatorFunction<Actor> theCreator,
-                                   DestructorFunction<Actor> theDestructor);
-
-    /**
-     * Sets the creator/destructor functions for Behaviors.
-     *
-     * @param theCreator
-     *          creator function
-     * @param theDestructor
-     *          destructor
-     */
-    void setBehaviorCreatorDestructor(
-      CreatorFunction<Behavior> theCreator,
-      DestructorFunction<Behavior> theDestructor);
-
-    /**
-     * Sets the creator/destructor functions for Sensors.
-     *
-     * @param theCreator
-     *          creator function
-     * @param theDestructor
-     *          destructor
-     */
-    void setSensorCreatorDestructor(
-      CreatorFunction<Sensor> theCreator,
-      DestructorFunction<Sensor> theDestructor);
-
-    /**
-     * Sets the name of the implementing library.
-     *
-     * @param theLibrary
-     *          plugin library name
-     */
-    void setLibrary(const std::string &theLibrary) noexcept;
-
     protected:
 
     private:
 
-    /** All types of actors defined in this plugin. */
-    std::vector<ActorDefinition> myActors;
+    /** Definition of the plugin. */
+    const PluginDefinition myDefinition;
 
     /** Creator/destructor functions for Actors. */
-    CreatorDestructorAttributes<Actor> myActorCreatorDestructor;
-
-    /** All types of behaviors defined in this plugin. */
-    std::vector<BehaviorDefinition> myBehaviors;
+    CreatorDestructorProperties<Actor> myActorCreatorDestructor;
 
     /** Creator/destructor functions for Behaviors. */
-    CreatorDestructorAttributes<Behavior> myBehaviorCreatorDestructor;
-
-    /** All types of sensors defined in this plugin. */
-    std::vector<SensorDefinition> mySensors;
+    CreatorDestructorProperties<Behavior> myBehaviorCreatorDestructor;
 
     /** Creator/destructor functions for Sensors. */
     CreatorDestructor<Sensor> mySensorCreatorDestructor;
 
-    /** Library implementing the plugin. */
-    std::string myLibrary;
-
-    /** Name of the plugin. */
-    const std::string myName;
+    /** Library handle from dlopen. */
+    void *myLibraryHandle;
   };
 }

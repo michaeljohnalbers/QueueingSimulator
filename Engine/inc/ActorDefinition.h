@@ -30,13 +30,10 @@ namespace QS
      *
      * @param theName
      *          specific name of Actor type
-     * @param theColor
-     *          default color to draw the Actor
      * @param theBehaviors
      *          names of input behaviors to this actor
      */
     ActorDefinition(const std::string &theName,
-                    const std::string &theColor,
                     const std::vector<std::string> &theBehaviors);
 
     /**
@@ -55,18 +52,11 @@ namespace QS
     ~ActorDefinition() = default;
 
     /**
-     * Returns the list of behaviors this actor uses.
+     * Returns the list of behavior sets this actor uses.
      *
-     * @return behavior list
+     * @return behavior set list
      */
-    std::vector<std::string> getBehaviors() const noexcept;
-
-    /**
-     * Returns the default color for drawing this actor.
-     *
-     * @return default color
-     */
-    std::string getColor() const noexcept;
+    std::vector<std::string> getBehaviorSets() const noexcept;
 
     /**
      * Returns the name of the type of Actor.
@@ -98,12 +88,8 @@ namespace QS
 
     private:
 
-    /** Names of all of the behaviors that this actor uses as input. */
-    const std::vector<const std::string> myBehaviors;
-
-    /** Default color for drawing */
-    // TODO: probably change to RGB value
-    const std::string myColor;
+    /** Names of all of the behavior sets that this actor uses as input. */
+    const std::vector<const std::string> myBehaviorSets;
 
     /** Name of the type of actor */
     const std::string myName;
