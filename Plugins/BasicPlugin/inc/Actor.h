@@ -96,13 +96,13 @@ namespace QS
     private:
 
     /** Mass, in grams. */
-    const float myMass_grams;
+    float myMass_grams;
 
     /** Location of Individual in the world. Cartesian coordinate. */
     Eigen::Vector2f myPosition;
 
     /** Actor's radius, in meters. */
-    const float myRadius_m;
+    float myRadius_m;
 
     /**
      * Velocity vector, origin at Actor's current location. Measured

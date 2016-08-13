@@ -92,6 +92,6 @@ namespace QS
     const std::string myName;
 
     /** Names of all of the behaviors that this set uses. */
-    const std::vector<const std::string> myBehaviors;
+    const std::vector<std::string> myBehaviors;
   };
 }

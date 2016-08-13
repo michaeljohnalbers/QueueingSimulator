@@ -10,7 +10,7 @@
 #include <map>
 #include <string>
 
-#include <Eigne/Core.h>
+#include <Eigen/Core>
 
 namespace QS
 {
@@ -69,7 +69,7 @@ namespace QS
      *          sensable data from the environment
      * @return motion vector
      */
-    virtual Eigen::Vec2f evaluate(const Sensable &theSensable);
+    virtual Eigen::Vector2f evaluate(const Sensable &theSensable);
 
     /**
      * Copy assignment operator.

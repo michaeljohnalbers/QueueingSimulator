@@ -11,6 +11,8 @@
 
 namespace QS
 {
+  class Sensable;
+
   /**
    * A sensor is an object which senses data within the simulation world. It
    * stores that information and is then used by steering behaviors in

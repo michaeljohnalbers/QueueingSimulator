@@ -92,6 +92,6 @@ namespace QS
     const std::string myName;
 
     /** Names of all of the sensor that this behavior uses as input. */
-    const std::vector<const std::string> mySensors;
+    const std::vector<std::string> mySensors;
   };
 }
