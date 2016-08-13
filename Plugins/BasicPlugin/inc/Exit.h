@@ -29,7 +29,7 @@ namespace QS
      * Constructor. See Target.h
      *
      */
-    Exit(const Eigen::Vec2f &thePoint, const float theRadius);
+    Exit(const Eigen::Vector2f &thePoint, const float theRadius);
 
     /**
      * Copy constructor.

@@ -1,0 +1,4 @@
+# Ignore everything as this is where cmake generates its files.
+*
+# Don't ignore this file.
+!.gitignore

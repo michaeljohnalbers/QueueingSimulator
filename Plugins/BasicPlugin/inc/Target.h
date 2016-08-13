@@ -8,7 +8,7 @@
  * @author Michael Albers
  */
 
-#include <Eigne/Core.h>
+#include <Eigen/Core>
 
 namespace QS
 {
@@ -36,7 +36,7 @@ namespace QS
      *          if theRadius is negative.
      * TODO: can thePoint values be negative?
      */
-    Target(const Eigen::Vec2f &thePoint,
+    Target(const Eigen::Vector2f &thePoint,
            const float theRadius);
 
     /**
@@ -59,7 +59,7 @@ namespace QS
      *
      * @return target's point
      */
-    Eigen::Vec2f getPoint() const noexcept;
+    Eigen::Vector2f getPoint() const noexcept;
 
     /**
      * Return the target's radius, in meters.
@@ -83,7 +83,7 @@ namespace QS
     private:
 
     /** Target's location. */
-    const Eigen::Vec2f myPoint;
+    const Eigen::Vector2f myPoint;
 
     /** Radius of the target, in meters. */
     const float myRadius_m;

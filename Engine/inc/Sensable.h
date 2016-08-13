@@ -7,6 +7,8 @@
  * @author Michael Albers
  */
 
+#include <vector>
+
 class Actor;
 class Target;
 class Exit;

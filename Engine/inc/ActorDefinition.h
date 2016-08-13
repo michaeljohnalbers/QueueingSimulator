@@ -89,9 +89,10 @@ namespace QS
     private:
 
     /** Names of all of the behavior sets that this actor uses as input. */
-    const std::vector<const std::string> myBehaviorSets;
+    const std::vector<std::string> myBehaviorSets;
 
     /** Name of the type of actor */
     const std::string myName;
   };
 }
+
