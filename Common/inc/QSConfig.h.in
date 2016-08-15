@@ -1,0 +1,3 @@
+// the configured options and settings for QS
+#define QS_VERSION_MAJOR @QueueingSimulator_VERSION_MAJOR@
+#define QS_VERSION_MINOR @QueueingSimulator_VERSION_MINOR@

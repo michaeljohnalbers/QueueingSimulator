@@ -6,9 +6,9 @@
  */
 
 #include <iostream>
+#include "ControlGUI.h"
 
 int main(int argc, char **argv)
 {
-  std::cout << "Started " << argv[0] << std::endl;
-  return 0;
+  return QS::ControlGUI::run(argc, argv);
 }

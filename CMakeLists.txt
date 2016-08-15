@@ -2,9 +2,13 @@
 # Description: Top level CMake file for all of Queueing Simulator
 
 cmake_minimum_required(VERSION 3.5)
-project(QueueingSimulator LANGUAGES CXX VERSION 0.01)
+project(QueueingSimulator VERSION 0.01 LANGUAGES CXX)
 
 include(ExternalProject)
+
+###################################
+# General Settings
+###################################
 
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -13,6 +17,16 @@ if(NOT CMAKE_BUILD_TYPE)
 RelWithDebInfo MinSizeRel."
       FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
+
+# Generate version header file.
+configure_file (
+  "${PROJECT_SOURCE_DIR}/Common/inc/QSConfig.h.in"
+  "${PROJECT_BINARY_DIR}/Common/inc/QSConfig.h")
+include_directories("${PROJECT_BINARY_DIR}/Common/inc/")
+
+###################################
+# Compiler Settings
+###################################
 
 # Yes, it sort of defeats the purpose to only support gcc. But the use of CMake
 # here is more to try it out and use it's ability to find/download 3rd party
@@ -31,7 +45,14 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+###################################
 # External packages used
+###################################
+
+find_package(PkgConfig)
+
+# Eigen is headers only, so just download it instead of trying to find it on
+# the system.
 set(EIGEN_FILE 3.2.9.tar.gz)
 ExternalProject_Add(Eigen3
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/Eigen3
@@ -42,6 +63,15 @@ ExternalProject_Add(Eigen3
   TEST_COMMAND "")
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/Eigen3)
 
+pkg_check_modules(GTKMM gtkmm-3.0) # look into FindPkgConfig.cmake, 
+include_directories(${GTKMM_INCLUDE_DIRS})
+link_directories(${GTKMM_LIBRARY_DIRS})
+
+###################################
+# Sub-directories for building
+###################################
+
+add_subdirectory(Control/src)
 add_subdirectory(Engine/src)
 add_subdirectory(Plugins/BasicPlugin/src)
-add_subdirectory(main)
+add_subdirectory(Main/src)
