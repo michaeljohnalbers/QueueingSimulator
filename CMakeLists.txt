@@ -49,10 +49,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # External packages used
 ###################################
 
+# For reference: builds 3rd party packages first, then re-runs cmake for
+# actual build.
+# https://cmake.org/pipermail/cmake/2013-October/056105.html
+# https://github.com/OpenChemistry/openchemistry
+
 find_package(PkgConfig)
 
 # Eigen is headers only, so just download it instead of trying to find it on
-# the system.
+# the system. Need to use custom download command as curl that comes with Linux
+# Mint doesn't support https.
 set(EIGEN_FILE 3.2.9.tar.gz)
 ExternalProject_Add(Eigen3
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/Eigen3
@@ -63,9 +69,31 @@ ExternalProject_Add(Eigen3
   TEST_COMMAND "")
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/Eigen3)
 
-pkg_check_modules(GTKMM gtkmm-3.0) # look into FindPkgConfig.cmake, 
+pkg_check_modules(GTKMM gtkmm-3.0 REQUIRED)
 include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS})
+
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIR})
+link_directories(${OPENGL_LIBRARIES})
+
+find_package(GLUT REQUIRED)
+include_directories(${GLUT_INCLUDE_DIR})
+link_directories(${GLUT_LIBRARIES})
+
+set(XERCESC_VERSION 3.1.4)
+ExternalProject_Add(xerces-c
+  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/xerces-c
+  URL http://apache.mirrors.pair.com/xerces/c/3/sources/xerces-c-${XERCESC_VERSION}.tar.bz2
+  URL_MD5 d04ae9d8b2dee2157c6db95fa908abfd
+  CONFIGURE_COMMAND ../xerces-c/configure --prefix=${CMAKE_CURRENT_BINARY_DIR}/xerces-c --disable-network --disable-static
+  BUILD_COMMAND $(MAKE) --directory=src --silent
+  TEST_COMMAND "")
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/xerces-c/include)
+link_directories(${CMAKE_CURRENT_BINARY_DIR}/xerces-c/libs)
+
+
 
 ###################################
 # Sub-directories for building
