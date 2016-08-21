@@ -9,12 +9,15 @@
 
 #include <vector>
 
-class Actor;
-class Target;
-class Exit;
-
 namespace QS
 {
+  class Actor;
+  // TODO: undo this with further development
+#if 0
+  class Target;
+  class Exit;
+#endif
+
   /**
    * This class encapsulates all things that can be sensed within within the
    * simulation world. In other words, all Sensors use objects of this class
@@ -39,9 +42,24 @@ namespace QS
      * @param theExits
      *          sensable exits within the world
      */
-    Sensable(const std::vector<const Actor*> theActors,
+    Sensable(const std::vector<const Actor*> theActors
+             // TODO: undo this with further developement
+#if 0
+             ,
              const std::vector<const Target*> theTargets,
-             const std::vector<const Exit*> theExits);
+             const std::vector<const Exit*> theExits
+#endif
+      ) noexcept;
+
+    /**
+     * Copy constructor
+     */
+    Sensable(const Sensable &) = default;
+
+    /**
+     * Move constructor
+     */
+    Sensable(Sensable &&) = default;
 
     /**
      * Destructor.
@@ -55,6 +73,8 @@ namespace QS
      */
     std::vector<const Actor*> getActors() const noexcept;
 
+    // TODO: undo this with further development
+#if 0
     /**
      * Returns the sensable targets. Not in any particular order.
      *
@@ -69,17 +89,33 @@ namespace QS
      */
     std::vector<const Exit*> getExits() const noexcept;
 
+#endif
+
+    /**
+     * Copy assignment operator
+     */
+    Sensable& operator=(const Sensable &) = default;
+
+    /**
+     * Move assignment operator
+     */
+    Sensable& operator=(Sensable &&) = default;
+
+
     protected:
 
     private:
 
     /** All actors in the world that can be sensed. */
-    const std::vector<const Actor*> myActors;
+    std::vector<const Actor*> myActors;
 
+    // TODO: undo this with further development
+#if 0
     /** All targets in the world which can be sensed. */
-    const std::vector<const Target*> myTargets;
+    std::vector<const Target*> myTargets;
 
     /** All exits in the world which can be sensed. */
-    const std::vector<const Exit*> myExits;
+    std::vector<const Exit*> myExits;
+#endif
   };
 }

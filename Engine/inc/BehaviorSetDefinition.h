@@ -70,7 +70,7 @@ namespace QS
      *
      * @param theOther
      *          behavior set definition to compare against
-     * @return true if the names are equal, false otherwise
+     * @return true if the name & behaviors are equal, false otherwise
      */
     bool operator==(const BehaviorSetDefinition &theOther) const noexcept;
 
@@ -89,9 +89,9 @@ namespace QS
     private:
 
     /** Name of the behavior set */
-    const std::string myName;
+    std::string myName;
 
     /** Names of all of the behaviors that this set uses. */
-    const std::vector<std::string> myBehaviors;
+    std::vector<std::string> myBehaviors;
   };
 }

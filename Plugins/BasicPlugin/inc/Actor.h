@@ -37,7 +37,8 @@ namespace QS
      *          Map of property name (key) to property value (value). Must
      *          contain "mass", value in grams, and "radius", value in meters.
      * @throws std::invalid_argument
-     *           if map is missing "mass" and "radius" properties.
+     *           if map is missing "mass" and "radius" properties, or if either
+     *           of those properties have invalid values
      */
     Actor(const std::map<std::string, std::string> &theProperties);
 
@@ -51,21 +52,21 @@ namespace QS
      *
      * @return mass
      */
-    float getMass() const;
+    float getMass() const noexcept;
 
     /**
      * Returns the Actor's position.
      *
      * @return Actor's position
      */
-    Eigen::Vector2f getPosition() const;
+    Eigen::Vector2f getPosition() const noexcept;
 
     /**
      * Returns the radius of the actor, in meters.
      *
      * @return radius
      */
-    float getRadius() const;
+    float getRadius() const noexcept;
 
     /**
      * Returns the velocity vector. Origin at Actor's current location.
@@ -73,7 +74,7 @@ namespace QS
      *
      * @return velocity vector.
      */
-    Eigen::Vector2f getVelocity() const;
+    Eigen::Vector2f getVelocity() const noexcept;
 
     /**
      * Sets the Actor's position.
@@ -81,15 +82,15 @@ namespace QS
      * @param thePosition
      *          new position
      */
-    void setPosition(const Eigen::Vector2f &thePosition);
+    void setPosition(const Eigen::Vector2f &thePosition) noexcept;
 
     /**
      * Sets the Actor's velocity. Origin at Actor's current location.
      *
      * @param theVelocity
-     *          new velocity
+     *          new velocity vector, magnitude will be in meters/second
      */
-    void setVelocity(const Eigen::Vector2f &theVelocity);
+    void setVelocity(const Eigen::Vector2f &theVelocity) noexcept;
 
     protected:
 

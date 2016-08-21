@@ -7,8 +7,10 @@
  * @author Michael Albers
  */
 
+#include <map>
 #include <string>
 #include <utility>
+#include "PluginDefinition.h"
 
 namespace QS
 {
@@ -75,8 +77,8 @@ namespace QS
     Plugin(Plugin&&) = delete;
 
     /**
-     * Constructor. Constructs the plugin from the given definition. The shared library
-     * is also loaded here.
+     * Constructor. Constructs the plugin from the given definition. The shared
+     * library is also loaded here.
      *
      * @throw std::runtime_error On problems loading the shared library.
      */
@@ -88,22 +90,23 @@ namespace QS
     ~Plugin();
 
     /**
-     * Creates an actor of the given type with the given properties. The caller owns
-     * the pointer, but must use destroyActor to destroy the returned object.
+     * Creates an actor of the given type with the given properties. The caller
+     * owns the pointer, but must use destroyActor to destroy the returned
+     * object.
      *
      * @param theType
      *          actor type name
      * @param theProperties
-     *          key/value pairs of properties specific to the type of actor being
-     *          created.
+     *          key/value pairs of properties specific to the type of actor
+     *          being created.
      * @throw std::invalid_argument On invalid actor type
      */
     Actor* createActor(const std::string &theType,
                        const std::map<std::string, std::string> &theProperties);
 
     /**
-     * Creates the behavior with the given name. The caller owns the pointer, but must
-     * use destroyBehavior to destroy the returned object.
+     * Creates the behavior with the given name. The caller owns the pointer,
+     * but must use destroyBehavior to destroy the returned object.
      *
      * @param theBehavior
      *          name of the behavior
@@ -112,8 +115,8 @@ namespace QS
     Behavior* createBehavior(const std::string &theBehavior);
 
     /**
-     * Creates the sensor with the given name. The caller owns the pointer, but must
-     * use destroySensor to destroy the returned object.
+     * Creates the sensor with the given name. The caller owns the pointer, but
+     * must use destroySensor to destroy the returned object.
      *
      * @param theSensor
      *          name of the sensor

@@ -70,7 +70,7 @@ namespace QS
      *
      * @param theOther
      *          behavior definition to compare against
-     * @return true if the names are equal, false otherwise
+     * @return true if the name and sensors are equal, false otherwise
      */
     bool operator==(const BehaviorDefinition &theOther) const noexcept;
 
@@ -89,9 +89,9 @@ namespace QS
     private:
 
     /** Name of the type of behavior */
-    const std::string myName;
+    std::string myName;
 
     /** Names of all of the sensor that this behavior uses as input. */
-    const std::vector<std::string> mySensors;
+    std::vector<std::string> mySensors;
   };
 }

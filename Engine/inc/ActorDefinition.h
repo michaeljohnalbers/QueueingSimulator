@@ -30,11 +30,11 @@ namespace QS
      *
      * @param theName
      *          specific name of Actor type
-     * @param theBehaviors
-     *          names of input behaviors to this actor
+     * @param theBehaviorSets
+     *          names of input behavior sets to this actor
      */
     ActorDefinition(const std::string &theName,
-                    const std::vector<std::string> &theBehaviors);
+                    const std::vector<std::string> &theBehaviorSets);
 
     /**
      * Copy constructor.
@@ -70,7 +70,7 @@ namespace QS
      *
      * @param theOther
      *          actor definition to compare against
-     * @return true if the type names are equal, false otherwise
+     * @return true if the name is equal, false otherwise
      */
     bool operator==(const ActorDefinition &theOther) const noexcept;
 
@@ -89,10 +89,9 @@ namespace QS
     private:
 
     /** Names of all of the behavior sets that this actor uses as input. */
-    const std::vector<std::string> myBehaviorSets;
+    std::vector<std::string> myBehaviorSets;
 
     /** Name of the type of actor */
-    const std::string myName;
+    std::string myName;
   };
 }
-

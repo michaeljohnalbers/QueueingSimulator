@@ -39,6 +39,7 @@ set(CMAKE_CXX_FLAGS "--std=c++11 -Wall -Wno-deprecated")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O")
+SET(CMAKE_EXE_LINKER_FLAGS "-pthread")
 
 # Put libraries an executables into lib and bin directories.
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -56,18 +57,22 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package(PkgConfig)
 
+# If problems downloading using https see:
+# http://stackoverflow.com/questions/29816529/unsupported-protocol-while-downlod-tar-gz-package
+
 # Eigen is headers only, so just download it instead of trying to find it on
-# the system. Need to use custom download command as curl that comes with Linux
-# Mint doesn't support https.
+# the system. Build/test/etc. aren't needed either.
 set(EIGEN_FILE 3.2.9.tar.gz)
-ExternalProject_Add(Eigen3
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/Eigen3
-  DOWNLOAD_COMMAND /usr/bin/wget https://bitbucket.org/eigen/eigen/get/${EIGEN_FILE}
+ ExternalProject_Add(Eigen3
+  PREFIX Eigen3
+  URL https://bitbucket.org/eigen/eigen/get/${EIGEN_FILE}
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
-  INSTALL_COMMAND /bin/tar xzf ${CMAKE_CURRENT_BINARY_DIR}/Eigen3/src/${EIGEN_FILE} -C ${CMAKE_CURRENT_BINARY_DIR}/Eigen3 --strip-components=1
+  INSTALL_COMMAND ""
   TEST_COMMAND "")
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/Eigen3)
+ExternalProject_Get_Property(Eigen3 source_dir binary_dir)
+set(EIGEN3_INCLUDE_DIR ${source_dir})
+include_directories(${EIGEN3_INCLUDE_DIR})
 
 pkg_check_modules(GTKMM gtkmm-3.0 REQUIRED)
 include_directories(${GTKMM_INCLUDE_DIRS})
@@ -81,19 +86,34 @@ find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIR})
 link_directories(${GLUT_LIBRARIES})
 
-set(XERCESC_VERSION 3.1.4)
+# Taken from:
+# http://stackoverflow.com/questions/8507723/how-to-start-working-with-gtest-and-cmake
+ExternalProject_Add(gtest
+  URL https://googletest.googlecode.com/files/gtest-1.7.0.zip
+  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
+  INSTALL_COMMAND ""
+)
+ExternalProject_Get_Property(gtest source_dir binary_dir)
+set(GTEST_INCLUDE_DIR ${source_dir}/include)
+set(GTEST_LIBRARY_DIR ${binary_dir})
+set(GTEST_LIBRARY "${GTEST_LIBRARY_DIR}/libgtest.a")
+
+# Only building static libs to make QueueingSimulator a standalone exe.
+# The build/install commands both use the --directory=src option to skip
+# building the example binaries which just aren't needed.
+set(XERCES_DIR ${CMAKE_CURRENT_BINARY_DIR}/xerces-c)
 ExternalProject_Add(xerces-c
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/xerces-c
-  URL http://apache.mirrors.pair.com/xerces/c/3/sources/xerces-c-${XERCESC_VERSION}.tar.bz2
+  PREFIX xerces-c
+  URL http://apache.mirrors.pair.com/xerces/c/3/sources/xerces-c-3.1.4.tar.bz2
   URL_MD5 d04ae9d8b2dee2157c6db95fa908abfd
-  CONFIGURE_COMMAND ../xerces-c/configure --prefix=${CMAKE_CURRENT_BINARY_DIR}/xerces-c --disable-network --disable-static
+  CONFIGURE_COMMAND ../xerces-c/configure --prefix=${XERCES_DIR} --disable-network --disable-shared --enable-silent-rules
   BUILD_COMMAND $(MAKE) --directory=src --silent
+  INSTALL_COMMAND $(MAKE) --directory=src install --silent
   TEST_COMMAND "")
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/xerces-c/include)
-link_directories(${CMAKE_CURRENT_BINARY_DIR}/xerces-c/libs)
-
-
+set(XERCESC_INCLUDE_DIR ${XERCES_DIR}/include)
+set(XERCESC_LIBRARY_DIR ${XERCES_DIR}/libs)
+include_directories(${XERCESC_INCLUDE_DIR})
+link_directories(${XERCESC_LIBRARY_DIR})
 
 ###################################
 # Sub-directories for building
@@ -103,3 +123,23 @@ add_subdirectory(Control/src)
 add_subdirectory(Engine/src)
 add_subdirectory(Plugins/BasicPlugin/src)
 add_subdirectory(Main/src)
+
+
+###################################
+# Tests
+# Can either run
+#  - make test
+#  - ctest
+###################################
+# To set output on failures:
+#   setenv CTEST_OUTPUT_ON_FAILURE 1
+# then run tests
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
+    "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
+  # TODO: at some point put test exes into separate directory
+  enable_testing()
+  add_subdirectory(Plugins/BasicPlugin/test)
+  add_test(NAME BasicPluginTest COMMAND BasicPluginTest)
+  add_subdirectory(Engine/test)
+  add_test(NAME EngineTest COMMAND EngineTest)
+endif()

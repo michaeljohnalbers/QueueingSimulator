@@ -49,7 +49,8 @@ namespace QS
      *
      * @param theInputSensorTypes
      *          list of the names of sensors which are used as inputs to this
-     *          behavior
+     *          behavior; this may be empty as some behaviors may not need any
+     *          sensor input
      */
     Behavior(const std::vector<std::string> &theInputSensorTypes);
 
@@ -85,7 +86,7 @@ namespace QS
      *
      * @return list of input sensor types
      */
-    std::vector<std::string> getInputSensorTypes() const;
+    std::vector<std::string> getInputSensorTypes() const noexcept;
 
     /**
      * Copy assignment operator.
