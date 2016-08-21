@@ -1,8 +1,9 @@
 #pragma once
 
 /**
- * @file Plugin.h
- * @brief Contains all the information for a single plugin.
+ * @file PluginDefinition.h
+ * @brief Contains all the information for a single plugin from its definition
+ *        file.
  *
  * @author Michael Albers
  */
@@ -15,10 +16,6 @@
 #include "BehaviorSetDefinition.h"
 #include "SensorDefinition.h"
 
-class Actor;
-class Behavior;
-class Sensor;
-
 namespace QS
 {
   /**
@@ -26,7 +23,7 @@ namespace QS
    * of the following: Actors, Behaviors, BehaviorSets and Sensors. Plugins
    * allow user-defined extensions to Queueing Simulator.
    */
-  class Plugin
+  class PluginDefinition
   {
     public:
 
@@ -39,7 +36,7 @@ namespace QS
     /**
      * Default constructor.
      */
-    Plugin() = delete;
+    PluginDefinition() = delete;
 
     /**
      * Constructor.
@@ -47,22 +44,22 @@ namespace QS
      * @param theName
      *          plugin's name
      */
-    Plugin(const std::string &theName);
+    PluginDefinition(const std::string &theName);
 
     /**
      * Copy constructor.
      */
-    Plugin(const Plugin&) = default;
+    PluginDefinition(const PluginDefinition&) = default;
 
     /**
      * Move constructor.
      */
-    Plugin(Plugin&&) = default;
+    PluginDefinition(PluginDefinition&&) = default;
 
     /**
      * Destructor.
      */
-    ~Plugin() = default;
+    ~PluginDefinition() = default;
 
     /**
      * Adds a new actor definition to this plugin.
@@ -93,7 +90,7 @@ namespace QS
      *           if another definition with the same name already exists
      */
     void addBehaviorSetDefinition(
-      const BehaviorSetDefinition &theBehaviorDefinition);
+      const BehaviorSetDefinition &theBehaviorSetDefinition);
 
     /**
      * Adds a new sensor definition to this plugin.
@@ -127,13 +124,6 @@ namespace QS
     CreatorDestructorPair getBehaviorCreatorDestructor() const noexcept;
 
     /**
-     * Returns the creator/destructor function namess for BehaviorSets.
-     *
-     * @return creator/destructor functions
-     */
-    CreatorDestructorPair getBehaviorSetCreatorDestructor() const noexcept;
-
-    /**
      * Returns the list of all Behaviors defined in this plugin.
      *
      * @return custom behaviors
@@ -141,18 +131,19 @@ namespace QS
     std::vector<BehaviorDefinition> getBehaviorDefinitions() const noexcept;
 
     /**
-     * Returns the creator/destructor function names for Sensors.
+     * Returns the creator/destructor function namess for BehaviorSets.
      *
      * @return creator/destructor functions
      */
-    CreatorDestructorPair getSensorCreatorDestructor() const noexcept;
+    CreatorDestructorPair getBehaviorSetCreatorDestructor() const noexcept;
 
     /**
-     * Returns the list of all Sensors defined in this plugin.
+     * Returns the list of all Behavior sets defined in this plugin.
      *
-     * @return custom sensors
+     * @return custom behavior sets
      */
-    std::vector<SensorDefinition> getSensorDefinitions() const noexcept;
+    std::vector<BehaviorSetDefinition> getBehaviorSetDefinitions()
+      const noexcept;
 
     /**
      * Returns the name of the library which implements this plugin.
@@ -169,14 +160,28 @@ namespace QS
     std::string getName() const noexcept;
 
     /**
+     * Returns the creator/destructor function names for Sensors.
+     *
+     * @return creator/destructor functions
+     */
+    CreatorDestructorPair getSensorCreatorDestructor() const noexcept;
+
+    /**
+     * Returns the list of all Sensors defined in this plugin.
+     *
+     * @return custom sensors
+     */
+    std::vector<SensorDefinition> getSensorDefinitions() const noexcept;
+
+    /**
      * Copy assignment operator.
      */
-    Plugin& operator=(const Plugin&) = default;
+    PluginDefinition& operator=(const PluginDefinition&) = default;
 
     /**
      * Move assignment operator.
      */
-    Plugin& operator=(Plugin&&) = default;
+    PluginDefinition& operator=(PluginDefinition&&) = default;
 
     /**
      * Sets the creator/destructor function names for Actors.
@@ -187,7 +192,7 @@ namespace QS
      *          destructor function
      */
     void setActorCreatorDestructor(const std::string &theCreator,
-                                   const std::string &theDestructor);
+                                   const std::string &theDestructor) noexcept;
 
     /**
      * Sets the creator/destructor function names for Behaviors.
@@ -198,7 +203,8 @@ namespace QS
      *          destructor function
      */
     void setBehaviorCreatorDestructor(const std::string &theCreator,
-                                      const std::string & theDestructor);
+                                      const std::string &theDestructor)
+      noexcept;
 
     /**
      * Sets the creator/destructor function names for BehaviorSets.
@@ -209,7 +215,16 @@ namespace QS
      *          destructor function
      */
     void setBehaviorSetCreatorDestructor(const std::string &theCreator,
-                                         const std::string & theDestructor);
+                                         const std::string &theDestructor)
+      noexcept;
+
+    /**
+     * Sets the name of the implementing library.
+     *
+     * @param theLibrary
+     *          plugin library name
+     */
+    void setLibrary(const std::string &theLibrary) noexcept;
 
     /**
      * Sets the creator/destructor function names for Sensors.
@@ -220,19 +235,19 @@ namespace QS
      *          destructor function
      */
     void setSensorCreatorDestructor(const std::string &theCreator,
-                                    const std::string &theDestructor);
-
-    /**
-     * Sets the name of the implementing library.
-     *
-     * @param theLibrary
-     *          plugin library name
-     */
-    void setLibrary(const std::string &theLibrary) noexcept;
+                                    const std::string &theDestructor)
+      noexcept;
 
     protected:
 
     private:
+
+    /**
+     * Helper function for the add* functions.
+     */
+    template <class T>
+    void addItem(std::vector<T> &theVector, const T &theItem,
+                 const std::string &theDescription);
 
     /** All types of actors defined in this plugin. */
     std::vector<ActorDefinition> myActors;
@@ -262,6 +277,6 @@ namespace QS
     std::string myLibrary;
 
     /** Name of the plugin. */
-    const std::string myName;
+    std::string myName;
   };
 }

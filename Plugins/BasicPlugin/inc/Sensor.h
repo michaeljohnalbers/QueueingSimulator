@@ -38,6 +38,8 @@ namespace QS
      *
      * @param theTypeName
      *           name of the type of sensor that this is
+     * @throws std::invalid_argument
+     *           on empty type name
      */
     Sensor(const std::string &theTypeName);
 
@@ -51,7 +53,7 @@ namespace QS
      *
      * @return type name
      */
-    std::string getTypeName() const;
+    std::string getTypeName() const noexcept;
 
     /**
      * Populates the sensor with data from the sensable environment.

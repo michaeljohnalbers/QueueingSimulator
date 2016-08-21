@@ -78,6 +78,6 @@ namespace QS
     private:
 
     /** Name of the type of sensor */
-    const std::string myName;
+    std::string myName;
   };
 }
