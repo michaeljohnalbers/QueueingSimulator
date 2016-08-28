@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Author: Michael Albers
+# Description: Run script for queuing simulator
+
+QS_BASE_DIR=@CMAKE_INSTALL_PREFIX@
+
+export LD_LIBRARY_PATH=${QS_BASE_DIR}/@QS_INSTALL_LIB_DIR@:${LD_LIBRARY_PATH}
+
+# Make sure cwd is bin directory to find plugin directory (maybe later do this
+# via an environment variable).
+cd ${QS_BASE_DIR}/@QS_INSTALL_BIN_DIR@
+./QueueingSimulator "$@"

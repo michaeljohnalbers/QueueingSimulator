@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<!-- Author: Michael Albers
+     Description: Schema against which all plugin configuration files will be
+                  validated. This schema will be automatically used by
+		  Queueing Simulator, and hence, does not need to be referenced
+		  in the plugin configuration file.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   targetNameSpace="https://github.com/michaeljohnalbers/QueueingSimulator">
+  <xs:simpleType name="nonEmptyString">
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Empty 'source' attributes indicate the item comes from this plugin. -->
+  <xs:element name="Plugin" minOccurs="1" maxOccurs="1">
+    <xs:complexType>
+      <xs:sequence>
+
+	<!-- Actors section-->
+	<xs:element name="Actors" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="Actor" minOccurs="0" maxOccurs="unbounded">
+		<xs:complexType>
+		  <xs:sequence>
+		    <xs:element name="BehaviorSet"
+				minOccurs="1" maxOccurs="unbounded" >
+		      <xs:complexType>
+			<xs:attribute name="name" type="nonEmptyString"
+				      use="required" />
+			<xs:attribute name="source" type="nonEmptyString"
+				      use="optional" />
+		      </xs:complexType>
+		    </xs:element>
+		  </xs:sequence>
+		  <xs:attribute name="type" type="nonEmptyString"
+				use="required" />
+		</xs:complexType>
+	      </xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="creator" type="nonEmptyString" use="required"/>
+	    <xs:attribute name="destructor" type="nonEmptyString"
+			  use="required"/>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- BehaviorSets section-->
+	<xs:element name="BehaviorSets" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="BehaviorSet" minOccurs="0"
+			  maxOccurs="unbounded">
+		<xs:complexType>
+		  <xs:sequence>
+		    <xs:element name="Behavior"	minOccurs="1"
+				maxOccurs="unbounded">
+		      <xs:complexType>
+			<xs:attribute name="name" type="nonEmptyString"
+				      use="required" />
+			<xs:attribute name="source" type="nonEmptyString"
+				      use="optional" />
+		      </xs:complexType>
+		    </xs:element>
+		  </xs:sequence>
+		  <xs:attribute name="name" type="nonEmptyString"
+				use="required" />
+		</xs:complexType>
+	      </xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="creator" type="nonEmptyString" use="required"/>
+	    <xs:attribute name="destructor" type="nonEmptyString"
+			  use="required"/>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Behaviors section-->
+	<xs:element name="Behaviors" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="Behavior" minOccurs="0"
+			  maxOccurs="unbounded">
+		<xs:complexType>
+		  <xs:sequence>
+		    <!-- Behaviors don't necessarily have to use sensors. -->
+		    <xs:element name="Sensor" minOccurs="0"
+				maxOccurs="unbounded">
+		      <xs:complexType>
+			<xs:attribute name="name" type="nonEmptyString"
+				      use="required" />
+			<xs:attribute name="source" type="nonEmptyString"
+				      use="optional" />
+		      </xs:complexType>
+		    </xs:element>
+		  </xs:sequence>
+		  <xs:attribute name="name" type="nonEmptyString"
+				use="required" />
+		</xs:complexType>
+	      </xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="creator" type="nonEmptyString" use="required"/>
+	    <xs:attribute name="destructor" type="nonEmptyString"
+			  use="required"/>
+	  </xs:complexType>
+	</xs:element>
+
+
+	<!-- Sensors section-->
+	<xs:element name="Sensors" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="Sensor" minOccurs="0"
+			  maxOccurs="unbounded">
+		<xs:complexType>
+		  <xs:attribute name="name" type="nonEmptyString"
+				use="required" />
+		</xs:complexType>
+	      </xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="creator" type="nonEmptyString" use="required"/>
+	    <xs:attribute name="destructor" type="nonEmptyString"
+			  use="required"/>
+	  </xs:complexType>
+	</xs:element>
+
+      </xs:sequence>
+      <xs:attribute name="library" type="nonEmptyString" use="required"/>
+      <xs:attribute name="name" type="nonEmptyString" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

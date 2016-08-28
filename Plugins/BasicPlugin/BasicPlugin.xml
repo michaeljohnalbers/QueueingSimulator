@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  This is the plugin definition file for the Basic Plugin. In this are the base
+  classes for all other plugins. Also included is a basic actor, behavior set,
+  and behavior.
+-->
+<Plugin name="BasicPlugin" library="libqs-basic-plugin.so">
+  <Actors creator="actorCreator" destructor="actorDestructor">
+    <Actor type="Actor">
+      <BehaviorSet name="BasicWalk" />
+    </Actor>
+  </Actors>
+
+  <BehaviorSets creator="behaviorSetCreator" destructor="behaviorSetDestructor">
+    <BehaviorSet name="BasicWalk">
+      <Behavior name="Walk" />
+    </BehaviorSet>
+  </BehaviorSets>
+
+  <Behaviors creator="behaviorCreator" destructor="behaviorDestructor">
+    <Behavior name="Walk" />
+  </Behaviors>
+
+  <Sensors creator="sensorCreator" destructor="sensorDestructor">
+  </Sensors>
+</Plugin>

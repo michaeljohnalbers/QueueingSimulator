@@ -15,7 +15,7 @@ GTEST_TEST(PluginDefinitionTest, testConstruction)
 
 GTEST_TEST(PluginDefinition, testCopyMove)
 {
-  QS::PluginDefinition plugin("StandardPlugin");
+  QS::PluginDefinition plugin("");
   plugin.setLibrary("TheLibrary.so");
   QS::ActorDefinition actor("ActorDef", {"B", "C", "D"});
   plugin.addActorDefinition(actor);
@@ -53,7 +53,7 @@ GTEST_TEST(PluginDefinition, testCopyMove)
 
 GTEST_TEST(PluginDefinition, testActors)
 {
-  QS::PluginDefinition plugin("StandardPlugin");
+  QS::PluginDefinition plugin("");
 
   // No actor stuff "built-in"
   EXPECT_TRUE(plugin.getActorDefinitions().empty());
@@ -99,7 +99,7 @@ GTEST_TEST(PluginDefinition, testActors)
 
 GTEST_TEST(PluginDefinition, testBehaviors)
 {
-  QS::PluginDefinition plugin("StandardPlugin");
+  QS::PluginDefinition plugin("");
 
   // No behavior stuff "built-in"
   EXPECT_TRUE(plugin.getBehaviorDefinitions().empty());
@@ -146,7 +146,7 @@ GTEST_TEST(PluginDefinition, testBehaviors)
 
 GTEST_TEST(PluginDefinition, testBehaviorSets)
 {
-  QS::PluginDefinition plugin("StandardPlugin");
+  QS::PluginDefinition plugin("");
 
   // No behavior set stuff "built-in"
   EXPECT_TRUE(plugin.getBehaviorSetDefinitions().empty());
@@ -193,9 +193,17 @@ GTEST_TEST(PluginDefinition, testBehaviorSets)
             plugin.getBehaviorSetCreatorDestructor().second);
 }
 
+GTEST_TEST(PluginDefinition, testDirectory)
+{
+  QS::PluginDefinition plugin("/home/someDirectory");
+
+  // Test getter
+  EXPECT_EQ("/home/someDirectory", plugin.getDirectory());
+}
+
 GTEST_TEST(PluginDefinition, testLibrary)
 {
-  QS::PluginDefinition plugin("StandardPlugin");
+  QS::PluginDefinition plugin("");
 
   // Test no library built in
   EXPECT_EQ(0u, plugin.getLibrary().size());
@@ -205,9 +213,18 @@ GTEST_TEST(PluginDefinition, testLibrary)
   EXPECT_EQ("SomeLibrary", plugin.getLibrary());
 }
 
+GTEST_TEST(PluginDefinition, testName)
+{
+  QS::PluginDefinition plugin("");
+
+  // Test getter/setter
+  plugin.setName("StandardPlugin");
+  EXPECT_EQ("StandardPlugin", plugin.getName());
+}
+
 GTEST_TEST(PluginDefinition, testSensors)
 {
-  QS::PluginDefinition plugin("StandardPlugin");
+  QS::PluginDefinition plugin("");
 
   // No sensor stuff "built-in"
   EXPECT_TRUE(plugin.getSensorDefinitions().empty());
@@ -249,12 +266,4 @@ GTEST_TEST(PluginDefinition, testSensors)
   plugin.setSensorCreatorDestructor("SensorConstructor", "SensorDestructor");
   EXPECT_EQ("SensorConstructor", plugin.getSensorCreatorDestructor().first);
   EXPECT_EQ("SensorDestructor", plugin.getSensorCreatorDestructor().second);
-}
-
-GTEST_TEST(PluginDefinition, testGetName)
-{
-  QS::PluginDefinition plugin("StandardPlugin");
-
-  // getName
-  EXPECT_EQ("StandardPlugin", plugin.getName());
 }

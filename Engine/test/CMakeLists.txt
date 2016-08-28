@@ -6,4 +6,5 @@ link_directories(${GTEST_LIBRARY_DIR})
 add_executable(EngineTest ${sources})
 target_include_directories(EngineTest PUBLIC ../inc ${GTEST_INCLUDE_DIR})
 target_include_directories(EngineTest PUBLIC ../../Plugins/BasicPlugin/inc)
-target_link_libraries(EngineTest ${GTEST_LIBRARY} qs-engine qs-basic-plugin)
+target_link_libraries(EngineTest ${GTEST_LIBRARY} qs-engine qs-basic-plugin
+                      ${XERCESC_LIBRARY})

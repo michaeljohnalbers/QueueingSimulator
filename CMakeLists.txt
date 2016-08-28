@@ -41,10 +41,15 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O")
 SET(CMAKE_EXE_LINKER_FLAGS "-pthread")
 
-# Put libraries an executables into lib and bin directories.
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+###################################
+# Installation Settings
+###################################
+
+# TODO: change this at some point
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+set(QS_INSTALL_BIN_DIR bin)
+set(QS_INSTALL_LIB_DIR lib)
+set(QS_INSTALL_PLUGIN_BASE_DIR plugins)
 
 ###################################
 # External packages used
@@ -86,17 +91,20 @@ find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIR})
 link_directories(${GLUT_LIBRARIES})
 
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
+    "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
 # Taken from:
 # http://stackoverflow.com/questions/8507723/how-to-start-working-with-gtest-and-cmake
-ExternalProject_Add(gtest
-  URL https://googletest.googlecode.com/files/gtest-1.7.0.zip
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
-  INSTALL_COMMAND ""
-)
-ExternalProject_Get_Property(gtest source_dir binary_dir)
-set(GTEST_INCLUDE_DIR ${source_dir}/include)
-set(GTEST_LIBRARY_DIR ${binary_dir})
-set(GTEST_LIBRARY "${GTEST_LIBRARY_DIR}/libgtest.a")
+  ExternalProject_Add(gtest
+    URL https://googletest.googlecode.com/files/gtest-1.7.0.zip
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
+    INSTALL_COMMAND ""
+    )
+  ExternalProject_Get_Property(gtest source_dir binary_dir)
+  set(GTEST_INCLUDE_DIR ${source_dir}/include)
+  set(GTEST_LIBRARY_DIR ${binary_dir})
+  set(GTEST_LIBRARY "${GTEST_LIBRARY_DIR}/libgtest.a")
+endif()
 
 # Only building static libs to make QueueingSimulator a standalone exe.
 # The build/install commands both use the --directory=src option to skip
@@ -111,7 +119,8 @@ ExternalProject_Add(xerces-c
   INSTALL_COMMAND $(MAKE) --directory=src install --silent
   TEST_COMMAND "")
 set(XERCESC_INCLUDE_DIR ${XERCES_DIR}/include)
-set(XERCESC_LIBRARY_DIR ${XERCES_DIR}/libs)
+set(XERCESC_LIBRARY_DIR ${XERCES_DIR}/lib)
+set(XERCESC_LIBRARY "-lxerces-c")
 include_directories(${XERCESC_INCLUDE_DIR})
 link_directories(${XERCESC_LIBRARY_DIR})
 
@@ -121,9 +130,9 @@ link_directories(${XERCESC_LIBRARY_DIR})
 
 add_subdirectory(Control/src)
 add_subdirectory(Engine/src)
-add_subdirectory(Plugins/BasicPlugin/src)
 add_subdirectory(Main/src)
 
+include(Plugins/Plugins.cmake)
 
 ###################################
 # Tests
@@ -136,10 +145,15 @@ add_subdirectory(Main/src)
 # then run tests
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
     "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
-  # TODO: at some point put test exes into separate directory
+
   enable_testing()
-  add_subdirectory(Plugins/BasicPlugin/test)
-  add_test(NAME BasicPluginTest COMMAND BasicPluginTest)
-  add_subdirectory(Engine/test)
-  add_test(NAME EngineTest COMMAND EngineTest)
+  list(APPEND testDirs Plugins/BasicPlugin/test Engine/test)
+  list(APPEND tests    BasicPluginTest          EngineTest)
+
+  foreach(testDir IN LISTS testDirs)
+    add_subdirectory(${testDir})
+  endforeach()
+  foreach(test IN LISTS tests)
+    add_test(NAME ${test} COMMAND ${test})
+  endforeach()
 endif()

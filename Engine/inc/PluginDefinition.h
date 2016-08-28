@@ -41,10 +41,10 @@ namespace QS
     /**
      * Constructor.
      *
-     * @param theName
-     *          plugin's name
+     * @param theDirectory
+     *          directory where plugin files are located
      */
-    PluginDefinition(const std::string &theName);
+    PluginDefinition(const std::string &theDirectory);
 
     /**
      * Copy constructor.
@@ -146,6 +146,13 @@ namespace QS
       const noexcept;
 
     /**
+     * Returns the directory containing the plugin files.
+     *
+     * @return plugin directory
+     */
+    std::string getDirectory() const noexcept;
+
+    /**
      * Returns the name of the library which implements this plugin.
      *
      * @return library name
@@ -227,6 +234,14 @@ namespace QS
     void setLibrary(const std::string &theLibrary) noexcept;
 
     /**
+     * Sets the plugin's name from the definition file.
+     *
+     * @param theName
+     *          plugin's name
+     */
+    void setName(const std::string &theName) noexcept;
+
+    /**
      * Sets the creator/destructor function names for Sensors.
      *
      * @param theCreator
@@ -266,6 +281,9 @@ namespace QS
 
     /** Creator/destructor functions for BehaviorSets. */
     CreatorDestructorPair myBehaviorSetCreatorDestructor;
+
+    /** Directory containing plugin files. */
+    std::string myDirectory;
 
     /** All types of sensors defined in this plugin. */
     std::vector<SensorDefinition> mySensors;
