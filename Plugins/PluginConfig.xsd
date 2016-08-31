@@ -35,7 +35,7 @@
 		      </xs:complexType>
 		    </xs:element>
 		  </xs:sequence>
-		  <xs:attribute name="type" type="nonEmptyString"
+		  <xs:attribute name="name" type="nonEmptyString"
 				use="required" />
 		</xs:complexType>
 	      </xs:element>

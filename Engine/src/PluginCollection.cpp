@@ -9,10 +9,10 @@
 #include <cstring>
 #include <dirent.h>
 #include <stdexcept>
+#include "Plugin.h"
 #include "PluginCollection.h"
+#include "PluginDefinition.h"
 #include "PluginReader.h"
-
-#include <iostream> // TODO: remove
 
 QS::PluginCollection::PluginCollection(
   const std::string &thePluginBaseDirectory)
@@ -41,16 +41,13 @@ QS::PluginCollection::PluginCollection(
   while ((entry = ::readdir(directory)) != NULL)
   {
     std::string fileName{entry->d_name};
-    if (entry->d_type == DT_DIR)
+    if (entry->d_type == DT_DIR && "." != fileName && ".." != fileName)
     {
       std::string pluginDirectory{thePluginBaseDirectory};
       pluginDirectory += "/" + fileName;
 
       auto configFile = checkPluginDirectory(pluginDirectory);
-      if (false == configFile.empty())
-      {
-        readPlugin(pluginDirectory, configFile);
-      }
+      readPlugin(pluginDirectory, configFile, thePluginBaseDirectory);
     }
   }
 
@@ -79,8 +76,6 @@ std::string QS::PluginCollection::checkPluginDirectory(
         str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
       };
 
-    bool foundProblem = false;
-
     dirent *entry;
     errno = 0;
     while ((entry = ::readdir(pluginDirectory)) != NULL)
@@ -94,8 +89,10 @@ std::string QS::PluginCollection::checkPluginDirectory(
         }
         else
         {
-          // Too many XML files, ignore this invalid plugin directory.
-          foundProblem = true;
+          std::string error("Too many XML files found in plugin configuration "
+                            "file directory '");
+          error += thePluginDirectory + "'. There can be only one.";
+          throw std::runtime_error(error);
         }
       }
     }
@@ -108,15 +105,19 @@ std::string QS::PluginCollection::checkPluginDirectory(
       error += thePluginDirectory + "': " + std::strerror(thisErrno) + ".";
       throw std::runtime_error(error);
     }
-    else if (foundProblem)
-    {
-      // Ignore this invalid plugin directory.
-      configFile = "";
-    }
   }
   else
   {
-    // Fail silently on this seemingly bad directory.
+    auto thisErrno = errno;
+    std::string error{"Failed to open plugin directory '"};
+    error += thePluginDirectory + "': " + std::strerror(thisErrno) + ".";
+    throw std::runtime_error(error);
+  }
+
+  if (configFile.empty())
+  {
+    throw std::runtime_error("No plugin configuration file found in '" +
+                             thePluginDirectory + "'.");
   }
 
   return configFile;
@@ -133,21 +134,14 @@ std::shared_ptr<QS::Plugin> QS::PluginCollection::getPlugin(
   return thisPluginIter->second;
 }
 
-void QS::PluginCollection::readPlugin(const std::string &thePluginDirectory,
-                                      const std::string &theConfigFile)
+void QS::PluginCollection::readPlugin(
+  const std::string &thePluginDirectory,
+  const std::string &theConfigFile,
+  const std::string &thePluginSchemaDirectory)
 {
-  try
-  {
-    PluginReader pluginReader(thePluginDirectory, theConfigFile);
-    auto pluginDefinition = pluginReader.read();
-  }
-  catch (const std::logic_error &exception)
-  {
-    std::cout << exception.what() << std::endl;
-  }
-  catch (...)
-  {
-    std::cout << "Other exception" << std::endl;
-    throw;
-  }
+  PluginReader pluginReader(
+    thePluginDirectory, theConfigFile, thePluginSchemaDirectory);
+  auto pluginDefinition = pluginReader.read();
+  std::shared_ptr<Plugin> plugin(new Plugin(pluginDefinition));
+  myPlugins[pluginDefinition->getName()] = plugin;
 }

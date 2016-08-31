@@ -8,12 +8,13 @@
  */
 
 #include <string>
-#include <vector>
+#include <set>
+#include "DefinitionPair.h"
 
 namespace QS
 {
   /**
-   * Contains the definition for one type of actor as defined in a plugin
+   * Contains the definition for one name of actor as defined in a plugin
    * definition file.
    */
   class ActorDefinition
@@ -29,12 +30,9 @@ namespace QS
      * Constructor.
      *
      * @param theName
-     *          specific name of Actor type
-     * @param theBehaviorSets
-     *          names of input behavior sets to this actor
+     *          specific name of Actor
      */
-    ActorDefinition(const std::string &theName,
-                    const std::vector<std::string> &theBehaviorSets);
+    ActorDefinition(const std::string &theName);
 
     /**
      * Copy constructor.
@@ -52,16 +50,27 @@ namespace QS
     ~ActorDefinition() = default;
 
     /**
+     * Adds the given behavior set, from the given plugin, to this Actor.
+     *
+     * @param theBehaviorSet
+     *          behavior set to add
+     * @param theSource
+     *          source of the behavior set
+     */
+    void addBehaviorSet(const std::string &theBehaviorSet,
+                        const std::string &theSource) noexcept;
+
+    /**
      * Returns the list of behavior sets this actor uses.
      *
      * @return behavior set list
      */
-    std::vector<std::string> getBehaviorSets() const noexcept;
+    std::set<DefinitionPair> getBehaviorSets() const noexcept;
 
     /**
-     * Returns the name of the type of Actor.
+     * Returns the name of the name of Actor.
      *
-     * @return actor type name
+     * @return actor name name
      */
     std::string getName() const noexcept;
 
@@ -89,9 +98,9 @@ namespace QS
     private:
 
     /** Names of all of the behavior sets that this actor uses as input. */
-    std::vector<std::string> myBehaviorSets;
+    std::set<DefinitionPair> myBehaviorSets;
 
-    /** Name of the type of actor */
+    /** Name of the actor */
     std::string myName;
   };
 }

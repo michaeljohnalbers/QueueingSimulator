@@ -6,8 +6,9 @@
  */
 
 #include "Plugin.h"
+#include "PluginDefinition.h"
 
-QS::Plugin::Plugin(const PluginDefinition &theDefinition) :
+QS::Plugin::Plugin(std::shared_ptr<PluginDefinition> theDefinition) :
   myDefinition(theDefinition)
 {
 }

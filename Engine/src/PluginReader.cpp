@@ -16,10 +16,28 @@
 #include "xercesc/sax2/Attributes.hpp"
 
 QS::PluginReader::PluginReader(const std::string &thePluginDirectory,
-                               const std::string &theConfigFile) :
+                               const std::string &theConfigFile,
+                               const std::string &thePluginSchemaDirectory) :
   myConfigFile(theConfigFile),
-  myPluginDirectory(thePluginDirectory)
+  myPluginDirectory(thePluginDirectory),
+  myPluginSchemaDirectory(thePluginSchemaDirectory)
 {
+}
+
+std::string QS::PluginReader::getPluginSource(const Attributes &theAttributes)
+  const noexcept
+{
+  std::string source;
+  try
+  {
+    source = XMLUtilities::getAttribute(theAttributes, "source");
+  }
+  catch (const std::invalid_argument&)
+  {
+    // No source specified, use this plugin.
+    source = myPluginDefinition->getName();
+  }
+  return source;
 }
 
 std::shared_ptr<QS::PluginDefinition> QS::PluginReader::read()
@@ -27,8 +45,8 @@ std::shared_ptr<QS::PluginDefinition> QS::PluginReader::read()
   try
   {
     SAX2XMLReader* parser = XMLReaderFactory::createXMLReader();
-    parser->loadGrammar("../plugins/PluginConfig.xsd",
-                        Grammar::SchemaGrammarType, true);
+    std::string schema = myPluginSchemaDirectory + "/" + SCHEMA_FILE;
+    parser->loadGrammar(schema.c_str(), Grammar::SchemaGrammarType, true);
     parser->setFeature(XMLUni::fgXercesUseCachedGrammarInParse, true);
     parser->setFeature(XMLUni::fgSAX2CoreValidation, true);
     parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);
@@ -54,11 +72,17 @@ std::shared_ptr<QS::PluginDefinition> QS::PluginReader::read()
         myConfigFile + "': " + message.get() +
         " at " + XMLUtilities::getLocation(exception)};
   }
+  catch (const std::exception &e)
+  {
+    throw std::logic_error{
+      "std::exception while reading plugin configuration file '" +
+        myConfigFile + "': " + e.what()};
+  }
   catch (...)
   {
     throw std::logic_error{
       "Unexpected exception while reading plugin configuration file '" +
-        myConfigFile + "'"};
+        myConfigFile + "'."};
   }
   return myPluginDefinition;
 }
@@ -67,6 +91,54 @@ void QS::PluginReader::characters(const XMLCh *const chars,
                                   const XMLSize_t length)
 {
   myStringBuffer += XMLUtilities::cStr(chars).get();
+}
+
+void QS::PluginReader::endElement(const XMLCh *const uri,
+                                  const XMLCh *const localname,
+                                  const XMLCh *const qname)
+{
+  std::string elementName{XMLUtilities::cStr(localname).get()};
+  if ("Actor" == elementName)
+  {
+    myPluginDefinition->addActorDefinition(*myActorDefinition);
+    myActorDefinition.reset();
+  }
+  else if ("BehaviorSet" == elementName)
+  {
+    if (myBehaviorSetDefinition)
+    {
+      myPluginDefinition->addBehaviorSetDefinition(*myBehaviorSetDefinition);
+      myBehaviorSetDefinition.reset();
+    }
+    else
+    {
+      // BehaviorSet element in Actor element.
+    }
+  }
+  else if ("Behavior" == elementName)
+  {
+    if (myBehaviorDefinition)
+    {
+      myPluginDefinition->addBehaviorDefinition(*myBehaviorDefinition);
+      myBehaviorDefinition.reset();
+    }
+    else
+    {
+      // Behavior element in BehaviorSet element.
+    }
+  }
+  else if ("Sensor" == elementName)
+  {
+    if (mySensorDefinition)
+    {
+      myPluginDefinition->addSensorDefinition(*mySensorDefinition);
+      mySensorDefinition.reset();
+    }
+    else
+    {
+      // Sensor element in Behavior element.
+    }
+  }
 }
 
 void QS::PluginReader::startDocument()
@@ -79,8 +151,7 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
                                     const XMLCh *const qname,
                                     const Attributes &attrs)
 {
-  auto elementNameRaw = XMLUtilities::cStr(localname);
-  std::string elementName{elementNameRaw.get()};
+  std::string elementName{XMLUtilities::cStr(localname).get()};
   myStringBuffer = "";
 
   if ("Plugin" == elementName)
@@ -97,9 +168,10 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
     myPluginDefinition->setActorCreatorDestructor(
       actorCreator, actorDestructor);
   }
-  else if ("Actors" == elementName)
+  else if ("Actor" == elementName)
   {
-    auto actorType = XMLUtilities::getAttribute(attrs, "type");
+    auto actorName = XMLUtilities::getAttribute(attrs, "name");
+    myActorDefinition.reset(new ActorDefinition(actorName));
   }
   else if ("BehaviorSets" == elementName)
   {
@@ -112,6 +184,15 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
   else if ("BehaviorSet" == elementName)
   {
     auto behaviorSetName = XMLUtilities::getAttribute(attrs, "name");
+    if (myActorDefinition)
+    {
+      auto behaviorSetSource = getPluginSource(attrs);
+      myActorDefinition->addBehaviorSet(behaviorSetName, behaviorSetSource);
+    }
+    else
+    {
+      myBehaviorSetDefinition.reset(new BehaviorSetDefinition(behaviorSetName));
+    }
   }
   else if ("Behaviors" == elementName)
   {
@@ -123,6 +204,15 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
   else if ("Behavior" == elementName)
   {
     auto behaviorName = XMLUtilities::getAttribute(attrs, "name");
+    if (myBehaviorSetDefinition)
+    {
+      auto behaviorSource = getPluginSource(attrs);
+      myBehaviorSetDefinition->addBehavior(behaviorName, behaviorSource);
+    }
+    else
+    {
+      myBehaviorDefinition.reset(new BehaviorDefinition(behaviorName));
+    }
   }
   else if ("Sensors" == elementName)
   {
@@ -133,6 +223,16 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
   }
   else if ("Sensor" == elementName)
   {
+    auto sensorName = XMLUtilities::getAttribute(attrs, "name");
+    if (myBehaviorDefinition)
+    {
+      auto sensorSource = getPluginSource(attrs);
+      myBehaviorDefinition->addSensor(sensorName, sensorSource);
+    }
+    else
+    {
+      mySensorDefinition.reset(new SensorDefinition(sensorName));
+    }
   }
 }
 

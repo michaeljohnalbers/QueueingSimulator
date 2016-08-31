@@ -9,7 +9,6 @@
 #include "xercesc/util/PlatformUtils.hpp"
 #include "xercesc/util/XMLString.hpp"
 #include "ControlGUI.h"
-#include "PluginCollection.h"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -20,9 +19,6 @@ int main(int argc, char **argv)
   try
   {
     XMLPlatformUtils::Initialize();
-
-    // TODO: this needs to go in a better place (remove include in CMake)
-    QS::PluginCollection collection("../plugins");
 
     status = QS::ControlGUI::run(argc, argv);
     XMLPlatformUtils::Terminate();

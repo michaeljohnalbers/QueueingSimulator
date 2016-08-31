@@ -8,7 +8,8 @@
  */
 
 #include <string>
-#include <vector>
+#include <set>
+#include "DefinitionPair.h"
 
 namespace QS
 {
@@ -30,11 +31,8 @@ namespace QS
      *
      * @param theName
      *          specific name of behavior
-     * @param theSensors
-     *          names of sensors used for input
      */
-    BehaviorDefinition(const std::string &theName,
-                       const std::vector<std::string> &theSensors);
+    BehaviorDefinition(const std::string &theName);
 
     /**
      * Copy constructor.
@@ -52,6 +50,17 @@ namespace QS
     ~BehaviorDefinition() = default;
 
     /**
+     * Adds the given sensor, from the given plugin, to this Behavior.
+     *
+     * @param theSensor
+     *          sensor to add
+     * @param theSource
+     *          source of the sensor
+     */
+    void addSensor(const std::string &theSensor,
+                   const std::string &theSource) noexcept;
+
+    /**
      * Returns the name of the type of Behavior.
      *
      * @return behavior type name
@@ -63,7 +72,7 @@ namespace QS
      *
      * @return sensor list
      */
-    std::vector<std::string> getSensors() const noexcept;
+    std::set<DefinitionPair> getSensors() const noexcept;
 
     /**
      * Equality operator.
@@ -92,6 +101,6 @@ namespace QS
     std::string myName;
 
     /** Names of all of the sensor that this behavior uses as input. */
-    std::vector<std::string> mySensors;
+    std::set<DefinitionPair> mySensors;
   };
 }

@@ -8,7 +8,6 @@ target_link_libraries(QueueingSimulator ${GTKMM_LIBRARIES})
 target_link_libraries(QueueingSimulator ${GTKMM_LIBRARIES})
 target_link_libraries(QueueingSimulator ${XERCESC_LIBRARY})
 target_include_directories(QueueingSimulator PRIVATE "../../Control/inc")
-target_include_directories(QueueingSimulator PRIVATE "../../Engine/inc")
 
 install(TARGETS QueueingSimulator
         RUNTIME DESTINATION ${QS_INSTALL_BIN_DIR})

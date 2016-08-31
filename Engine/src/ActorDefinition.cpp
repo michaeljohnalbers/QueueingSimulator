@@ -7,10 +7,7 @@
 
 #include "ActorDefinition.h"
 
-QS::ActorDefinition::ActorDefinition(
-  const std::string &theName,
-  const std::vector<std::string> &theBehaviorSets) :
-  myBehaviorSets(theBehaviorSets),
+QS::ActorDefinition::ActorDefinition(const std::string &theName) :
   myName(theName)
 {
   // myName, myBehaviorSets or any entry in myBehaviorSets cannot be
@@ -18,7 +15,14 @@ QS::ActorDefinition::ActorDefinition(
   // reader/schema.
 }
 
-std::vector<std::string> QS::ActorDefinition::getBehaviorSets() const noexcept
+void QS::ActorDefinition::addBehaviorSet(const std::string &theBehaviorSet,
+                                         const std::string &theSource) noexcept
+{
+  myBehaviorSets.insert({theBehaviorSet, theSource});
+}
+
+std::set<QS::DefinitionPair> QS::ActorDefinition::getBehaviorSets()
+  const noexcept
 {
   return myBehaviorSets;
 }

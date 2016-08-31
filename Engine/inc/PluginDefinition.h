@@ -10,6 +10,7 @@
 
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "ActorDefinition.h"
 #include "BehaviorDefinition.h"

@@ -17,7 +17,7 @@ GTEST_TEST(PluginDefinition, testCopyMove)
 {
   QS::PluginDefinition plugin("");
   plugin.setLibrary("TheLibrary.so");
-  QS::ActorDefinition actor("ActorDef", {"B", "C", "D"});
+  QS::ActorDefinition actor("ActorDef");
   plugin.addActorDefinition(actor);
 
   // Test copy constructor
@@ -61,13 +61,9 @@ GTEST_TEST(PluginDefinition, testActors)
   EXPECT_EQ(0u, plugin.getActorCreatorDestructor().second.size());
 
   // Test basic addition
-  std::vector<QS::ActorDefinition> actors{
-    {"Actor1", {"BehaviorSet1"}},
-    {"Actor2", {"BehaviorSet2"}},
-    {"Actor3", {"BehaviorSet3", "OtherBehavior"}}
-  };
+  std::vector<QS::ActorDefinition> actors{{"Actor1"}, {"Actor2"}, {"Actor3"}};
 
-  for (auto actorDef: actors)
+  for (auto actorDef : actors)
   {
     EXPECT_NO_THROW(plugin.addActorDefinition(actorDef));
   }
@@ -108,10 +104,7 @@ GTEST_TEST(PluginDefinition, testBehaviors)
 
   // Test basic addition
   std::vector<QS::BehaviorDefinition> behaviors{
-    {"Behavior1", {"Sensor"}},
-    {"Behavior2", {"Sensor2"}},
-    {"Behavior3", {"Sensor3", "OtherSensor"}}
-  };
+    {"Behavior1"}, {"Behavior2"}, {"Behavior3"}};
 
   for (auto behaviorDef: behaviors)
   {
@@ -155,9 +148,7 @@ GTEST_TEST(PluginDefinition, testBehaviorSets)
 
   // Test basic addition
   std::vector<QS::BehaviorSetDefinition> behaviorSets{
-    {"BehaviorSet1", {"Behanvior1"}},
-    {"BehaviorSet2", {"Behavior2"}},
-    {"BehaviorSet3", {"Behavior3", "OtherBehavior"}}
+    {"BehaviorSet1"}, {"BehaviorSet2"}, {"BehaviorSet3"}
   };
 
   for (auto behaviorsetDef: behaviorSets)

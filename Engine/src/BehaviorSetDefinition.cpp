@@ -8,13 +8,18 @@
 #include "BehaviorSetDefinition.h"
 
 QS::BehaviorSetDefinition::BehaviorSetDefinition(
-  const std::string &theName,
-  const std::vector<std::string> &theBehaviors) :
-  myName(theName),
-  myBehaviors(theBehaviors)
+  const std::string &theName) :
+  myName(theName)
 {
   // myName, myBehaviors or any entry in myBehaviors cannot be empty. However,
   // this is levied upon the plugin configuration reader/schema.
+}
+
+void QS::BehaviorSetDefinition::addBehavior(const std::string &theBehavior,
+                                            const std::string &theSource)
+  noexcept
+{
+  myBehaviors.insert({theBehavior, theSource});
 }
 
 std::string QS::BehaviorSetDefinition::getName() const noexcept
@@ -22,7 +27,7 @@ std::string QS::BehaviorSetDefinition::getName() const noexcept
   return myName;
 }
 
-std::vector<std::string> QS::BehaviorSetDefinition::getBehaviors()
+std::set<QS::DefinitionPair> QS::BehaviorSetDefinition::getBehaviors()
   const noexcept
 {
   return myBehaviors;

@@ -34,6 +34,10 @@ namespace QS
      *
      * @param thePluginBaseDirectory
      *          directory where all plugin sub-directories can be found.
+     * @param std::runtime_error
+     *          on any error loading plugins
+     * @param std::logic_error
+     *          on any error loading plugins
      */
     PluginCollection(const std::string &thePluginBaseDirectory);
 
@@ -92,9 +96,12 @@ namespace QS
      *          directory containing plugin files (including theConfigFile)
      * @param theConfigFile
      *          plugin config file
+     * @param thePluginSchemaDirectory
+     *          directory in which to find the plugin schema
      */
     void readPlugin(const std::string &thePluginDirectory,
-                    const std::string &theConfigFile);
+                    const std::string &theConfigFile,
+                    const std::string &thePluginSchemaDirectory);
 
     private:
 

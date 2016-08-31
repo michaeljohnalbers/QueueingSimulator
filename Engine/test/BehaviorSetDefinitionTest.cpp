@@ -10,13 +10,14 @@
 
 GTEST_TEST(BehaviorSetDefinitionTest, testConstruction)
 {
-  EXPECT_NO_THROW(QS::BehaviorSetDefinition behaviorSet("", {""}));
+  EXPECT_NO_THROW(QS::BehaviorSetDefinition behaviorSet(""));
 }
 
 GTEST_TEST(BehaviorSetDefinition, testCopyMove)
 {
-  QS::BehaviorSetDefinition behaviorsetDef("StandardBehaviorSet",
-                                           {"Behavior1", "Behavior2"});
+  QS::BehaviorSetDefinition behaviorsetDef("StandardBehaviorSet");
+  behaviorsetDef.addBehavior("Behavior1", "Source");
+  behaviorsetDef.addBehavior("Behavior2", "Source");
 
   // Test copy constructor
   QS::BehaviorSetDefinition behaviorsetCopy(behaviorsetDef);
@@ -31,57 +32,74 @@ GTEST_TEST(BehaviorSetDefinition, testCopyMove)
             behaviorsetMove.getBehaviors());
 
   // Test copy assignment operator
-  QS::BehaviorSetDefinition behaviorsetAssignCopy{"", {""}};
+  QS::BehaviorSetDefinition behaviorsetAssignCopy{""};
   behaviorsetAssignCopy = behaviorsetDef;
   EXPECT_EQ(behaviorsetDef.getName(), behaviorsetAssignCopy.getName());
   EXPECT_EQ(behaviorsetDef.getBehaviors(),
             behaviorsetAssignCopy.getBehaviors());
 
   // Test move assignment operator
-  QS::BehaviorSetDefinition behaviorsetAssignMove{"", {""}};
+  QS::BehaviorSetDefinition behaviorsetAssignMove{""};
   behaviorsetAssignMove = behaviorsetDef;
   EXPECT_EQ(behaviorsetDef.getName(), behaviorsetAssignMove.getName());
   EXPECT_EQ(behaviorsetDef.getBehaviors(),
             behaviorsetAssignMove.getBehaviors());
 }
 
-GTEST_TEST(BehaviorSetDefinition, testGetters)
+GTEST_TEST(BehaviorSetDefinition, testBehaviors)
 {
-  std::vector<std::string> behaviorSets{"Behavior1", "Behavior2"};
-  QS::BehaviorSetDefinition behaviorsetDef("StandardBehaviorSet", behaviorSets);
-  EXPECT_EQ("StandardBehaviorSet", behaviorsetDef.getName());
-  EXPECT_EQ(behaviorSets, behaviorsetDef.getBehaviors());
+  std::set<QS::DefinitionPair> behaviors{
+    {"Behavior1", "Source1"},
+    {"Behavior2", "Source2"}};
+
+  QS::BehaviorSetDefinition behaviorSetDef("StandardBehaviorSet");
+  for (auto pair : behaviors)
+  {
+    behaviorSetDef.addBehavior(pair.myName, pair.mySource);
+  }
+
+  EXPECT_EQ(behaviors, behaviorSetDef.getBehaviors());
+}
+
+GTEST_TEST(BehaviorSetDefinition, testGetName)
+{
+  QS::BehaviorSetDefinition behaviorSetDef("StandardBehaviorSet");
+  EXPECT_EQ("StandardBehaviorSet", behaviorSetDef.getName());
 }
 
 GTEST_TEST(BehaviorSetDefinition, testEqualityOperator)
 {
-  QS::BehaviorSetDefinition behaviorsetDef("StandardBehaviorSet",
-                                           {"Behavior1", "Behavior2"});
-  auto behaviorsetCopy(behaviorsetDef);
-  EXPECT_TRUE(behaviorsetDef == behaviorsetCopy);
-  EXPECT_TRUE(behaviorsetCopy == behaviorsetDef);
+  QS::BehaviorSetDefinition behaviorSetDef("StandardBehaviorSet");
+  behaviorSetDef.addBehavior("Behavior1", "Source");
+  behaviorSetDef.addBehavior("Behavior2", "Source");
 
-  // Test behaviorset with a different name.
+  auto behaviorSetCopy(behaviorSetDef);
+  EXPECT_TRUE(behaviorSetDef == behaviorSetCopy);
+  EXPECT_TRUE(behaviorSetCopy == behaviorSetDef);
+
+  // Test behaviorSet with a different name.
   {
-    QS::BehaviorSetDefinition behaviorsetDiff("Standardbehaviorset",
-                                              {"Behavior1", "Behavior2"});
-    EXPECT_FALSE(behaviorsetDef == behaviorsetDiff);
-    EXPECT_FALSE(behaviorsetDiff == behaviorsetDef);
+    QS::BehaviorSetDefinition behaviorSetDiff("Standardbehaviorset");
+    behaviorSetDiff.addBehavior("Behavior1", "Source");
+    behaviorSetDiff.addBehavior("Behavior2", "Source");
+    EXPECT_FALSE(behaviorSetDef == behaviorSetDiff);
+    EXPECT_FALSE(behaviorSetDiff == behaviorSetDef);
   }
 
-  // Test behaviorset with a different number of behaviors
+  // Test behaviorSet with a different number of behaviors
   {
-    QS::BehaviorSetDefinition behaviorsetDiff("StandardBehaviorSet",
-                                              {"Behavior1"});
-    EXPECT_FALSE(behaviorsetDef == behaviorsetDiff);
-    EXPECT_FALSE(behaviorsetDiff == behaviorsetDef);
+    QS::BehaviorSetDefinition behaviorSetDiff("StandardBehaviorset");
+    behaviorSetDiff.addBehavior("Behavior1", "Source");
+    EXPECT_FALSE(behaviorSetDef == behaviorSetDiff);
+    EXPECT_FALSE(behaviorSetDiff == behaviorSetDef);
   }
 
-  // Test behaviorset with a different behavior names
+  // Test behaviorSet with a different behavior names
   {
-    QS::BehaviorSetDefinition behaviorsetDiff("StandardBehaviorSet",
-                                              {"behavior1", "Behavior2"});
-    EXPECT_FALSE(behaviorsetDef == behaviorsetDiff);
-    EXPECT_FALSE(behaviorsetDiff == behaviorsetDef);
+    QS::BehaviorSetDefinition behaviorSetDiff("Standardbehaviorset");
+    behaviorSetDiff.addBehavior("behavior1", "Source");
+    behaviorSetDiff.addBehavior("Behavior2", "Source");
+    EXPECT_FALSE(behaviorSetDef == behaviorSetDiff);
+    EXPECT_FALSE(behaviorSetDiff == behaviorSetDef);
   }
 }

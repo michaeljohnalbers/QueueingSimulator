@@ -9,7 +9,7 @@
 -->
 <Plugin name="BasicPlugin" library="libqs-basic-plugin.so">
   <Actors creator="actorCreator" destructor="actorDestructor">
-    <Actor type="Actor">
+    <Actor name="Actor">
       <BehaviorSet name="BasicWalk" />
     </Actor>
   </Actors>

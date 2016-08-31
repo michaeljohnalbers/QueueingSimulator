@@ -96,7 +96,7 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
 # Taken from:
 # http://stackoverflow.com/questions/8507723/how-to-start-working-with-gtest-and-cmake
   ExternalProject_Add(gtest
-    URL https://googletest.googlecode.com/files/gtest-1.7.0.zip
+    URL https://github.com/google/googletest/archive/release-1.7.0.zip
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
     INSTALL_COMMAND ""
     )

@@ -8,15 +8,16 @@
  */
 
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
-#include "PluginDefinition.h"
 
 namespace QS
 {
   class Actor;
   class Behavior;
   class Sensor;
+  class PluginDefinition;
 
   /**
    * Run-time interface for a single plugin. This function manages loading the
@@ -80,9 +81,11 @@ namespace QS
      * Constructor. Constructs the plugin from the given definition. The shared
      * library is also loaded here.
      *
+     * @param theDefinition
+     *           populated plugin definition
      * @throw std::runtime_error On problems loading the shared library.
      */
-    Plugin(const PluginDefinition &theDefinition);
+    Plugin(std::shared_ptr<PluginDefinition> theDefinition);
 
     /**
      * Destructor.
@@ -168,7 +171,7 @@ namespace QS
     private:
 
     /** Definition of the plugin. */
-    const PluginDefinition myDefinition;
+    std::shared_ptr<PluginDefinition> myDefinition;
 
     /** Creator/destructor functions for Actors. */
     CreatorDestructorProperties<Actor> myActorCreatorDestructor;

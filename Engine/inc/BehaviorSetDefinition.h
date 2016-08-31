@@ -8,7 +8,8 @@
  */
 
 #include <string>
-#include <vector>
+#include <set>
+#include "DefinitionPair.h"
 
 namespace QS
 {
@@ -30,11 +31,8 @@ namespace QS
      *
      * @param theName
      *          specific name of behavior
-     * @param theBehaviors
-     *          names of behaviors in this set
      */
-    BehaviorSetDefinition(const std::string &theName,
-                          const std::vector<std::string> &theBehaviors);
+    BehaviorSetDefinition(const std::string &theName);
 
     /**
      * Copy constructor.
@@ -52,11 +50,22 @@ namespace QS
     ~BehaviorSetDefinition() = default;
 
     /**
+     * Adds the given behavior, from the given plugin, to this behavior set.
+     *
+     * @param theBehavior
+     *          behavior to add
+     * @param theSource
+     *          source of the behavior
+     */
+    void addBehavior(const std::string &theBehavior,
+                     const std::string &theSource) noexcept;
+
+    /**
      * Returns the list of behaviors this behavior set uses.
      *
      * @return behavior list
      */
-    std::vector<std::string> getBehaviors() const noexcept;
+    std::set<DefinitionPair> getBehaviors() const noexcept;
 
     /**
      * Returns the name of the BehaviorSet.
@@ -92,6 +101,6 @@ namespace QS
     std::string myName;
 
     /** Names of all of the behaviors that this set uses. */
-    std::vector<std::string> myBehaviors;
+    std::set<DefinitionPair> myBehaviors;
   };
 }
