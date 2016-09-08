@@ -9,8 +9,8 @@
 #include <stdexcept>
 #include "PluginDefinition.h"
 
-QS::PluginDefinition::PluginDefinition(const std::string &theName) :
-  myName(theName)
+QS::PluginDefinition::PluginDefinition(const std::string &theDirectory) :
+  myDirectory(theDirectory)
 {
 }
 
@@ -86,6 +86,11 @@ QS::PluginDefinition::getBehaviorSetDefinitions() const noexcept
   return myBehaviorSets;
 }
 
+std::string QS::PluginDefinition::getDirectory() const noexcept
+{
+  return myDirectory;
+}
+
 std::string QS::PluginDefinition::getLibrary() const noexcept
 {
   return myLibrary;
@@ -135,6 +140,11 @@ void QS::PluginDefinition::setBehaviorSetCreatorDestructor(
 void QS::PluginDefinition::setLibrary(const std::string &theLibrary) noexcept
 {
   myLibrary = theLibrary;
+}
+
+void QS::PluginDefinition::setName(const std::string &theName) noexcept
+{
+  myName = theName;
 }
 
 void QS::PluginDefinition::setSensorCreatorDestructor(

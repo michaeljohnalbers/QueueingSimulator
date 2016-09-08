@@ -8,13 +8,17 @@
 #include "BehaviorDefinition.h"
 
 QS::BehaviorDefinition::BehaviorDefinition(
-  const std::string &theName,
-  const std::vector<std::string> &theSensors) :
-  myName(theName),
-  mySensors(theSensors)
+  const std::string &theName) :
+  myName(theName)
 {
   // myName, mySensors or any entry in mySensors cannot be empty. However, this
   // is levied upon the plugin configuration reader/schema.
+}
+
+void QS::BehaviorDefinition::addSensor(const std::string &theSensor,
+                                       const std::string &theSource)  noexcept
+{
+  mySensors.insert({theSensor, theSource});
 }
 
 std::string QS::BehaviorDefinition::getName() const noexcept
@@ -22,7 +26,8 @@ std::string QS::BehaviorDefinition::getName() const noexcept
   return myName;
 }
 
-std::vector<std::string> QS::BehaviorDefinition::getSensors() const noexcept
+std::set<QS::DefinitionPair> QS::BehaviorDefinition::getSensors()
+  const noexcept
 {
   return mySensors;
 }
