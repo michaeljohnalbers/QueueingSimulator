@@ -7,6 +7,7 @@ target_link_libraries(QueueingSimulator qs-control)
 target_link_libraries(QueueingSimulator ${GTKMM_LIBRARIES})
 target_link_libraries(QueueingSimulator ${GTKMM_LIBRARIES})
 target_link_libraries(QueueingSimulator ${XERCESC_LIBRARY})
+target_link_libraries(QueueingSimulator dl)
 target_include_directories(QueueingSimulator PRIVATE "../../Control/inc")
 
 install(TARGETS QueueingSimulator

@@ -39,7 +39,7 @@ set(CMAKE_CXX_FLAGS "--std=c++11 -Wall -Wno-deprecated")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O")
-SET(CMAKE_EXE_LINKER_FLAGS "-pthread")
+SET(CMAKE_EXE_LINKER_FLAGS "-pthread -rdynamic")
 
 ###################################
 # Installation Settings

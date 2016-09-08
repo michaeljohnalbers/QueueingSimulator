@@ -12,12 +12,14 @@
 #include <string>
 #include <utility>
 
+#include "PluginDefinition.h"
+
 namespace QS
 {
   class Actor;
   class Behavior;
+  class BehaviorSet;
   class Sensor;
-  class PluginDefinition;
 
   /**
    * Run-time interface for a single plugin. This function manages loading the
@@ -30,18 +32,10 @@ namespace QS
 
     /**
      * Definition of a creator function. This function must be able to create
-     * all types of T's, which do not use properties, that are defined in the
-     * plugin.
+     * all types of T's that are defined in the plugin.
      */
     template<class T>
-    using CreatorFunction = T*(*)(const std::string &theType);
-
-    /**
-     * Definition of a creator function. This function must be able to create
-     * all types of T's, which use properties, that are defined in the plugin.
-     */
-    template<class T>
-    using CreatorPropertiesFunction = T*(*)(
+    using CreatorFunction = T*(*)(
       const std::string &theType,
       const std::map<std::string, std::string> &theProperties);
 
@@ -56,11 +50,6 @@ namespace QS
     template <class T>
     using CreatorDestructor = std::pair<CreatorFunction<T>,
                                         DestructorFunction<T>>;
-
-    /** Pair to hold the creator and destructor functions. */
-    template <class T>
-    using CreatorDestructorProperties = std::pair<CreatorPropertiesFunction<T>,
-                                                  DestructorFunction<T>>;
 
     /**
      * Default constructor.
@@ -93,7 +82,7 @@ namespace QS
     ~Plugin();
 
     /**
-     * Creates an actor of the given type with the given properties. The caller
+     * Creates an Actor of the given type with the given properties. The caller
      * owns the pointer, but must use destroyActor to destroy the returned
      * object.
      *
@@ -103,35 +92,75 @@ namespace QS
      *          key/value pairs of properties specific to the type of actor
      *          being created.
      * @throw std::invalid_argument On invalid actor type
+     * @throw std::logic_error If no creator function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
      */
     Actor* createActor(const std::string &theType,
                        const std::map<std::string, std::string> &theProperties);
 
     /**
-     * Creates the behavior with the given name. The caller owns the pointer,
+     * Creates the Behavior with the given name. The caller owns the pointer,
      * but must use destroyBehavior to destroy the returned object.
      *
      * @param theBehavior
      *          name of the behavior
+     * @param theProperties
+     *          key/value pairs of properties specific to the type of behavior
+     *          being created.
      * @throw std::invalid_argument On invalid behavior name
+     * @throw std::logic_error If no creator function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
      */
-    Behavior* createBehavior(const std::string &theBehavior);
+    Behavior* createBehavior(
+      const std::string &theBehavior,
+      const std::map<std::string, std::string> &theProperties);
 
     /**
-     * Creates the sensor with the given name. The caller owns the pointer, but
+     * Creates the BehaviorSet with the given name. The caller owns the pointer,
+     * but must use destroyBehavior to destroy the returned object.
+     *
+     * @param theBehaviorSet
+     *          name of the behavior set
+     * @param theProperties
+     *          key/value pairs of properties specific to the type of behavior
+     *          set being created.
+     * @throw std::invalid_argument On invalid behavior name
+     * @throw std::logic_error If no creator function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
+     */
+    BehaviorSet* createBehaviorSet(
+      const std::string &theBehaviorSet,
+      const std::map<std::string, std::string> &theProperties);
+
+    /**
+     * Creates the Sensor with the given name. The caller owns the pointer, but
      * must use destroySensor to destroy the returned object.
      *
      * @param theSensor
      *          name of the sensor
+     * @param theProperties
+     *          key/value pairs of properties specific to the type of sensor
+     *          being created.
      * @throw std::invalid_argument On invalid sensor name
+     * @throw std::logic_error If no creator function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
      */
-    Sensor* createSensor(const std::string &theSensor);
+    Sensor* createSensor(
+      const std::string &theSensor,
+      const std::map<std::string, std::string> &theProperties);
 
     /**
      * Destroys actors created from createActor.
      *
      * @param theActor
      *          actor to destroy
+     * @throw std::logic_error If no destructor function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
      */
     void destroyActor(Actor *theActor) const;
 
@@ -140,14 +169,31 @@ namespace QS
      *
      * @param theBehavior
      *          behavior to destroy
+     * @throw std::logic_error If no destructor function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
      */
     void destroyBehavior(Behavior *theBehavior) const;
+
+    /**
+     * Destroys the behavior set from createBehaviorSet.
+     *
+     * @param theBehaviorSet
+     *          behavior set to destroy
+     * @throw std::logic_error If no destructor function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
+     */
+    void destroyBehaviorSet(BehaviorSet *theBehaviorSet) const;
 
     /**
      * Destroys the sensor from createSensor.
      *
      * @param theSensor
      *          sensor to destroy
+     * @throw std::logic_error If no destructor function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
      */
     void destroySensor(Sensor *theSensor) const;
 
@@ -170,17 +216,85 @@ namespace QS
 
     private:
 
+    /**
+     * Generic creator function.
+     *
+     * @param theSensor
+     *          type name of thing being created
+     * @param theProperties
+     *          key/value pairs of properties specific to the type of thing
+     *          being created.
+     * @param theCreatorDestructor
+     *          creator/destructor functions
+     * @param theName
+     *          description of the thing being created
+     * @throw std::invalid_argument On invalid type name
+     * @throw std::logic_error If no creator function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
+     */
+    template<class T>
+    T* create(const std::string &theType,
+              const std::map<std::string, std::string> &theProperties,
+              CreatorDestructor<T> theCreatorDestructor,
+              const std::string &theName);
+
+    /**
+     * Generic destruction funcction.
+     *
+     * @param theObject
+     *          object to destroy
+     * @param theCreatorDestructor
+     *          creator/destructor functions
+     * @param theName
+     *          description of the thing being destroyed
+     * @throw std::logic_error If no destructor function defined (this shouldn't
+     *          happend and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
+     */
+    template<class T>
+    void destroy(T *theObject,
+                 CreatorDestructor<T> theCreatorDestructor,
+                 const std::string &theName) const;
+
+    /**
+     * Generic function for loading creator/destructor functions.
+     *
+     * @param theCreatorDestructor
+     *          name of creator and destructor functions
+     * @param theType
+     *          description of functions being loaded
+     * @throw std::runtime_error
+     *          on error loading functions
+     */
+    template<class T>
+    CreatorDestructor<T> loadCreatorDestructor(
+      PluginDefinition::CreatorDestructorPair theCreatorDestructor,
+      const std::string &theType);
+
+    /**
+     * Opens the library.
+     *
+     * @throws std::runtime_error
+     *            if library cannot be opened.
+     */
+    void openLibrary();
+
     /** Definition of the plugin. */
     std::shared_ptr<PluginDefinition> myDefinition;
 
     /** Creator/destructor functions for Actors. */
-    CreatorDestructorProperties<Actor> myActorCreatorDestructor;
+    CreatorDestructor<Actor> myActorCreatorDestructor{nullptr, nullptr};
 
     /** Creator/destructor functions for Behaviors. */
-    CreatorDestructorProperties<Behavior> myBehaviorCreatorDestructor;
+    CreatorDestructor<Behavior> myBehaviorCreatorDestructor{nullptr, nullptr};
+
+    /** Creator/destructor functions for BehaviorSets. */
+    CreatorDestructor<BehaviorSet> myBehaviorSetCreatorDestructor{
+      nullptr, nullptr};
 
     /** Creator/destructor functions for Sensors. */
-    CreatorDestructor<Sensor> mySensorCreatorDestructor;
+    CreatorDestructor<Sensor> mySensorCreatorDestructor{nullptr, nullptr};
 
     /** Library handle from dlopen. */
     void *myLibraryHandle;
