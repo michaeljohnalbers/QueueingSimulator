@@ -113,6 +113,11 @@ void QS::Plugin::destroySensor(QS::Sensor *theSensor) const
   destroy<Sensor>(theSensor, mySensorCreatorDestructor, "Sensor");
 }
 
+std::shared_ptr<QS::PluginDefinition> QS::Plugin::getDefinition() const noexcept
+{
+  return myDefinition;
+}
+
 std::string QS::Plugin::getName() const noexcept
 {
   return myDefinition->getName();

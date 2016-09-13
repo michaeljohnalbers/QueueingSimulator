@@ -14,8 +14,8 @@
 class TestSensor : public QS::Sensor
 {
   public:
-  TestSensor(const std::string &theTypeName) :
-    Sensor(theTypeName)
+  TestSensor() :
+    Sensor(QS::PluginEntity::Properties{})
   {
   }
 
@@ -27,28 +27,5 @@ class TestSensor : public QS::Sensor
 GTEST_TEST(SensorTest, testConstruction)
 {
   // Test nominal construction
-  EXPECT_NO_THROW(TestSensor sensor("Hello"));
-
-  // Verify an exception is thrown on an empty name
-  try
-  {
-    TestSensor sensor("");
-    FAIL();
-  }
-  catch (const std::invalid_argument &e)
-  {
-    EXPECT_EQ(std::string("Sensor type name cannot be empty "
-                          "in Sensor constructor."),
-              e.what());
-  }
-  catch (...)
-  {
-    FAIL();
-  }
-}
-
-GTEST_TEST(SensorTest, testGetTypeName)
-{
-  TestSensor sensor("Hello");
-  EXPECT_EQ(std::string("Hello"), sensor.getTypeName());
+  EXPECT_NO_THROW(TestSensor sensor);
 }

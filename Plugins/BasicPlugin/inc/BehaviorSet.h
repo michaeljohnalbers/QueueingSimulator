@@ -7,10 +7,10 @@
  * @author Michael Albers
  */
 
-#include <map>
-#include <string>
-
-#include <Eigen/Core>
+#include "DependencyManager.h"
+#include "EntityDependency.h"
+#include "PluginEntity.h"
+#include "Eigen/Core"
 
 namespace QS
 {
@@ -24,7 +24,7 @@ namespace QS
    * BehaviorSets to be swapped out for more appropriate sets during a
    * simulation.
    */
-  class BehaviorSet
+  class BehaviorSet : public PluginEntity, public DependencyManager<Behavior>
   {
     public:
 
@@ -36,10 +36,10 @@ namespace QS
     /**
      * Constructor
      *
-     * @param theBehaviors
-     *          all behaviors that make up this set, key is the behavior name
+     * @param theProperties
+     *          all properties for this behavior set
      */
-    BehaviorSet(const std::map<std::string, Behavior*> &theBehaviors);
+    BehaviorSet(const Properties &theProperties);
 
     /**
      * Copy constructor.
@@ -82,9 +82,6 @@ namespace QS
     BehaviorSet& operator=(BehaviorSet&&) = default;
 
     protected:
-
-    /** All behaviors for this set, keyed by name. */
-    std::map<std::string, Behavior*> myBehaviors;
 
     private:
   };

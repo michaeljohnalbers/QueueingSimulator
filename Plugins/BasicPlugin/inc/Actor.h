@@ -7,13 +7,15 @@
  * @author Michael Albers
  */
 
-#include <map>
-#include <string>
-
-#include <Eigen/Core>
+#include "DependencyManager.h"
+#include "EntityDependency.h"
+#include "PluginEntity.h"
+#include "Eigen/Core"
 
 namespace QS
 {
+  class BehaviorSet;
+
   /**
    * Basic definition of an individual within the simulation. This class
    * contains basic attributes of any individual such as mass, position, etc.
@@ -21,7 +23,7 @@ namespace QS
    * This class is designed to be inherited from to add specific features and
    * capabilities for custom, user-defined actors.
    */
-  class Actor
+  class Actor : public PluginEntity, public DependencyManager<BehaviorSet>
   {
     public:
 
@@ -40,7 +42,7 @@ namespace QS
      *           if map is missing "mass" and "radius" properties, or if either
      *           of those properties have invalid values
      */
-    Actor(const std::map<std::string, std::string> &theProperties);
+    Actor(const Properties &theProperties);
 
     /**
      * Destructor.

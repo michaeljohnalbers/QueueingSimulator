@@ -9,6 +9,8 @@
 
 #include <string>
 
+#include "PluginEntity.h"
+
 namespace QS
 {
   class Sensable;
@@ -24,7 +26,7 @@ namespace QS
    * defines that it has a certain type name. Then a steering behavior
    * indicates that it needs a sensor of that type name.
    */
-  class Sensor
+  class Sensor : public PluginEntity
   {
     public:
 
@@ -36,24 +38,17 @@ namespace QS
     /**
      * Constructor
      *
-     * @param theTypeName
-     *           name of the type of sensor that this is
+     * @param theProperties
+     *           properties for the sensor
      * @throws std::invalid_argument
      *           on empty type name
      */
-    Sensor(const std::string &theTypeName);
+    Sensor(const Properties &theProperties);
 
     /**
      * Destructor.
      */
     virtual ~Sensor() = default;
-
-    /**
-     * Returns the name of the type of this sensor.
-     *
-     * @return type name
-     */
-    std::string getTypeName() const noexcept;
 
     /**
      * Populates the sensor with data from the sensable environment.
@@ -67,8 +62,5 @@ namespace QS
     protected:
 
     private:
-
-    /** Sensor type name*/
-    const std::string myTypeName;
   };
 }

@@ -12,6 +12,7 @@
 #include "xercesc/util/PlatformUtils.hpp"
 #include "xercesc/util/XMLString.hpp"
 #include "xercesc/dom/DOM.hpp"
+#include "xercesc/sax/SAXParseException.hpp"
 #include "xercesc/sax2/Attributes.hpp"
 
 XERCES_CPP_NAMESPACE_USE
@@ -57,10 +58,7 @@ namespace QS
      * @param p
      *          array to delete
      */
-    static void dispose(Utf16Char* p)
-    {
-      XMLString::release(&p);
-    }
+    static void dispose(Utf16Char* p);
 
     /**
      * Deleter for char array.
@@ -68,10 +66,7 @@ namespace QS
      * @param p
      *          array to delete
      */
-    static void dispose(char* p)
-    {
-      XMLString::release(&p);
-    }
+    static void dispose(char* p);
 
     /**
      * Trancodes from Utf16Char to char. Returns object to manage memory.
@@ -80,10 +75,7 @@ namespace QS
      *         string to transcode.
      * @return Transcoded string
      */
-    static ZStr<char> cStr(Utf16Char const* s)
-    {
-      return ZStr<char>(XMLString::transcode(s), &dispose);
-    }
+    static ZStr<char> cStr(Utf16Char const* s);
 
     /**
      * Trancodes from char to Utf16Char. Returns object to manage memory.
@@ -92,10 +84,7 @@ namespace QS
      *         string to transcode.
      * @return Transcoded string
      */
-    static ZStr<Utf16Char> uStr(char const* s)
-    {
-      return ZStr<Utf16Char>(XMLString::transcode(s), &dispose);
-    }
+    static ZStr<Utf16Char> uStr(char const* s);
 
     /**
      * Trancodes from std::string to Utf16Char (just saves an c_str call).
@@ -105,10 +94,7 @@ namespace QS
      *         string to transcode.
      * @return Transcoded string
      */
-    static ZStr<Utf16Char> uStr(const std::string &theString)
-    {
-      return ZStr<Utf16Char>(XMLString::transcode(theString.c_str()), &dispose);
-    }
+    static ZStr<Utf16Char> uStr(const std::string &theString);
 
     /**
      * Returns the value for the attribute with the given name.
@@ -121,19 +107,7 @@ namespace QS
      *          if no attribute with the given name exists
      */
     static std::string getAttribute(const Attributes &theAttrs,
-                                    const std::string &theAttrName)
-    {
-      auto attrName = XMLUtilities::uStr(theAttrName);
-      auto attrValueRaw = theAttrs.getValue(attrName.get());
-      if (attrValueRaw == nullptr)
-      {
-        throw std::invalid_argument{"No attribute with name '" + theAttrName +
-            "' found."};
-      }
-
-      auto attrValue = XMLUtilities::cStr(attrValueRaw);
-      return attrValue.get();
-    }
+                                    const std::string &theAttrName);
 
     /**
      * Returns location information as a string
@@ -142,13 +116,7 @@ namespace QS
      *          exception from which to get location information
      * @return location string
      */
-    static std::string getLocation(const SAXParseException &theException)
-    {
-      std::string location;
-      location += "line: " + std::to_string(theException.getLineNumber()) +
-        ", column: " + std::to_string(theException.getColumnNumber());
-      return location;
-    }
+    static std::string getLocation(const SAXParseException &theException);
 
     /**
      * Returns location information as a string
@@ -157,11 +125,6 @@ namespace QS
      *          exception from which to get location information
      * @return location string
      */
-    static std::string getLocation(const XMLException &theException)
-    {
-      std::string location;
-      location += "line: " + std::to_string(theException.getSrcLine());
-      return location;
-    }
+    static std::string getLocation(const XMLException &theException);
   };
 }

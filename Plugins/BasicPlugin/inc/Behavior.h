@@ -10,7 +10,9 @@
 #include <string>
 #include <vector>
 
-#include <Eigen/Core>
+#include "DependencyManager.h"
+#include "PluginEntity.h"
+#include "Eigen/Core"
 
 namespace QS
 {
@@ -35,7 +37,7 @@ namespace QS
    * faster the simulation will run. However, there should be no parallelism
    * used in this function. The Queueing Simulator handles all parallelism.
    */
-  class Behavior
+  class Behavior : public PluginEntity, public DependencyManager<Sensor>
   {
     public:
 
@@ -47,12 +49,10 @@ namespace QS
     /**
      * Constructor.
      *
-     * @param theInputSensorTypes
-     *          list of the names of sensors which are used as inputs to this
-     *          behavior; this may be empty as some behaviors may not need any
-     *          sensor input
+     * @param theProperties
+     *          properties for this Behavior
      */
-    Behavior(const std::vector<std::string> &theInputSensorTypes);
+    Behavior(const Properties &theProperties);
 
     /**
      * Copy constructor.
@@ -70,23 +70,13 @@ namespace QS
     virtual ~Behavior() = default;
 
     /**
-     * Evaluates the steering behavior from the list of input sensors. Each
-     * sensor must have already "sensed" what it needs to. This this behavior
-     * need only retrieve the sensor's data.
+     * Evaluates the steering behavior based on the dependency sensors in the
+     * DependencyManager parent class. These sensors need to be already
+     * populated (i.e., have "sensed" what they need).
      *
-     * @param theSensors
-     *          input sensors
      * @return vector used to influence the motion of the Actor
      */
-    virtual Eigen::Vector2f evaluate(
-      const std::vector<const Sensor*> theSensors) = 0;
-
-    /**
-     * Returns the list of input sensor types.
-     *
-     * @return list of input sensor types
-     */
-    std::vector<std::string> getInputSensorTypes() const noexcept;
+    virtual Eigen::Vector2f evaluate() = 0;
 
     /**
      * Copy assignment operator.
@@ -101,11 +91,5 @@ namespace QS
     protected:
 
     private:
-
-    /**
-     * Input sensor types.
-     * TODO: this probably isn't sufficient. Might need info on which plugin the sensor originates and other data for the sensors.
-     */
-    const std::vector<std::string> myInputSensorTypes;
   };
 }

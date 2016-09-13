@@ -8,12 +8,13 @@
 #include <stdexcept>
 #include "Actor.h"
 
-QS::Actor::Actor(const std::map<std::string, std::string> &theProperties) :
+QS::Actor::Actor(const Properties &theProperties) :
+  PluginEntity(theProperties),
   myPosition(0.0, 0.0),
   myVelocity_ms(0.0, 0.0)
 {
-  auto massIter = theProperties.find("mass");
-  if (theProperties.end() == massIter)
+  auto massIter = myProperties.find("mass");
+  if (myProperties.end() == massIter)
   {
     throw std::invalid_argument(
       "Missing 'mass' property in Actor constructor.");
@@ -26,8 +27,8 @@ QS::Actor::Actor(const std::map<std::string, std::string> &theProperties) :
       ", must be >= 0 in Actor constructor.");
   }
 
-  auto radiusIter = theProperties.find("radius");
-  if (theProperties.end() == radiusIter)
+  auto radiusIter = myProperties.find("radius");
+  if (myProperties.end() == radiusIter)
   {
     throw std::invalid_argument(
       "Missing 'radius' property in Actor constructor.");

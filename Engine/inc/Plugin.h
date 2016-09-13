@@ -198,6 +198,13 @@ namespace QS
     void destroySensor(Sensor *theSensor) const;
 
     /**
+     * Returns the definition of this plugin.
+     *
+     * @return plugin definition
+     */
+    std::shared_ptr<PluginDefinition> getDefinition() const noexcept;
+
+    /**
      * Returns the plugin name.
      */
     std::string getName() const noexcept;

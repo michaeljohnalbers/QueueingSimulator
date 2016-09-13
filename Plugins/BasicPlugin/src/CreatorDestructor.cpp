@@ -16,7 +16,7 @@ extern "C"
 {
   QS::Actor* actorCreator(
     const std::string &theActorName,
-    const std::map<std::string, std::string> &theProperties)
+    const QS::PluginEntity::Properties &theProperties)
   {
     // Only one type of Actor in this plugin, so just ignore the name.
     return new QS::Actor(theProperties);
@@ -29,10 +29,10 @@ extern "C"
 
   QS::BehaviorSet* behaviorSetCreator(
     const std::string &theBehaviorSetName,
-    const std::map<std::string, QS::Behavior*> &theBehaviors)
+    const QS::PluginEntity::Properties &theProperties)
   {
     // Only one behavior set in this plugin, so just ignore the name.
-    return new QS::BehaviorSet(theBehaviors);
+    return new QS::BehaviorSet(theProperties);
   }
 
   void behaviorSetDestructor(QS::BehaviorSet *theBehaviorSet)
@@ -42,7 +42,7 @@ extern "C"
 
   QS::Behavior* behaviorCreator(
     const std::string &theBehaviorName,
-    const std::vector<std::string> &theInputSensorTypes)
+    const QS::PluginEntity::Properties &theProperties)
   {
     // TODO: until an actual behavior is implemented this will have to do.
     return nullptr;
@@ -53,7 +53,9 @@ extern "C"
     delete theBehavior;
   }
 
-  QS::Sensor* sensorCreator(const std::string &theSensorName)
+  QS::Sensor* sensorCreator(
+    const std::string &theSensorName,
+    const QS::PluginEntity::Properties &theProperties)
   {
     // TODO: until an actual sensor is implemented, this will have to do.
     return nullptr;

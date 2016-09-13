@@ -17,22 +17,24 @@
 extern "C"
 {
   QS::Actor* actorCreator(
-    const std::string &theActorName,
-    const std::map<std::string, std::string> &theProperties);
-  void actorDestructor(QS::Actor *theActor);
+    const std::string&,
+    const QS::PluginEntity::Properties&);
+  void actorDestructor(QS::Actor*);
 
   QS::BehaviorSet* behaviorSetCreator(
-    const std::string &theBehaviorSetName,
-    const std::map<std::string, QS::Behavior*> &theBehaviors);
-  void behaviorSetDestructor(QS::BehaviorSet *theBehaviorSet);
+    const std::string&,
+    const QS::PluginEntity::Properties&);
+  void behaviorSetDestructor(QS::BehaviorSet*);
 
   QS::Behavior* behaviorCreator(
-    const std::string &theBehaviorName,
-    const std::vector<std::string> &theInputSensorTypes);
-  void behaviorDestructor(QS::Behavior *theBehavior);
+    const std::string&,
+    const QS::PluginEntity::Properties&);
+  void behaviorDestructor(QS::Behavior*);
 
-  QS::Sensor* sensorCreator(const std::string &theSensorName);
-  void sensorDestructor(QS::Sensor *theSensor);
+  QS::Sensor* sensorCreator(
+    const std::string&,
+    const QS::PluginEntity::Properties&);
+  void sensorDestructor(QS::Sensor*);
 }
 
 GTEST_TEST(CreatorDestructor, testActor)
@@ -51,29 +53,25 @@ GTEST_TEST(CreatorDestructor, testActor)
 
 GTEST_TEST(CreatorDestructor, testBehaviorSet)
 {
-  QS::Behavior *behavior = reinterpret_cast<QS::Behavior*>(0x1);
-  QS::BehaviorSet* behaviorSet = behaviorSetCreator("",
-                                                    {{"Behavior", behavior}});
+  QS::PluginEntity::Properties properties{{"Behavior", "Property"}};
+  QS::BehaviorSet* behaviorSet = behaviorSetCreator("", properties);
   EXPECT_NE(nullptr, behaviorSet);
 
   EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
-
-  // Test catching an exception on BehaviorSet construction
-  EXPECT_THROW(behaviorSetCreator("", {}), std::invalid_argument);
 }
 
 GTEST_TEST(CreatorDestructor, testBehavior)
 {
   // TODO: no behaviors implemented yet, when they are, use one here
-  QS::Behavior *behavior = behaviorCreator("", {""});
+  QS::Behavior *behavior = behaviorCreator("", {});
   EXPECT_EQ(nullptr, behavior);
   EXPECT_NO_THROW(behaviorDestructor(behavior));
 }
 
 GTEST_TEST(CreatorDestructor, testSensor)
 {
-  // TODO: no sensors implemented yet, when they are, sue one here
-  QS::Sensor *sensor = sensorCreator("");
+  // TODO: no sensors implemented yet, when they are, use one here
+  QS::Sensor *sensor = sensorCreator("", {});
   EXPECT_EQ(nullptr, sensor);
   EXPECT_NO_THROW(sensorDestructor(sensor));
 }

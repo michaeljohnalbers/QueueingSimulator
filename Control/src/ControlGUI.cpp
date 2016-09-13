@@ -5,12 +5,19 @@
  * @author Michael Albers
  */
 
+// For GNU basename (see basename(3))
+#define _GNU_SORUCE
+#include <cstring>
+#undef _GNU_SORUCE
+
 #include <iostream>
 
 #include "ControlGUI.h"
 #include "QSConfig.h"
+#include "Simulation.h"
 
-QS::ControlGUI::ControlGUI()
+QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
+  myBaseDir{theBaseDir}
 {
   set_title("Queueing Simulator");
   set_border_width(5);
@@ -321,7 +328,7 @@ void QS::ControlGUI::fileOpenHandler()
 
   auto filterXml = Gtk::FileFilter::create();
   filterXml->set_name("Simulation Files");
-  filterXml->add_mime_type("text/xml");
+  filterXml->add_pattern("*.xml");
   fileChooser.add_filter(filterXml);
 
   auto filterAny = Gtk::FileFilter::create();
@@ -335,9 +342,22 @@ void QS::ControlGUI::fileOpenHandler()
   {
     case Gtk::RESPONSE_OK:
     {
-      // TODO: need to read simulation file, and if valid, populate fields.
-      std::cout << "Selected " << fileChooser.get_filename() << std::endl;
-      setControlButtonSensitivities(true, false, false);
+      try
+      {
+        std::string simulationConfigFile{fileChooser.get_filename()};
+        // TODO: handle batch mode
+        Simulation simulation{myBaseDir, simulationConfigFile};
+        setControlButtonSensitivities(true, false, false);
+        std::string basename = ::basename(simulationConfigFile.c_str());
+        mySimulationEntry.set_text(basename);
+      }
+      catch (const std::exception &exception)
+      {
+        std::string error{"Error loading simulation: "};
+        error += exception.what();
+        Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
+        errorDialog.run();
+      }
     }
     break;
 
@@ -397,6 +417,9 @@ void QS::ControlGUI::modeRadioButtonToggled()
     myMainBox.add(myBatchFrame);
     myMainBox.remove(myRealTimeFrame);
   }
+
+  setSensitivities(myBatchBox, myBatchButton.get_active());
+
   show_all_children();
   // Set to such a size that the window/box/whatever is forced to expand. This
   // has the effect of shrinking the window on real-time->batch transition.
@@ -414,11 +437,11 @@ void QS::ControlGUI::playButtonHandler()
   setMenuSensitivities(false, false, false);
 }
 
-int QS::ControlGUI::run(int argc, char **argv)
+int QS::ControlGUI::run(int argc, char **argv, const std::string &theBaseDir)
 {
   auto app = Gtk::Application::create(argc, argv, "gs.Main");
 
-  ControlGUI gui;
+  ControlGUI gui{theBaseDir};
 
   // Shows the window and returns when it is closed.
   return app->run(gui);

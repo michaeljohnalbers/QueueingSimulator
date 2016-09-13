@@ -5,6 +5,7 @@
  * @author Michael Albers
  */
 
+#include <cstdlib>
 #include <iostream>
 #include "xercesc/util/PlatformUtils.hpp"
 #include "xercesc/util/XMLString.hpp"
@@ -14,14 +15,24 @@ XERCES_CPP_NAMESPACE_USE
 
 int main(int argc, char **argv)
 {
-  // Just do this once for the entire program.
-  int status = 0;
+  int status = 1;
   try
   {
     XMLPlatformUtils::Initialize();
 
-    status = QS::ControlGUI::run(argc, argv);
+    auto baseDirEnvVar = std::getenv("QS_BASE_DIR");
+    if (NULL == baseDirEnvVar)
+    {
+      throw std::runtime_error("QS_BASE_DIR environment variable is not set.");
+    }
+
+    status = QS::ControlGUI::run(argc, argv, baseDirEnvVar);
     XMLPlatformUtils::Terminate();
+    status = 0;
+  }
+  catch (const std::runtime_error &exception)
+  {
+    std::cerr << argv[0] << ": Fatal error: " << exception.what() << std::endl;
   }
   catch (const XMLException &exception)
   {
@@ -29,7 +40,6 @@ int main(int argc, char **argv)
     std::cerr << argv[0] << ": Fatal error initializing xerces: "
               << transcodedError << std::endl;
     XMLString::release(&transcodedError);
-    status = 1;
   }
   
   return status;
