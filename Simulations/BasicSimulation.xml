@@ -14,7 +14,8 @@
       <Actor type="Actor" source="BasicPlugin">
 	<Property key="x" value="0" />
 	<Property key="y" value="0" />
-	<Property key="mass" value="1" />
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
       </Actor>
     </Actors>
   </World>

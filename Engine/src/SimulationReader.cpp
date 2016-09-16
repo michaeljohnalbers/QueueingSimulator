@@ -6,6 +6,7 @@
  */
 
 #include <stdexcept>
+#include "EntityManager.h"
 #include "SimulationReader.h"
 #include "XMLUtilities.h"
 #include "World.h"
@@ -17,9 +18,11 @@
 QS::SimulationReader::SimulationReader(
   const std::string &theConfigFile,
   const std::string &theSimulationSchemaDirectory,
+  std::shared_ptr<EntityManager> theEntityManager,
   World &theWorld) :
 
   myConfigFile(theConfigFile),
+  myEntityManager(theEntityManager),
   mySimulationSchemaDirectory(theSimulationSchemaDirectory),
   myWorld(theWorld)
 {
@@ -59,7 +62,7 @@ void QS::SimulationReader::read()
   catch (const std::exception &e)
   {
     throw std::logic_error{
-      "std::exception while reading simulation configuration file '" +
+      "Error while reading simulation configuration file '" +
         myConfigFile + "': " + e.what()};
   }
   catch (...)
@@ -77,7 +80,9 @@ void QS::SimulationReader::endElement(const XMLCh *const uri,
   std::string elementName{XMLUtilities::cStr(localname).get()};
   if ("Actor" == elementName)
   {
-    // TODO: do something here
+    auto newActor = myEntityManager->createActor(
+      myActorTypeName, myProperties, myActorSource);
+    myWorld.addActor(newActor);
   }
 }
 
@@ -101,8 +106,8 @@ void QS::SimulationReader::startElement(const XMLCh *const uri,
   }
   else if ("Actor" == elementName)
   {
-    auto typeName = XMLUtilities::getAttribute(attrs, "type");
-    auto source = XMLUtilities::getAttribute(attrs, "source");
+    myActorTypeName = XMLUtilities::getAttribute(attrs, "type");
+    myActorSource = XMLUtilities::getAttribute(attrs, "source");
 
     myProperties.clear();
   }

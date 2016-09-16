@@ -8,6 +8,7 @@
  */
 
 #include <map>
+#include <memory>
 #include <string>
 #include "xercesc/sax2/DefaultHandler.hpp"
 
@@ -15,6 +16,7 @@ XERCES_CPP_NAMESPACE_USE
 
 namespace QS
 {
+  class EntityManager;
   class World;
 
   /**
@@ -38,11 +40,14 @@ namespace QS
      *          simulation configuration file
      * @param theSimulationSchemaDirectory
      *          directory in which to find the simulation schema
+     * @param theEntityManager
+     *          creator of plugin entities
      * @param theWorld
      *          simulation world to populate from data from the config file
      */
     SimulationReader(const std::string &theConfigFile,
                      const std::string &theSimulationSchemaDirectory,
+                     std::shared_ptr<EntityManager> theEntityManager,
                      World &theWorld);
 
     /**
@@ -99,8 +104,17 @@ namespace QS
 
     private:
 
+    /** Name of the plugin where the Actor can be found. */
+    std::string myActorSource;
+
+    /** Type name of Actor to create */
+    std::string myActorTypeName;
+
     /** Simulation config file */
     const std::string myConfigFile;
+
+    /** Creator of plugin entities. */
+    std::shared_ptr<EntityManager> myEntityManager;
 
     /** Map of properties to fill while parsing config file. */
     std::map<std::string, std::string> myProperties;

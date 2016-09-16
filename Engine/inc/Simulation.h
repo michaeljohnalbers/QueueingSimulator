@@ -8,10 +8,17 @@
  */
 
 #include <string>
+#include "EntityManager.h"
 #include "World.h"
 
 namespace QS
 {
+  class PluginCollection;
+
+  /**
+   * Holds everything for a simulation run, the world, plugins, plugin
+   * entities, the works.
+   */
   class Simulation
   {
     public:
@@ -79,18 +86,38 @@ namespace QS
 
     protected:
 
+    /**
+     * Delegation constructor
+     */
+    Simulation(const std::string &theBaseDir,
+               const std::string &theSimulationConfigFile,
+               const std::string &theOutputFile,
+               Mode theMode);
+
     private:
 
+    /**
+     * Read the simulation config file.
+     *
+     * @throws std::logic_error
+     *           on any error reading the file
+     */
     void readSimulation();
 
     /** Base directory */
     const std::string myBaseDir;
+
+    /** Creator/manager of plugin entities. */
+    std::shared_ptr<EntityManager> myEntityManager;
 
     /** Mode of the simulation. */
     const Mode myMode;
 
     /** Output file for batch mode (empty when in real-time mode) */
     const std::string myOutputFile;
+
+    /** All loaded plugins. */
+    std::shared_ptr<PluginCollection> myPlugins;
 
     /** Simulation configuration file. */
     const std::string mySimulationConfigFile;

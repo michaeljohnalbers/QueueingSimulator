@@ -12,9 +12,7 @@
 
 QS::Simulation::Simulation(const std::string &theBaseDir,
                            const std::string &theSimulationConfigFile) :
-  myBaseDir(theBaseDir),
-  myMode(Mode::RealTime),
-  mySimulationConfigFile(theSimulationConfigFile)
+  Simulation(theBaseDir, theSimulationConfigFile, "", Mode::RealTime)
 {
   readSimulation();
 }
@@ -22,23 +20,32 @@ QS::Simulation::Simulation(const std::string &theBaseDir,
 QS::Simulation::Simulation(const std::string &theBaseDir,
                            const std::string &theSimulationConfigFile,
                            const std::string &theOutputFile) :
-  myBaseDir(theBaseDir),
-  myMode(Mode::Batch),
-  myOutputFile(theOutputFile),
-  mySimulationConfigFile(theSimulationConfigFile)
+  Simulation(theBaseDir, theSimulationConfigFile, theOutputFile, Mode::Batch)
 {
   readSimulation();
 }
 
-void QS::Simulation::readSimulation()
+QS::Simulation::Simulation(const std::string &theBaseDir,
+                           const std::string &theSimulationConfigFile,
+                           const std::string &theOutputFile,
+                           Mode theMode) :
+  myBaseDir(theBaseDir),
+  myMode(theMode),
+  myOutputFile(theOutputFile),
+  mySimulationConfigFile(theSimulationConfigFile)
 {
   std::string pluginsDir{myBaseDir + "/plugins"};
-  std::unique_ptr<PluginCollection> plugins{
-    new PluginCollection{pluginsDir}};
+  myPlugins.reset(new PluginCollection{pluginsDir});
 
+  myEntityManager.reset(new EntityManager{myPlugins});
+}
+
+void QS::Simulation::readSimulation()
+{
   std::string simulationsDir{myBaseDir + "/simulations"};
   std::unique_ptr<SimulationReader> simulationReader{
-    new SimulationReader{mySimulationConfigFile, simulationsDir, myWorld}};
+    new SimulationReader(mySimulationConfigFile, simulationsDir,
+                         myEntityManager, myWorld)};
 
   simulationReader->read();
 }

@@ -7,6 +7,13 @@
 
 #include "World.h"
 
+void QS::World::addActor(Actor *theActor)
+{
+  // TODO: need to verify this Actor does not overlap with any other Actor, and
+  // that it is fully within the world bounds
+  myActors.push_back(theActor);
+}
+
 void QS::World::setDimentions(float theWidth_m, float theLength_m)
 {
   myWidth_m = theWidth_m;

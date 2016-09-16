@@ -44,6 +44,14 @@ namespace QS
     ~World() = default;
 
     /**
+     * Add the given Actor to the world.
+     *
+     * @param theActor
+     *          Actor to add
+     */
+    void addActor(Actor *theActor);
+
+    /**
      * Sets the dimensions of the world.
      *
      * @param theWidth_m

@@ -8,9 +8,9 @@
 #include <map>
 #include <string>
 #include "Actor.h"
-#include "Behavior.h"
-#include "BehaviorSet.h"
-#include "Sensor.h"
+#include "Walk.h"
+#include "BasicWalk.h"
+#include "NullSensor.h"
 
 extern "C"
 {
@@ -32,7 +32,7 @@ extern "C"
     const QS::PluginEntity::Properties &theProperties)
   {
     // Only one behavior set in this plugin, so just ignore the name.
-    return new QS::BehaviorSet(theProperties);
+    return new QS::BasicWalk(theProperties);
   }
 
   void behaviorSetDestructor(QS::BehaviorSet *theBehaviorSet)
@@ -44,8 +44,8 @@ extern "C"
     const std::string &theBehaviorName,
     const QS::PluginEntity::Properties &theProperties)
   {
-    // TODO: until an actual behavior is implemented this will have to do.
-    return nullptr;
+    // Only one Behavior in this plugin, so ignore the name.
+    return new QS::Walk(theProperties);
   }
 
   void behaviorDestructor(QS::Behavior *theBehavior)
@@ -57,8 +57,8 @@ extern "C"
     const std::string &theSensorName,
     const QS::PluginEntity::Properties &theProperties)
   {
-    // TODO: until an actual sensor is implemented, this will have to do.
-    return nullptr;
+    // Only one sensor in this plugin, so ignore the name.
+    return new QS::NullSensor(theProperties);
   }
 
   void sensorDestructor(QS::Sensor *theSensor)

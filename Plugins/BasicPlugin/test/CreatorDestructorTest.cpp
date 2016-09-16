@@ -53,7 +53,7 @@ GTEST_TEST(CreatorDestructor, testActor)
 
 GTEST_TEST(CreatorDestructor, testBehaviorSet)
 {
-  QS::PluginEntity::Properties properties{{"Behavior", "Property"}};
+  QS::PluginEntity::Properties properties{{"BehaviorSet", "Property"}};
   QS::BehaviorSet* behaviorSet = behaviorSetCreator("", properties);
   EXPECT_NE(nullptr, behaviorSet);
 
@@ -62,16 +62,18 @@ GTEST_TEST(CreatorDestructor, testBehaviorSet)
 
 GTEST_TEST(CreatorDestructor, testBehavior)
 {
-  // TODO: no behaviors implemented yet, when they are, use one here
-  QS::Behavior *behavior = behaviorCreator("", {});
-  EXPECT_EQ(nullptr, behavior);
+  QS::PluginEntity::Properties properties{{"Behavior", "Property"}};
+  QS::Behavior *behavior = behaviorCreator("", properties);
+  EXPECT_NE(nullptr, behavior);
+
   EXPECT_NO_THROW(behaviorDestructor(behavior));
 }
 
 GTEST_TEST(CreatorDestructor, testSensor)
 {
-  // TODO: no sensors implemented yet, when they are, use one here
-  QS::Sensor *sensor = sensorCreator("", {});
-  EXPECT_EQ(nullptr, sensor);
+  QS::PluginEntity::Properties properties{{"Sensor", "Property"}};
+  QS::Sensor *sensor = sensorCreator("", properties);
+  EXPECT_NE(nullptr, sensor);
+
   EXPECT_NO_THROW(sensorDestructor(sensor));
 }
