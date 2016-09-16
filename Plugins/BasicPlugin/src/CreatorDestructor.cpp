@@ -8,15 +8,15 @@
 #include <map>
 #include <string>
 #include "Actor.h"
-#include "Behavior.h"
-#include "BehaviorSet.h"
-#include "Sensor.h"
+#include "Walk.h"
+#include "BasicWalk.h"
+#include "NullSensor.h"
 
 extern "C"
 {
   QS::Actor* actorCreator(
     const std::string &theActorName,
-    const std::map<std::string, std::string> &theProperties)
+    const QS::PluginEntity::Properties &theProperties)
   {
     // Only one type of Actor in this plugin, so just ignore the name.
     return new QS::Actor(theProperties);
@@ -29,10 +29,10 @@ extern "C"
 
   QS::BehaviorSet* behaviorSetCreator(
     const std::string &theBehaviorSetName,
-    const std::map<std::string, QS::Behavior*> &theBehaviors)
+    const QS::PluginEntity::Properties &theProperties)
   {
     // Only one behavior set in this plugin, so just ignore the name.
-    return new QS::BehaviorSet(theBehaviors);
+    return new QS::BasicWalk(theProperties);
   }
 
   void behaviorSetDestructor(QS::BehaviorSet *theBehaviorSet)
@@ -42,10 +42,10 @@ extern "C"
 
   QS::Behavior* behaviorCreator(
     const std::string &theBehaviorName,
-    const std::vector<std::string> &theInputSensorTypes)
+    const QS::PluginEntity::Properties &theProperties)
   {
-    // TODO: until an actual behavior is implemented this will have to do.
-    return nullptr;
+    // Only one Behavior in this plugin, so ignore the name.
+    return new QS::Walk(theProperties);
   }
 
   void behaviorDestructor(QS::Behavior *theBehavior)
@@ -53,10 +53,12 @@ extern "C"
     delete theBehavior;
   }
 
-  QS::Sensor* sensorCreator(const std::string &theSensorName)
+  QS::Sensor* sensorCreator(
+    const std::string &theSensorName,
+    const QS::PluginEntity::Properties &theProperties)
   {
-    // TODO: until an actual sensor is implemented, this will have to do.
-    return nullptr;
+    // Only one sensor in this plugin, so ignore the name.
+    return new QS::NullSensor(theProperties);
   }
 
   void sensorDestructor(QS::Sensor *theSensor)

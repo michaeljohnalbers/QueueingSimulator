@@ -13,15 +13,18 @@ QS::Plugin::Plugin(std::shared_ptr<PluginDefinition> theDefinition) :
   myDefinition(theDefinition)
 {
   openLibrary();
-  loadCreatorDestructor<Actor>(myDefinition->getActorCreatorDestructor(),
-                               "Actor");
-  loadCreatorDestructor<BehaviorSet>(
-    myDefinition->getBehaviorSetCreatorDestructor(),
-    "Behavior Set");
-  loadCreatorDestructor<Behavior>(myDefinition->getBehaviorCreatorDestructor(),
-                                  "Behavior");
-  loadCreatorDestructor<Sensor>(myDefinition->getSensorCreatorDestructor(),
-                                "Sensor");
+
+  myActorCreatorDestructor = loadCreatorDestructor<Actor>(
+    myDefinition->getActorCreatorDestructor(), "Actor");
+
+  myBehaviorSetCreatorDestructor = loadCreatorDestructor<BehaviorSet>(
+    myDefinition->getBehaviorSetCreatorDestructor(), "Behavior Set");
+
+  myBehaviorCreatorDestructor = loadCreatorDestructor<Behavior>(
+    myDefinition->getBehaviorCreatorDestructor(), "Behavior");
+
+  mySensorCreatorDestructor = loadCreatorDestructor<Sensor>(
+    myDefinition->getSensorCreatorDestructor(), "Sensor");
 }
 
 QS::Plugin::~Plugin()
@@ -29,6 +32,7 @@ QS::Plugin::~Plugin()
   // Don't care about return status.
   dlclose(myLibraryHandle);
 }
+
 template<class T>
 T* QS::Plugin::create(const std::string &theType,
                       const std::map<std::string, std::string> &theProperties,
@@ -111,6 +115,11 @@ void QS::Plugin::destroyBehaviorSet(QS::BehaviorSet *theBehaviorSet) const
 void QS::Plugin::destroySensor(QS::Sensor *theSensor) const
 {
   destroy<Sensor>(theSensor, mySensorCreatorDestructor, "Sensor");
+}
+
+std::shared_ptr<QS::PluginDefinition> QS::Plugin::getDefinition() const noexcept
+{
+  return myDefinition;
 }
 
 std::string QS::Plugin::getName() const noexcept

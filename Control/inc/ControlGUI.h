@@ -28,7 +28,15 @@ namespace QS
     /**
      * Default constructor.
      */
-    ControlGUI();
+    ControlGUI() = delete;
+
+    /**
+     * Constructor
+     *
+     * @param theBaseDir
+     *          QS base directory (installation directory)
+     */
+    ControlGUI(const std::string &theBaseDir);
 
     /**
      * Copy constructor.
@@ -58,9 +66,16 @@ namespace QS
     /**
      * Main GUI function. When this returns the GUI has finished.
      *
+     * @param argc
+     *          argc from main
+     * @param argv
+     *          argv from main
+     * @param theBaseDir
+     *          QS base directory (installation directory)
+     *
      * @return overall GUI status
      */
-    static int run(int argc, char **argv);
+    static int run(int argc, char **argv, const std::string &theBaseDir);
 
     protected:
 
@@ -213,6 +228,9 @@ namespace QS
     void viewMessagesHandler();
 
     private:
+
+    /** Base directory */
+    const std::string myBaseDir;
 
     Gtk::Box myMainBox;
 

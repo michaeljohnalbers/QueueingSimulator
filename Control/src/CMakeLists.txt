@@ -3,8 +3,11 @@
 
 file(GLOB sources *.cpp)
 
-include_directories(../inc)
 add_library(qs-control SHARED ${sources})
+
+target_include_directories(qs-control PRIVATE ../inc)
+target_include_directories(qs-control PRIVATE ../../Engine/inc)
+target_link_libraries(qs-control qs-engine)
 
 install(TARGETS qs-control
         LIBRARY DESTINATION ${QS_INSTALL_LIB_DIR})

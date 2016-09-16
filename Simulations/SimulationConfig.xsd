@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!-- Author: Michael Albers
+     Description: Schema against which all simulation configuration files will
+                  be validated. This schema will be automatically used by
+		  Queueing Simulator, and hence, does not need to be referenced
+		  in the simulation configuration file.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   targetNameSpace="https://github.com/michaeljohnalbers/QueueingSimulator">
+  <xs:simpleType name="nonEmptyString">
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="positiveFloat">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="Simulation" minOccurs="1" maxOccurs="1">
+    <xs:complexType>
+      <xs:sequence>
+
+	<!-- Seed value for the random number engine. -->
+	<xs:element name="Seed" minOccurs="1" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:attribute name="value" type="xs:unsignedLong" use="required" />
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Definition of the world which is being simulated. -->
+	<xs:element name="World" minOccurs="1" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <!-- List of all the actors in the simulation. -->
+	      <xs:element name="Actors">
+		<xs:complexType>
+		  <xs:sequence>
+
+		    <xs:element name="Actor" minOccurs="1"
+				maxOccurs="unbounded">
+		      <xs:complexType>
+			<xs:sequence>
+			  <xs:element name="Property" minOccurs="0"
+				      maxOccurs="unbounded">
+			    <xs:complexType>
+			      <xs:attribute name="key" type="nonEmptyString"
+					    use="required"/>
+			      <xs:attribute name="value" type="nonEmptyString"
+					    use="required"/>
+			    </xs:complexType>
+			  </xs:element>
+			</xs:sequence>
+
+			<!-- Name of the type of the actor. -->
+			<xs:attribute name="type" type="nonEmptyString"
+				      use="required"/>
+			<!-- Name of the plugin in which the actor is found. -->
+			<xs:attribute name="source" type="nonEmptyString"
+				      use="required"/>
+		      </xs:complexType>
+		    </xs:element>
+
+		  </xs:sequence>
+		</xs:complexType>
+	      </xs:element>
+	    </xs:sequence>
+
+	    <!-- When viewed from above:
+		 width: size of the X dimension
+		 length: size of the Y dimension
+	    -->
+	    <xs:attribute name="width" type="positiveFloat" use="required" />
+	    <xs:attribute name="length" type="positiveFloat" use="required" />
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

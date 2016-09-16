@@ -7,12 +7,7 @@
 
 #include "Behavior.h"
 
-QS::Behavior::Behavior(const std::vector<std::string> &theInputSensorTypes) :
-  myInputSensorTypes(theInputSensorTypes)
+QS::Behavior::Behavior(const Properties &theProperties) :
+  PluginEntity(theProperties)
 {
-}
-
-std::vector<std::string> QS::Behavior::getInputSensorTypes() const noexcept
-{
-  return myInputSensorTypes;
 }

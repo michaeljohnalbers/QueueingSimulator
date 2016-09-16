@@ -21,9 +21,12 @@
   </BehaviorSets>
 
   <Behaviors creator="behaviorCreator" destructor="behaviorDestructor">
-    <Behavior name="Walk" />
+    <Behavior name="Walk">
+      <Sensor name="NullSensor" />
+    </Behavior>
   </Behaviors>
 
   <Sensors creator="sensorCreator" destructor="sensorDestructor">
+    <Sensor name="NullSensor" />
   </Sensors>
 </Plugin>

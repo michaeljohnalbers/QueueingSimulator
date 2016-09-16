@@ -50,6 +50,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 set(QS_INSTALL_BIN_DIR bin)
 set(QS_INSTALL_LIB_DIR lib)
 set(QS_INSTALL_PLUGIN_BASE_DIR plugins)
+set(QS_INSTALL_SIMULATIONS_BASE_DIR simulations)
 
 ###################################
 # External packages used
@@ -133,6 +134,7 @@ add_subdirectory(Engine/src)
 add_subdirectory(Main/src)
 
 include(Plugins/Plugins.cmake)
+include(Simulations/Simulations.cmake)
 
 ###################################
 # Tests
@@ -140,7 +142,7 @@ include(Plugins/Plugins.cmake)
 #  - make test
 #  - ctest
 ###################################
-# To set output on failures:
+# To see output on failures:
 #   setenv CTEST_OUTPUT_ON_FAILURE 1
 # then run tests
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR

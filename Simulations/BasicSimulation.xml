@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  This is about the most rudimentary simulation that can be defined. It really
+  just serves as a test simulation. Gotta learn to crawl before you can walk.
+-->
+
+<Simulation>
+  <Seed value="1" />
+  <World width="10" length="10">
+    <Actors>
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="x" value="0" />
+	<Property key="y" value="0" />
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+      </Actor>
+    </Actors>
+  </World>
+</Simulation>

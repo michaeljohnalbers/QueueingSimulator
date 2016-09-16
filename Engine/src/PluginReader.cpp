@@ -4,6 +4,7 @@
  *
  * @author Michael Albers
  */
+
 #include <stdexcept>
 #include "ActorDefinition.h"
 #include "BehaviorSetDefinition.h"
