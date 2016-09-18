@@ -93,10 +93,10 @@ namespace QS
     /** All of the Actors for the simulation. */
     std::vector<Actor*> myActors;
 
-    /** World length, in meters.*/
+    /** World length (y dimension), in meters.*/
     float myLength_m = 0.0;
 
-    /** World width, in meters.*/
+    /** World width (x dimension), in meters.*/
     float myWidth_m = 0.0;
 
     /** Generator of pseudo-random numbers. */

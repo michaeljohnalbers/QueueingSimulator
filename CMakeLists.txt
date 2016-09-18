@@ -80,17 +80,35 @@ ExternalProject_Get_Property(Eigen3 source_dir binary_dir)
 set(EIGEN3_INCLUDE_DIR ${source_dir})
 include_directories(${EIGEN3_INCLUDE_DIR})
 
+set(GLFW_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/GLFW)
+ExternalProject_Add(GLFW
+  PREFIX GLFW
+  GIT_REPOSITORY https://github.com/glfw/glfw
+  GIT_TAG 3.2.1
+  CMAKE_ARGS -DGLFW_BUILD_DOCS=OFF -DGLFW_BUILD_EXAMPLES=OFF
+             -DBUILD_SHARED_LIBS=ON
+             -DCMAKE_INSTALL_PREFIX=${GLFW_INSTALL_DIR})
+set(GLFW_INCLUDE_DIR ${GLFW_INSTALL_DIR}/include)
+set(GLFW_LIBRARY_DIR ${GLFW_INSTALL_DIR}/lib)
+set(GLFW_LIBRARIES "-lglfw")
+link_directories(${GLFW_LIBRARY_DIR})
+# Use GLFW shared object library to avoid X11 dependencies needed at compile
+# time when using .a.
+# See http://stackoverflow.com/questions/24345384/glfw-linker-errors-on-ubuntu-14-04-lts
+install(DIRECTORY ${GLFW_LIBRARY_DIR}/ DESTINATION ${QS_INSTALL_LIB_DIR}
+        FILES_MATCHING REGEX "libglfw.*"
+	REGEX "cmake" EXCLUDE
+	REGEX "pkg" EXCLUDE)
+
+find_package(GLEW REQUIRED)
+link_directories(${FLEW_LIBRARY_DIRS})
+
 pkg_check_modules(GTKMM gtkmm-3.0 REQUIRED)
 include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS})
 
 find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
 link_directories(${OPENGL_LIBRARIES})
-
-find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIR})
-link_directories(${GLUT_LIBRARIES})
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
     "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
@@ -131,6 +149,7 @@ link_directories(${XERCESC_LIBRARY_DIR})
 
 add_subdirectory(Control/src)
 add_subdirectory(Engine/src)
+add_subdirectory(Visualization/src)
 add_subdirectory(Main/src)
 
 include(Plugins/Plugins.cmake)
@@ -149,8 +168,8 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
     "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
 
   enable_testing()
-  list(APPEND testDirs Plugins/BasicPlugin/test Engine/test)
-  list(APPEND tests    BasicPluginTest          EngineTest)
+  list(APPEND testDirs Plugins/BasicPlugin/test Engine/test Visualization/test)
+  list(APPEND tests    BasicPluginTest          EngineTest  VisualizationTest)
 
   foreach(testDir IN LISTS testDirs)
     add_subdirectory(${testDir})
