@@ -15,6 +15,10 @@
 
 namespace QS
 {
+  class Actors;
+  class ShaderProgram;
+  class WorldBox;
+
   class Visualization
   {
     public:
@@ -97,14 +101,20 @@ namespace QS
     std::tuple<int, int> getRealTimeWindowDimensions() const noexcept;
 
     /**
-     * Creates everything needed to draw the world box.
+     * Performs GLFW initialization (creeating window, etc.).
      */
-    void initWorldBox();
+    void initializeGLFW();
 
     /**
      * Visualization main loop
      */
     void visualize();
+
+    /** Object for drawing actors. */
+    std::unique_ptr<Actors> myActors;
+
+    /** width:height of the world, used as window aspect ratio */
+    float myAspectRatio;
 
     /** Visualization thread. */
     std::shared_ptr<std::thread> myThread;
@@ -115,22 +125,13 @@ namespace QS
     /** Main visualization window. */
     GLFWwindow *myWindow = nullptr;
 
-    /** Buffer for world box points. */
-    GLuint myWorldBoxBuffer;
-
-    /** World box vertex array object. */
-    GLuint myWorldVAO[2];
-
     /** Size of the X dimension, meters. */
     const float myXDimension_m;
-
-    /** x / y, used for scaling X dimenions. */
-    float myXScale;
 
     /** Size of Y dimension, meters. */
     const float myYDimension_m;
 
-    /** y / x, used for scaling Y dimensions */
-    float myYScale;
+    /** Box bounding the world. */
+    std::unique_ptr<WorldBox> myWorldBox;
   };
 }

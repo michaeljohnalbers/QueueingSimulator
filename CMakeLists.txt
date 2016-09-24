@@ -69,7 +69,7 @@ find_package(PkgConfig)
 # Eigen is headers only, so just download it instead of trying to find it on
 # the system. Build/test/etc. aren't needed either.
 set(EIGEN_FILE 3.2.9.tar.gz)
- ExternalProject_Add(Eigen3
+ExternalProject_Add(Eigen3
   PREFIX Eigen3
   URL https://bitbucket.org/eigen/eigen/get/${EIGEN_FILE}
   CONFIGURE_COMMAND ""
@@ -79,6 +79,16 @@ set(EIGEN_FILE 3.2.9.tar.gz)
 ExternalProject_Get_Property(Eigen3 source_dir binary_dir)
 set(EIGEN3_INCLUDE_DIR ${source_dir})
 include_directories(${EIGEN3_INCLUDE_DIR})
+
+ExternalProject_Add(GLM
+  PREFIX GLM
+  GIT_REPOSITORY https://github.com/g-truc/glm
+  GIT_TAG 0.9.8.0
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND "")
+ExternalProject_Get_Property(GLM source_dir)
+set(GLM_INCLUDE_DIR ${source_dir})
 
 set(GLFW_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/GLFW)
 ExternalProject_Add(GLFW

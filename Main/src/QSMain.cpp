@@ -28,6 +28,7 @@ int main(int argc, char **argv)
     }
 
     QS::Visualization vis(1024, 768);
+    //QS::Visualization vis(10, 10);
     vis.startThread();
 
     status = QS::ControlGUI::run(argc, argv, baseDirEnvVar);

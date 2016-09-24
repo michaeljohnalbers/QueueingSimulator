@@ -16,14 +16,18 @@ endforeach()
 add_library(qs-visualization SHARED ${sources})
 
 target_include_directories(qs-visualization PRIVATE ../inc)
+target_include_directories(qs-visualization PRIVATE
+                           ../../Plugins/BasicPlugin/inc)
 # For processed shaders
 target_include_directories(qs-visualization PRIVATE
                            ${CMAKE_CURRENT_BINARY_DIR}/../inc)
 target_include_directories(qs-visualization PRIVATE ${GLFW_INCLUDE_DIR})
 target_include_directories(qs-visualization PRIVATE ${OPENGL_INCLUDE_DIR})
+target_include_directories(qs-visualization PRIVATE ${GLM_INCLUDE_DIR})
 target_link_libraries(qs-visualization ${OPENGL_LIBRARIES})
 target_link_libraries(qs-visualization ${GLEW_LIBRARIES})
 target_link_libraries(qs-visualization ${GLFW_LIBRARIES})
+target_link_libraries(qs-visualization qs-basic-plugin)
 
 install(TARGETS qs-visualization
         LIBRARY DESTINATION ${QS_INSTALL_LIB_DIR})

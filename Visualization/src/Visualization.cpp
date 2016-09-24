@@ -5,39 +5,38 @@
  * @author Michael Albers
  */
 
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
 
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "Visualization.h"
 #include "VisualizationInitialization.h"
+#include "Actors.h"
+#include "WorldBox.h"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
+#include "Actor.h"// TODO: remove
 
 QS::Visualization::Visualization(float theXDimension_m, float theYDimension_m) :
   myXDimension_m(theXDimension_m),
   myYDimension_m(theYDimension_m)
 {
-  myXScale = myXDimension_m / myYDimension_m;
-  myYScale = myYDimension_m / myXDimension_m;
-
-  if (myXScale > myYScale)
-  {
-    myXScale = 1.0;
-  }
-  else
-  {
-    myYScale = 1.0;
-  }
+  myAspectRatio = myXDimension_m / myYDimension_m;
 }
 
 QS::Visualization::~Visualization()
 {
   if (myThread)
   {
-    myThreadControl = false;
     // Wake up GLFW for shutdown.
     glfwPostEmptyEvent();
+    myThreadControl = false; // TODO: not a thread-safe way to do this
     myThread->join();
   }
 }
@@ -58,65 +57,55 @@ void QS::Visualization::frameBufferCallback(
 std::tuple<int, int> QS::Visualization::getRealTimeWindowDimensions()
   const noexcept
 {
-  // Size window to 3/4 of height (assumes height is smaller of the dimensions,
-  // or at least equal to width, which is a safe assumption for pretty much all
-  // monitors any more as far as I know) with width keeping world aspect ratio
-  // consisten.
-  const float scaleFactor = 0.75;
+  const float scaleFactor = 0.9;
   const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
   float maxHeight = mode->height * scaleFactor;
   float maxWidth = mode->width * scaleFactor;
 
-  float width = myXScale;
-  float height = myYScale;
-
-  // Finds the window size that maintains the aspect ratio of the world AND
-  // making sure it expands to either maxHeight or maxWidth without going over
-  // either. There is probably some clever math to do this, but I tried for
-  // hours to figure it out and couldn't do it. This loop should be pretty fast
-  // since it will only go to 0.75 of the smallest screen dimension.
+  // This finds the window size that best fits into the maximums above while
+  // still maintaining the aspect ratio of the world. There are probably more
+  // efficient ways to do this, but I can't think of one and the loop shouldn't
+  // ever be more than a few thousand iterations, which isn't bad at all.
+  float width = myAspectRatio;
+  float height = 1.0;
   while (width < maxWidth && height < maxHeight)
   {
-    if (1.0 == myYScale)
-    {
-      height++;
-      width = height * myXScale;
-    }
-    else
-    {
-      width++;
-      height = width * myYScale;
-    }
+    height++;
+    width = height * myAspectRatio;
   }
+
   return std::make_tuple(static_cast<int>(width), static_cast<int>(height));
 }
 
-void QS::Visualization::initWorldBox()
+void QS::Visualization::initializeGLFW()
 {
-  glGenVertexArrays(2, myWorldVAO);
-  glBindVertexArray(myWorldVAO[0]);
+  glfwSetErrorCallback(errorCallback);
 
-  // Origin is at middle of screen
-  constexpr int NUM_POINTS = 4;
-  GLfloat worldBoxPoints[][2] = {
-    {-0.9, 0.9}, {0.9, 0.9},
-    {0.9, -0.9}, {-0.9, -0.9}};
+  // Not the most efficient to init/terminate for each visualization, but in
+  // the overall scheme, compared to the simulation itself it isn't too much of
+  // a cost.
+  VisualizationInitialization::InitializeGLFW();
 
-  for (int pointIndex = 0; pointIndex < NUM_POINTS; ++pointIndex)
+  int width, height;
+  std::tie(width, height) = getRealTimeWindowDimensions();
+
+  myWindow = glfwCreateWindow(width, height, "Queueing Simulator", NULL, NULL);
+  if (!myWindow)
   {
-    worldBoxPoints[pointIndex][0] *= myXScale;
-    worldBoxPoints[pointIndex][1] *= myYScale;
+    throw std::logic_error("Failed to create simulation visualization window.");
   }
+  glfwMakeContextCurrent(myWindow);
 
-  glGenBuffers(1, &myWorldBoxBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, myWorldBoxBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(worldBoxPoints), worldBoxPoints,
-               GL_STATIC_DRAW);
+  VisualizationInitialization::InitializeGLEW();
 
-  // TODO: change to use glGetAttribLocation
-  const int vPositionLocation = 0;
-  glVertexAttribPointer(vPositionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0);
-  glEnableVertexAttribArray(vPositionLocation);
+  glViewport(0, 0, width, height);
+  glfwSetWindowAspectRatio(myWindow, width, height);
+  glEnable(GL_DEPTH_TEST);
+
+  // Handle window resize.
+  glfwSetFramebufferSizeCallback(myWindow, &frameBufferCallback);
+
+  glfwSwapInterval(1);
 }
 
 void QS::Visualization::run(Visualization *theVisualizer) noexcept
@@ -139,64 +128,45 @@ void QS::Visualization::startThread()
 
 void QS::Visualization::visualize()
 {
-  glfwSetErrorCallback(errorCallback);
+  initializeGLFW();
 
-  // Not the most efficient to init/terminate for each visualization, but in
-  // the overall scheme, compared to the simulation itself it isn't too much of
-  // a cost.
-  VisualizationInitialization::InitializeGLFW();
+  myActors.reset(new Actors());
+  myWorldBox.reset(new WorldBox(myXDimension_m, myYDimension_m));
 
-  int width, height;
-  std::tie(width, height) = getRealTimeWindowDimensions();
+  // TODO: eventually remove this
+  Actor actor({{"mass", "1.0"}, {"radius", "50.0"}});
+  actor.setPosition({50.0, 50.0});
+  Actor actor2({{"mass", "1.0"}, {"radius", "25.0"}});
+  actor2.setPosition({myXDimension_m - 25.0, 25.0});
+  std::vector<Actor*> actors{&actor, &actor2};
 
-  myWindow = glfwCreateWindow(width, height, "Queueing Simulator", NULL, NULL);
-  if (!myWindow)
-  {
-    throw std::logic_error("Failed to create simulation visualization window.");
-  }
-
-  glfwSetWindowAspectRatio(myWindow, width, height);
-
-  glfwMakeContextCurrent(myWindow);
-  VisualizationInitialization::InitializeGLEW();
-
-  // Handle window resize.
-  glfwSetFramebufferSizeCallback(myWindow, &frameBufferCallback);
-
-  glfwSwapInterval(1);
-
-  std::string passThroughVertexShaderSource = 
-#include "PassThrough.vert"
-    ;
-
-  std::string redFragmentShaderSource = 
-#include "Red.frag"
-    ;
-
-  Shader passThroughVertexShader(passThroughVertexShaderSource,
-                                 GL_VERTEX_SHADER);
-  Shader redFragmentShader(redFragmentShaderSource,
-                           GL_FRAGMENT_SHADER);
-  ShaderProgram worldBoxProgram;
-  worldBoxProgram.attachShader(passThroughVertexShader);
-  worldBoxProgram.attachShader(redFragmentShader);
-  worldBoxProgram.link();
-
-  initWorldBox();
+  // TODO: Absolutely no idea how the near/far values work.
+  float zFar = 1000.0;
+  float zNear = 0.1;
+  glm::mat4 projectionMatrix;
+  projectionMatrix = glm::perspective(45.0f, myAspectRatio, zNear, zFar);
+ 
+  //https://www.opengl.org/discussion_boards/showthread.php/171541-glm-Triangle-with-perspective
+  // TODO: This will be adjusted when moving the camera.
+  glm::mat4 viewMatrix;
+  viewMatrix = glm::lookAt(
+    glm::vec3(myXDimension_m/2, myYDimension_m/2,
+              std::min(myXDimension_m, myYDimension_m)), 
+    glm::vec3(myXDimension_m/2, myYDimension_m/2, 0.0f), 
+    glm::vec3(0.0f, 1.0f, 0.0f));
 
   myThreadControl = true;
   while (myThreadControl)
   {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glfwPollEvents();
 
-    worldBoxProgram.use();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glBindVertexArray(myWorldVAO[0]);
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
+    myWorldBox->draw(viewMatrix, projectionMatrix);
+    myActors->draw(viewMatrix, projectionMatrix, actors);
 
     glfwSwapBuffers(myWindow);
-
-    glfwPollEvents();
   }
 
   glfwDestroyWindow(myWindow);
