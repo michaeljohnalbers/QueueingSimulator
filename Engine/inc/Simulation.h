@@ -75,6 +75,20 @@ namespace QS
     ~Simulation() = default;
 
     /**
+     * Returns the simulation world.
+     *
+     * @return simulation world
+     */
+    const World& getWorld() const noexcept;
+
+    /**
+     * Returns the simulation world.
+     *
+     * @return simulation world
+     */
+    World& getWorld() noexcept;
+
+    /**
      * Copy assignment operator
      */
     Simulation& operator=(const Simulation&) = delete;

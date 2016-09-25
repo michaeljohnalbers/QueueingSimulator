@@ -27,6 +27,7 @@ int main(int argc, char **argv)
     }
 
     status = QS::ControlGUI::run(argc, argv, baseDirEnvVar);
+
     XMLPlatformUtils::Terminate();
     status = 0;
   }

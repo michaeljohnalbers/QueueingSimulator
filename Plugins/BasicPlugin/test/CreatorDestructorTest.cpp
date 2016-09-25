@@ -42,6 +42,8 @@ GTEST_TEST(CreatorDestructor, testActor)
   std::map<std::string, std::string> properties;
   properties.insert({"mass", "0.1"});
   properties.insert({"radius", "0.1"});
+  properties.insert({"x", "0.11"});
+  properties.insert({"y", "0.11"});
   QS::Actor *actor = actorCreator("", properties);
   EXPECT_NE(nullptr, actor);
 
