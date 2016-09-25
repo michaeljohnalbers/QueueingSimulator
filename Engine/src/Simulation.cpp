@@ -40,6 +40,16 @@ QS::Simulation::Simulation(const std::string &theBaseDir,
   myEntityManager.reset(new EntityManager{myPlugins});
 }
 
+const QS::World& QS::Simulation::getWorld() const noexcept
+{
+  return myWorld;
+}
+
+QS::World& QS::Simulation::getWorld() noexcept
+{
+  return myWorld;
+}
+
 void QS::Simulation::readSimulation()
 {
   std::string simulationsDir{myBaseDir + "/simulations"};

@@ -14,6 +14,16 @@ void QS::World::addActor(Actor *theActor)
   myActors.push_back(theActor);
 }
 
+const std::vector<QS::Actor*>& QS::World::getActors() const noexcept
+{
+  return myActors;
+}
+
+std::tuple<float, float> QS::World::getDimensions() const noexcept
+{
+  return std::make_tuple(myWidth_m, myLength_m);
+}
+
 void QS::World::setDimentions(float theWidth_m, float theLength_m)
 {
   myWidth_m = theWidth_m;

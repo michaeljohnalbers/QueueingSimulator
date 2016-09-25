@@ -95,11 +95,19 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   glUniformMatrix4fv(projectionLocation, 1, GL_FALSE,
                      glm::value_ptr(theProjectionMatrix));
 
+  glm::vec3 *colorVectors = new glm::vec3[theActors.size()];
   glm::mat4 *modelMatrices = new glm::mat4[theActors.size()];
 
   for (auto ii = 0u; ii < theActors.size(); ++ii)
   {
     Actor &actor = *theActors[ii];
+
+    // === Color
+    Eigen::Vector3f color = actor.getColor();
+    // x == r, y == g, z == b
+    colorVectors[ii] = glm::vec3(color.x(), color.y(), color.z());
+
+    // === Position
     float actorRadius = actor.getRadius();
     Eigen::Vector2f position = actor.getPosition();
 
@@ -112,6 +120,20 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
     modelMatrices[ii] = modelMatrix;
   }
 
+  // === Color
+  GLuint colorVectorsBuffer;
+  glGenBuffers(1, &colorVectorsBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, colorVectorsBuffer);
+  glBufferData(GL_ARRAY_BUFFER, theActors.size() * sizeof(glm::vec3),
+               &colorVectors[0], GL_STREAM_DRAW);
+
+  GLint colorLocation = glGetAttribLocation(myShaderProgram, "inColor");
+  glEnableVertexAttribArray(colorLocation);
+  glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glVertexAttribDivisor(colorLocation, 1);
+
+
+  // === Position
   GLuint modelMatricesBuffer;
   glGenBuffers(1, &modelMatricesBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, modelMatricesBuffer);
@@ -148,5 +170,6 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
 
   glBindVertexArray(0);
   glUseProgram(0);
+  delete [] colorVectors;
   delete [] modelMatrices;
 }

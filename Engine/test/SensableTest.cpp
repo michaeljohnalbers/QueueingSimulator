@@ -19,7 +19,8 @@ GTEST_TEST(SensableTest, testConstruction)
 GTEST_TEST(SensableTest, testCopyMove)
 {
   std::shared_ptr<QS::Actor> actor{
-    new QS::Actor({{"mass", "1.0"}, {"radius", "1.0"}})
+    new QS::Actor({{"mass", "1.0"}, {"radius", "1.0"},
+                   {"x", "5.0"}, {"y", "5.0"}})
       };
   std::vector<const QS::Actor*> actors{actor.get()};
   QS::Sensable sensable({actor.get()});
@@ -49,7 +50,8 @@ GTEST_TEST(SensableTest, testCopyMove)
 GTEST_TEST(SensableTest, testActors)
 {
   std::shared_ptr<QS::Actor> actor{
-    new QS::Actor({{"mass", "1.0"}, {"radius", "1.0"}})
+    new QS::Actor({{"mass", "1.0"}, {"radius", "1.0"},
+                   {"x", "5.0"}, {"y", "5.0"}})
       };
   std::vector<const QS::Actor*> actors{actor.get()};
   QS::Sensable sensable({actor.get()});

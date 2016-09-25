@@ -8,6 +8,7 @@
  */
 
 in vec3 inPosition;
+in vec3 inColor;
 in mat4 inModelMatrix;
 
 out vec4 fragmentColor;
@@ -20,6 +21,5 @@ void main()
   gl_Position = inProjectionMatrix * inViewMatrix * inModelMatrix *
     vec4(inPosition, 1.0);
 
-  // TODO: change to use input
-  fragmentColor = vec4(1.0, 0.0, 0.0, 1.0);
+  fragmentColor = vec4(inColor, 1.0);
 }

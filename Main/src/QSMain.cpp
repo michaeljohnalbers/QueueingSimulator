@@ -10,7 +10,6 @@
 #include "xercesc/util/PlatformUtils.hpp"
 #include "xercesc/util/XMLString.hpp"
 #include "ControlGUI.h"
-#include "Visualization.h"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -26,10 +25,6 @@ int main(int argc, char **argv)
     {
       throw std::runtime_error("QS_BASE_DIR environment variable is not set.");
     }
-
-    QS::Visualization vis(1024, 768);
-    //QS::Visualization vis(10, 10);
-    vis.startThread();
 
     status = QS::ControlGUI::run(argc, argv, baseDirEnvVar);
 

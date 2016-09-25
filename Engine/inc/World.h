@@ -7,8 +7,9 @@
  * @author Michael Albers
  */
 
-#include <vector>
 #include <random>
+#include <tuple>
+#include <vector>
 
 namespace QS
 {
@@ -50,6 +51,20 @@ namespace QS
      *          Actor to add
      */
     void addActor(Actor *theActor);
+
+    /**
+     * Returns all the Actors in the world.
+     *
+     * @return all the Actors in the world.
+     */
+    const std::vector<Actor*>& getActors() const noexcept;
+
+    /**
+     * Returns the dimensions of the world.
+     *
+     * @return world dimensions (witdth in meters, legnth in meters)
+     */
+    std::tuple<float, float> getDimensions() const noexcept;
 
     /**
      * Sets the dimensions of the world.

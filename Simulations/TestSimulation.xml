@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  Tests more Actors, positions and colors.
+-->
+
+<Simulation>
+  <Seed value="1" />
+  <World width="800" length="600">
+    <Actors>
+
+      <!-- Lower left (near origin), red-->
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="20.0" />
+	<Property key="x" value="20.01" />
+	<Property key="y" value="20.01" />
+	<Property key="color" value="1.0 0.0 0.0" />
+      </Actor>
+
+      <!-- Lower right, green-->
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="50.0" />
+	<Property key="x" value="749.99" />
+	<Property key="y" value="50.01" />
+	<Property key="color" value="0.0 1.0 0.0" />
+      </Actor>
+
+      <!-- Upper right, blue-->
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="100.0" />
+	<Property key="x" value="699.99" />
+	<Property key="y" value="499.99" />
+	<Property key="color" value="0.0 0.0 1.0" />
+      </Actor>
+
+      <!-- Upper left, default color-->
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="200.0" />
+	<Property key="x" value="200.01" />
+	<Property key="y" value="399.99" />
+	<Property key="color" value="0.0 0.0 -1.0" />
+      </Actor>
+    </Actors>
+  </World>
+</Simulation>

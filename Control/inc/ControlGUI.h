@@ -8,6 +8,8 @@
  */
 
 #include <gtkmm.h>
+#include <memory>
+#include "SimulationPackage.h"
 
 namespace QS
 {
@@ -291,5 +293,11 @@ namespace QS
     Gtk::Button myRealTimeZoomInButton;
     Gtk::Button myRealTimeZoomOutButton;
     Gtk::Label myRealTimeZoomLabel;
+
+    /** Simulation data */
+    std::unique_ptr<SimulationPackage> mySimulation;
+
+    /** Simulation configuration file. */
+    std::string mySimulationConfigFile;
   };
 }

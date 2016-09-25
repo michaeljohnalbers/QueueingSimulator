@@ -135,7 +135,6 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
   set(GTEST_LIBRARY "${GTEST_LIBRARY_DIR}/libgtest.a")
 endif()
 
-# Only building static libs to make QueueingSimulator a standalone exe.
 # The build/install commands both use the --directory=src option to skip
 # building the example binaries which just aren't needed.
 set(XERCES_DIR ${CMAKE_CURRENT_BINARY_DIR}/xerces-c)
@@ -143,7 +142,7 @@ ExternalProject_Add(xerces-c
   PREFIX xerces-c
   URL http://apache.mirrors.pair.com/xerces/c/3/sources/xerces-c-3.1.4.tar.bz2
   URL_MD5 d04ae9d8b2dee2157c6db95fa908abfd
-  CONFIGURE_COMMAND ../xerces-c/configure --prefix=${XERCES_DIR} --disable-network --disable-shared --enable-silent-rules
+  CONFIGURE_COMMAND ../xerces-c/configure --prefix=${XERCES_DIR} --disable-network --disable-static --enable-silent-rules
   BUILD_COMMAND $(MAKE) --directory=src --silent
   INSTALL_COMMAND $(MAKE) --directory=src install --silent
   TEST_COMMAND "")
@@ -152,6 +151,8 @@ set(XERCESC_LIBRARY_DIR ${XERCES_DIR}/lib)
 set(XERCESC_LIBRARY "-lxerces-c")
 include_directories(${XERCESC_INCLUDE_DIR})
 link_directories(${XERCESC_LIBRARY_DIR})
+install(DIRECTORY ${XERCESC_LIBRARY_DIR}/ DESTINATION ${QS_INSTALL_LIB_DIR}
+        FILES_MATCHING REGEX "libxerces-c.*.so")
 
 ###################################
 # Sub-directories for building
@@ -178,6 +179,7 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
     "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
 
   enable_testing()
+
   list(APPEND testDirs Plugins/BasicPlugin/test Engine/test Visualization/test)
   list(APPEND tests    BasicPluginTest          EngineTest  VisualizationTest)
 

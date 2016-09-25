@@ -17,6 +17,7 @@ namespace QS
 {
   class Actors;
   class ShaderProgram;
+  class World;
   class WorldBox;
 
   class Visualization
@@ -31,12 +32,10 @@ namespace QS
     /**
      * Constructor.
      *
-     * @param theXDimension_m
-     *          size of the X dimension, in meters
-     * @param theYDimension_m
-     *          size of the Y dimension, in meters
+     * @param theWorld
+     *          simulation world
      */
-    Visualization(float theXDimension_m, float theYDimension_m);
+    Visualization(World &theWorld);
 
     /**
      * Copy constructor
@@ -125,13 +124,16 @@ namespace QS
     /** Main visualization window. */
     GLFWwindow *myWindow = nullptr;
 
-    /** Size of the X dimension, meters. */
-    const float myXDimension_m;
-
-    /** Size of Y dimension, meters. */
-    const float myYDimension_m;
+    /** Simulation world. */
+    World &myWorld;
 
     /** Box bounding the world. */
     std::unique_ptr<WorldBox> myWorldBox;
+
+    /** Size of the X dimension, meters. */
+    float myXDimension_m;
+
+    /** Size of Y dimension, meters. */
+    float myYDimension_m;
   };
 }

@@ -14,7 +14,6 @@
 
 #include "ControlGUI.h"
 #include "QSConfig.h"
-#include "Simulation.h"
 
 QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
   myBaseDir{theBaseDir}
@@ -342,22 +341,11 @@ void QS::ControlGUI::fileOpenHandler()
   {
     case Gtk::RESPONSE_OK:
     {
-      try
-      {
-        std::string simulationConfigFile{fileChooser.get_filename()};
-        // TODO: handle batch mode
-        Simulation simulation{myBaseDir, simulationConfigFile};
-        setControlButtonSensitivities(true, false, false);
-        std::string basename = ::basename(simulationConfigFile.c_str());
-        mySimulationEntry.set_text(basename);
-      }
-      catch (const std::exception &exception)
-      {
-        std::string error{"Error loading simulation: "};
-        error += exception.what();
-        Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
-        errorDialog.run();
-      }
+      setControlButtonSensitivities(true, false, false);
+
+      mySimulationConfigFile = fileChooser.get_filename();
+      std::string basename = ::basename(mySimulationConfigFile.c_str());
+      mySimulationEntry.set_text(basename);
     }
     break;
 
@@ -435,6 +423,24 @@ void QS::ControlGUI::playButtonHandler()
 {
   setControlButtonSensitivities(false, true, true);
   setMenuSensitivities(false, false, false);
+
+  try
+  {
+    // TODO: handle batch mode
+    mySimulation.reset(new SimulationPackage(mySimulationConfigFile,
+                                             myBaseDir));
+    mySimulation->startSimulation();
+  }
+  catch (const std::exception &exception)
+  {
+    std::string error{"Error loading simulation: "};
+    error += exception.what();
+    Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
+    errorDialog.run();
+
+    // Bad simulation, get rid of it.
+    mySimulation.reset();
+  }
 }
 
 int QS::ControlGUI::run(int argc, char **argv, const std::string &theBaseDir)
@@ -480,6 +486,9 @@ void QS::ControlGUI::stopButtonHandler()
 {
   setControlButtonSensitivities(true, false, false);
   setMenuSensitivities(true, true, true);
+
+  // TODO: may need to be more sophisticated than this in the future.
+  mySimulation.reset();
 }
 
 void QS::ControlGUI::viewSummaryHandler()

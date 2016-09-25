@@ -16,6 +16,7 @@
 #include "Visualization.h"
 #include "VisualizationInitialization.h"
 #include "Actors.h"
+#include "World.h"
 #include "WorldBox.h"
 
 #include "glm/glm.hpp"
@@ -23,10 +24,10 @@
 
 #include "Actor.h"// TODO: remove
 
-QS::Visualization::Visualization(float theXDimension_m, float theYDimension_m) :
-  myXDimension_m(theXDimension_m),
-  myYDimension_m(theYDimension_m)
+QS::Visualization::Visualization(World &theWorld) :
+  myWorld(theWorld)
 {
+  std::tie(myXDimension_m, myYDimension_m) = myWorld.getDimensions();
   myAspectRatio = myXDimension_m / myYDimension_m;
 }
 
@@ -133,12 +134,14 @@ void QS::Visualization::visualize()
   myActors.reset(new Actors());
   myWorldBox.reset(new WorldBox(myXDimension_m, myYDimension_m));
 
+  const std::vector<Actor*> &actors = myWorld.getActors();
+
   // TODO: eventually remove this
-  Actor actor({{"mass", "1.0"}, {"radius", "50.0"}});
-  actor.setPosition({50.0, 50.0});
-  Actor actor2({{"mass", "1.0"}, {"radius", "25.0"}});
-  actor2.setPosition({myXDimension_m - 25.0, 25.0});
-  std::vector<Actor*> actors{&actor, &actor2};
+  // Actor actor({{"mass", "1.0"}, {"radius", "50.0"}});
+  // actor.setPosition({50.0, 50.0});
+  // Actor actor2({{"mass", "1.0"}, {"radius", "25.0"}});
+  // actor2.setPosition({myXDimension_m - 25.0, 25.0});
+  // std::vector<Actor*> actors{&actor, &actor2};
 
   // TODO: Absolutely no idea how the near/far values work.
   float zFar = 1000.0;
