@@ -7,9 +7,11 @@
  * @author Michael Albers
  */
 
+#include <chrono>
 #include <random>
 #include <tuple>
 #include <vector>
+#include "Eigen/Core"
 
 namespace QS
 {
@@ -51,6 +53,18 @@ namespace QS
      *          Actor to add
      */
     void addActor(Actor *theActor);
+
+    /**
+     * Converts the given point in Actor local space to world space coordinates.
+     *
+     * @param theActor
+     *          Actor to use as local space
+     * @param thePoint
+     *          point in local space to convert to world space
+     */
+    static Eigen::Vector2f convertPointToWorld(const Actor *theActor,
+                                               const Eigen::Vector2f &thePoint)
+      noexcept;
 
     /**
      * Returns all the Actors in the world.
@@ -97,9 +111,11 @@ namespace QS
     /**
      * Updates the world to the new state.
      *
+     * @param theInterval
+     *          amount of time elapsed since last update
      * @return true if the simulation has finished, false otherwise
      */
-    bool update();
+    bool update(std::chrono::milliseconds theInterval);
 
     protected:
 
@@ -119,5 +135,8 @@ namespace QS
 
     /** Distribution of pseudo-random numbers. */
     std::uniform_real_distribution<> myRNGDistribution{0, 1};
+
+    /** Actors for use in Sensable objects. */
+    std::vector<const Actor*> mySensableActors;
   };
 }

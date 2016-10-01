@@ -7,6 +7,7 @@
  * @author Michael Albers
  */
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -16,6 +17,7 @@
 
 namespace QS
 {
+  class Actor;
   class Sensor;
 
   /**
@@ -74,9 +76,22 @@ namespace QS
      * DependencyManager parent class. These sensors need to be already
      * populated (i.e., have "sensed" what they need).
      *
-     * @return vector used to influence the motion of the Actor
+     * The magnitude of the vector can be as large or as small as needed. This
+     * function isn't responsible for making sure it doesn't exceed any
+     * maximums.
+     *
+     * The vector returned should be an Actor local coordinates.
+     *
+     * @param theActor
+     *          Actor this Behavior is working on
+     * @param theInterval
+     *          amount of time elapsed since last simulation update
+     * @return Vector to where the this Behavior "wants" the Actor to be
+     *         located, relative to the Actor's center point
      */
-    virtual Eigen::Vector2f evaluate() = 0;
+    virtual Eigen::Vector2f evaluate(
+      const Actor *theActor,
+      const std::chrono::milliseconds &theInterval) = 0;
 
     /**
      * Copy assignment operator.

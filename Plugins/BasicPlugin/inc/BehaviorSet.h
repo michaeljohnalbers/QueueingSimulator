@@ -7,6 +7,7 @@
  * @author Michael Albers
  */
 
+#include <chrono>
 #include "DependencyManager.h"
 #include "EntityDependency.h"
 #include "PluginEntity.h"
@@ -14,6 +15,7 @@
 
 namespace QS
 {
+  class Actor;
   class Behavior;
   class Sensable;
 
@@ -62,14 +64,20 @@ namespace QS
      * as small as needed. This function isn't responsible for making sure it
      * doesn't exceed any maximums.
      *
-     * This base version simply takes all behaviors and adds the resulting
+     * This base version simply takes all behaviors and averages the resulting
      * vectors together.
      *
+     * The vector returned should be an Actor local coordinates.
+     *
+     * @param theActor
+     *          Actor this Behavior is working on
      * @param theSensable
      *          sensable data from the environment
-     * @return motion vector
+     * @return Vector to where the this BehaviorSet "wants" the Actor to be
+     *         located, relative to the Actor's center point
      */
-    virtual Eigen::Vector2f evaluate(const Sensable &theSensable);
+    virtual Eigen::Vector2f evaluate(const Actor *theActor,
+                                     const Sensable &theSensable);
 
     /**
      * Copy assignment operator.

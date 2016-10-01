@@ -49,9 +49,15 @@ namespace QS
     /**
      * Directs Actor to move in a straight line.
      *
+     * @param theActor
+     *          Actor this Behavior is working on
+     * @param theInterval
+     *          amount of time elapsed since last simulation update
      * @return vector used to influence the motion of the Actor
      */
-    virtual Eigen::Vector2f evaluate() override;
+    virtual Eigen::Vector2f evaluate(
+      const Actor *theActor,
+      const std::chrono::milliseconds &theInterval) override;
 
     /**
      * Copy assignment operator.
