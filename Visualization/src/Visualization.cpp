@@ -5,6 +5,7 @@
  * @author Michael Albers
  */
 
+#include <chrono>
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -21,8 +22,6 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-
-#include "Actor.h"// TODO: remove
 
 QS::Visualization::Visualization(World &theWorld) :
   myWorld(theWorld)
@@ -136,32 +135,39 @@ void QS::Visualization::visualize()
 
   const std::vector<Actor*> &actors = myWorld.getActors();
 
-  // TODO: eventually remove this
-  // Actor actor({{"mass", "1.0"}, {"radius", "50.0"}});
-  // actor.setPosition({50.0, 50.0});
-  // Actor actor2({{"mass", "1.0"}, {"radius", "25.0"}});
-  // actor2.setPosition({myXDimension_m - 25.0, 25.0});
-  // std::vector<Actor*> actors{&actor, &actor2};
-
   // TODO: Absolutely no idea how the near/far values work.
   float zFar = 1000.0;
   float zNear = 0.1;
   glm::mat4 projectionMatrix;
   projectionMatrix = glm::perspective(45.0f, myAspectRatio, zNear, zFar);
- 
+
   //https://www.opengl.org/discussion_boards/showthread.php/171541-glm-Triangle-with-perspective
   // TODO: This will be adjusted when moving the camera.
   glm::mat4 viewMatrix;
   viewMatrix = glm::lookAt(
     glm::vec3(myXDimension_m/2, myYDimension_m/2,
-              std::min(myXDimension_m, myYDimension_m)), 
-    glm::vec3(myXDimension_m/2, myYDimension_m/2, 0.0f), 
+              std::min(myXDimension_m, myYDimension_m)),
+    glm::vec3(myXDimension_m/2, myYDimension_m/2, 0.0f),
     glm::vec3(0.0f, 1.0f, 0.0f));
+
+  // The very first simulation update will be for an almost zero time.
+  std::chrono::time_point<std::chrono::steady_clock> savedTime =
+    std::chrono::steady_clock::now();
 
   myThreadControl = true;
   while (myThreadControl)
   {
     glfwPollEvents();
+
+    std::chrono::time_point<std::chrono::steady_clock> currentTime =
+      std::chrono::steady_clock::now();
+
+    std::chrono::milliseconds updateInterval =
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+        currentTime - savedTime);
+    savedTime = currentTime;
+
+    myThreadControl = (! myWorld.update(updateInterval));
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

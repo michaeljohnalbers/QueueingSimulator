@@ -7,6 +7,7 @@
  * @author Michael Albers
  */
 
+#include <chrono>
 #include <vector>
 
 namespace QS
@@ -37,12 +38,15 @@ namespace QS
      *
      * @param theActors
      *          sensable actors within the world
+     * @param theInterval
+     *          time since last update
      * @param theTargets
      *          sensable targets within the world
      * @param theExits
      *          sensable exits within the world
      */
-    Sensable(const std::vector<const Actor*> theActors
+    Sensable(const std::vector<const Actor*> theActors,
+             const std::chrono::milliseconds &theInterval
              // TODO: undo this with further developement
 #if 0
              ,
@@ -72,6 +76,13 @@ namespace QS
      * @return sensable actors.
      */
     std::vector<const Actor*> getActors() const noexcept;
+
+    /**
+     * Returns the interval since the last update.
+     *
+     * @return the interval since the last update.
+     */
+    std::chrono::milliseconds getInterval() const noexcept;
 
     // TODO: undo this with further development
 #if 0
@@ -108,6 +119,9 @@ namespace QS
 
     /** All actors in the world that can be sensed. */
     std::vector<const Actor*> myActors;
+
+    /** Interval since last update. */
+    std::chrono::milliseconds myInterval;
 
     // TODO: undo this with further development
 #if 0

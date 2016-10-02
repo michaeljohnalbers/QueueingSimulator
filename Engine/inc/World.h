@@ -7,9 +7,11 @@
  * @author Michael Albers
  */
 
+#include <chrono>
 #include <random>
 #include <tuple>
 #include <vector>
+#include "Eigen/Core"
 
 namespace QS
 {
@@ -53,6 +55,18 @@ namespace QS
     void addActor(Actor *theActor);
 
     /**
+     * Converts the given point in Actor local space to world space coordinates.
+     *
+     * @param theActor
+     *          Actor to use as local space
+     * @param thePoint
+     *          point in local space to convert to world space
+     */
+    static Eigen::Vector2f convertPointToWorld(const Actor *theActor,
+                                               const Eigen::Vector2f &thePoint)
+      noexcept;
+
+    /**
      * Returns all the Actors in the world.
      *
      * @return all the Actors in the world.
@@ -74,7 +88,7 @@ namespace QS
      * @param theLength_m
      *          length of the world, in meters
      */
-    void setDimentions(float theWidth_m, float theLength_m);
+    void setDimensions(float theWidth_m, float theLength_m);
 
     /**
      * Seeds the random number generator with the given value.
@@ -97,13 +111,38 @@ namespace QS
     /**
      * Updates the world to the new state.
      *
+     * @param theInterval
+     *          amount of time elapsed since last update
      * @return true if the simulation has finished, false otherwise
      */
-    bool update();
+    bool update(std::chrono::milliseconds theInterval);
 
     protected:
 
     private:
+
+    /**
+     * Checks if the initial placement of the provided Actor is valid: in world
+     * bounds, Actor hasn't already been added and  not overlapping any other
+     * Actor.
+     *
+     * @param theActor
+     *          actor whose placement is to be checked
+     * @param std::logic_error
+     *          if the Actor's location is invalid
+     */
+    void checkInitialPlacement(const Actor *theActor) const;
+
+    /**
+     * Detects if the Actor has collided with anything in the world.
+     *
+     * @param theActor
+     *          Actor to check for collisions
+     * @param theNewPosition
+     *          potential new position for the Actor (assuming no collisions)
+     */
+    void collisionDetection(Actor *theActor,
+                            const Eigen::Vector2f theNewPosition) const;
 
     /** All of the Actors for the simulation. */
     std::vector<Actor*> myActors;
@@ -119,5 +158,8 @@ namespace QS
 
     /** Distribution of pseudo-random numbers. */
     std::uniform_real_distribution<> myRNGDistribution{0, 1};
+
+    /** Actors for use in Sensable objects. */
+    std::vector<const Actor*> mySensableActors;
   };
 }

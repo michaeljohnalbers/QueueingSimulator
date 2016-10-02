@@ -440,6 +440,8 @@ void QS::ControlGUI::playButtonHandler()
 
     // Bad simulation, get rid of it.
     mySimulation.reset();
+    setControlButtonSensitivities(false, false, false);
+    setMenuSensitivities(true, false, false);
   }
 }
 

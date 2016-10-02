@@ -13,8 +13,9 @@ QS::BehaviorSet::BehaviorSet(const Properties &theProperties) :
 {
 }
 
-Eigen::Vector2f QS::BehaviorSet::evaluate(const Sensable &theSensable)
+Eigen::Vector2f QS::BehaviorSet::evaluate(const Actor *theActor,
+                                          const Sensable &theSensable)
 {
-  // TODO: implement this
+  // TODO: average all behavior's vectors
   return {0,0};
 }

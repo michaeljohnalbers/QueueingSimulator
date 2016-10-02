@@ -102,7 +102,7 @@ void QS::SimulationReader::startElement(const XMLCh *const uri,
   {
     auto lengthString = XMLUtilities::getAttribute(attrs, "length");
     auto widthString = XMLUtilities::getAttribute(attrs, "width");
-    myWorld.setDimentions(std::stof(widthString), std::stof(lengthString));
+    myWorld.setDimensions(std::stof(widthString), std::stof(lengthString));
   }
   else if ("Actor" == elementName)
   {

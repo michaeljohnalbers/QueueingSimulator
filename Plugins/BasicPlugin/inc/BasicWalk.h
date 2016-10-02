@@ -47,11 +47,14 @@ namespace QS
     /**
      * Evaluates a straight line walk.
      *
+     * @param theActor
+     *          Actor this Behavior is working on
      * @param theSensable
      *          sensable data from the environment
      * @return motion vector
      */
-    virtual Eigen::Vector2f evaluate(const Sensable &theSensable) override;
+    virtual Eigen::Vector2f evaluate(const Actor *theActor,
+                                     const Sensable &theSensable) override;
 
     /**
      * Copy assignment operator.

@@ -23,6 +23,7 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/Common/inc/QSConfig.h.in"
   "${PROJECT_BINARY_DIR}/Common/inc/QSConfig.h")
 include_directories("${PROJECT_BINARY_DIR}/Common/inc/")
+include_directories("${PROJECT_SOURCE_DIR}/Common/inc/")
 
 ###################################
 # Compiler Settings

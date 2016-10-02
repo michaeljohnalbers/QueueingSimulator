@@ -11,9 +11,11 @@
 #include "Sensable.h"
 #include "gtest/gtest.h"
 
+static std::chrono::milliseconds interval{55};
+
 GTEST_TEST(SensableTest, testConstruction)
 {
-  EXPECT_NO_THROW(QS::Sensable sensable({nullptr}));
+  EXPECT_NO_THROW(QS::Sensable sensable({nullptr}, interval));
 }
 
 GTEST_TEST(SensableTest, testCopyMove)
@@ -23,7 +25,7 @@ GTEST_TEST(SensableTest, testCopyMove)
                    {"x", "5.0"}, {"y", "5.0"}})
       };
   std::vector<const QS::Actor*> actors{actor.get()};
-  QS::Sensable sensable({actor.get()});
+  QS::Sensable sensable({actor.get()}, interval);
 
   std::vector<const QS::Actor*> emptyActors;
 
@@ -37,12 +39,12 @@ GTEST_TEST(SensableTest, testCopyMove)
   EXPECT_EQ(sensable.getActors(), sensableMove.getActors());
 
   // Test copy assignment operator
-  QS::Sensable sensableAssignCopy{emptyActors};
+  QS::Sensable sensableAssignCopy{emptyActors, interval};
   sensableAssignCopy = sensable;
   EXPECT_EQ(sensable.getActors(), sensableAssignCopy.getActors());
 
   // Test move assignment operator
-  QS::Sensable sensableAssignMove{emptyActors};
+  QS::Sensable sensableAssignMove{emptyActors, interval};
   sensableAssignMove = sensable;
   EXPECT_EQ(sensable.getActors(), sensableAssignMove.getActors());
 }
@@ -54,6 +56,12 @@ GTEST_TEST(SensableTest, testActors)
                    {"x", "5.0"}, {"y", "5.0"}})
       };
   std::vector<const QS::Actor*> actors{actor.get()};
-  QS::Sensable sensable({actor.get()});
+  QS::Sensable sensable({actor.get()}, interval);
   EXPECT_EQ(actors, sensable.getActors());
+}
+
+GTEST_TEST(SensableTest, testInterval)
+{
+  QS::Sensable sensable({nullptr}, interval);
+  EXPECT_EQ(interval, sensable.getInterval());
 }
