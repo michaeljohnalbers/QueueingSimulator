@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  Small world used to check collision detection/resolution.
+-->
+
+<Simulation>
+  <Seed value="1" />
+  <World width="5" length="5">
+    <Actors>
+
+      <!-- Lower left (near origin), red-->
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="x" value="1.01" />
+	<Property key="y" value="1.01" />
+	<Property key="color" value="1.0 0.0 0.0" />
+	<Property key="max speed" value="9.5"/>
+      </Actor>
+
+      <!-- Lower right, green-->
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="3.99" />
+      	<Property key="y" value="1.01" />
+      	<Property key="color" value="0.0 1.0 0.0" />
+      	<Property key="orientation" value="1.570795" />
+      </Actor>
+
+      <!-- Upper right, blue-->
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="3.99" />
+      	<Property key="y" value="3.99" />
+      	<Property key="color" value="0.0 0.0 1.0" />
+      	<Property key="orientation" value="3.14159" />
+      </Actor>
+
+      <!-- Upper left, white-->
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="1.01" />
+      	<Property key="y" value="3.99" />
+      	<Property key="orientation" value="4.712385" />
+      </Actor>
+    </Actors>
+  </World>
+</Simulation>

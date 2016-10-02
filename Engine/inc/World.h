@@ -88,7 +88,7 @@ namespace QS
      * @param theLength_m
      *          length of the world, in meters
      */
-    void setDimentions(float theWidth_m, float theLength_m);
+    void setDimensions(float theWidth_m, float theLength_m);
 
     /**
      * Seeds the random number generator with the given value.
@@ -120,6 +120,29 @@ namespace QS
     protected:
 
     private:
+
+    /**
+     * Checks if the initial placement of the provided Actor is valid: in world
+     * bounds, Actor hasn't already been added and  not overlapping any other
+     * Actor.
+     *
+     * @param theActor
+     *          actor whose placement is to be checked
+     * @param std::logic_error
+     *          if the Actor's location is invalid
+     */
+    void checkInitialPlacement(const Actor *theActor) const;
+
+    /**
+     * Detects if the Actor has collided with anything in the world.
+     *
+     * @param theActor
+     *          Actor to check for collisions
+     * @param theNewPosition
+     *          potential new position for the Actor (assuming no collisions)
+     */
+    void collisionDetection(Actor *theActor,
+                            const Eigen::Vector2f theNewPosition) const;
 
     /** All of the Actors for the simulation. */
     std::vector<Actor*> myActors;
