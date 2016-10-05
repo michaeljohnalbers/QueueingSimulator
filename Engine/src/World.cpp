@@ -135,16 +135,16 @@ void QS::World::setSeed(uint64_t theSeed)
   myRNGEngine.seed(theSeed);
 }
 
-bool QS::World::update(std::chrono::milliseconds theInterval)
+bool QS::World::update(float theIntervalInSeconds)
 {
-  Sensable sensable(mySensableActors, theInterval);
+  Sensable sensable(mySensableActors, theIntervalInSeconds);
 
   for (Actor *actor : myActors)
   {
     Eigen::Vector2f motionVector = actor->calculateMotionVector(sensable);
 
     Eigen::Vector2f adjustedMotionVector = actor->adjustVectorToMaximums(
-      motionVector, theInterval);
+      motionVector, theIntervalInSeconds);
 
     Eigen::Vector2f newActorPosition = convertPointToWorld(
       actor, adjustedMotionVector);

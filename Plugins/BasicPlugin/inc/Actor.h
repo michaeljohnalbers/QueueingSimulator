@@ -7,7 +7,6 @@
  * @author Michael Albers
  */
 
-#include <chrono>
 #include <functional>
 #include "DependencyManager.h"
 #include "EntityDependency.h"
@@ -92,7 +91,7 @@ namespace QS
      * @param theVector
      *          vector in local coordinates (likely the return from
      *          calculateMotionVector)
-     * @param theInterval
+     * @param theIntervalInSeconds
      *          duration in which the vector was generated. That is, the vector
      *          gives the meters or radians, the interval is the seconds in
      *          meters/second or radians/second.
@@ -101,7 +100,7 @@ namespace QS
      */
     virtual Eigen::Vector2f adjustVectorToMaximums(
       const Eigen::Vector2f &theVector,
-      const std::chrono::milliseconds &theInterval) const noexcept;
+      float theIntervalInSeconds) const noexcept;
 
     /**
      * Determines the vector the Actor wants to move. This function should not
@@ -114,7 +113,8 @@ namespace QS
      * @param theSensable
      *          sensable data in the world
      * @return Vector to where the Actor should ("wants") be located, relative
-     *         to the Actor's center point
+     *         to the Actor's center point, after the update
+     *         interval. So the units of the vector are meters/second.
      */
     virtual Eigen::Vector2f calculateMotionVector(
       const Sensable &theSensable);

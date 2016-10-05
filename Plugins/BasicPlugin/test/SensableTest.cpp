@@ -7,11 +7,11 @@
 
 #include <memory>
 #include <vector>
+#include "gtest/gtest.h"
 #include "Actor.h"
 #include "Sensable.h"
-#include "gtest/gtest.h"
 
-static std::chrono::milliseconds interval{55};
+static float interval{.055};
 
 GTEST_TEST(SensableTest, testConstruction)
 {
@@ -60,8 +60,8 @@ GTEST_TEST(SensableTest, testActors)
   EXPECT_EQ(actors, sensable.getActors());
 }
 
-GTEST_TEST(SensableTest, testInterval)
+GTEST_TEST(SensableTest, getIntervalInSeconds)
 {
   QS::Sensable sensable({nullptr}, interval);
-  EXPECT_EQ(interval, sensable.getInterval());
+  EXPECT_EQ(interval, sensable.getIntervalInSeconds());
 }

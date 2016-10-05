@@ -111,11 +111,11 @@ namespace QS
     /**
      * Updates the world to the new state.
      *
-     * @param theInterval
+     * @param theIntervalInSeconds
      *          amount of time elapsed since last update
      * @return true if the simulation has finished, false otherwise
      */
-    bool update(std::chrono::milliseconds theInterval);
+    bool update(float theIntervalInSeconds);
 
     protected:
 

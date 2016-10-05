@@ -7,6 +7,7 @@
 
 #include "gtest/gtest.h"
 #include "BasicWalk.h"
+#include "EigenHelper.h"
 #include "Sensable.h"
 #include "Walk.h"
 
@@ -22,9 +23,9 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
   basicWalk.setDependencies({basicWalkDependencies});
 
   {
-    std::chrono::milliseconds oneSecond{1000};
+    float oneSecond = 1.0;
     QS::Sensable sensable({}, oneSecond);
-    Eigen::Vector2f expectedMotionVector(0.89408, 0);
+    Eigen::Vector2f expectedMotionVector(1.0, 0);
     auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
     EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
       << "Actual X: " << actualMotionVector.x() << std::endl;
@@ -33,9 +34,9 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
   }
 
   {
-    std::chrono::milliseconds oneMillisecond{1};
+    float oneMillisecond = 0.001;
     QS::Sensable sensable({}, oneMillisecond);
-    Eigen::Vector2f expectedMotionVector(0.00089408, 0);
+    Eigen::Vector2f expectedMotionVector(0.001, 0);
     auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
     EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
       << "Actual X: " << actualMotionVector.x() << std::endl;
@@ -44,14 +45,13 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
   }
 
   {
-    // Test at a movie-type frame rate (think batch mode). 24 frames per second
-    // is actually 41 2/3 milliseconds per frame, but std::chrono::milliseconds
-    // only deals in integer numbers. So I rounded up.
-    std::chrono::milliseconds twentyFourFramesPerSecond{42};
+    // Test at a movie-type frame rate (think batch mode).
+    float twentyFourFramesPerSecond = 1.0/24.0;
     QS::Sensable sensable({}, twentyFourFramesPerSecond);
-    Eigen::Vector2f expectedMotionVector(0.03755136, 0);
+    Eigen::Vector2f expectedMotionVector(0.041666, 0);
     auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
-    EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
+    EXPECT_NEAR(expectedMotionVector.x(), actualMotionVector.x(),
+                QS::FLOAT_TOLERANCE)
       << "Actual X: " << actualMotionVector.x() << std::endl;
     EXPECT_FLOAT_EQ(expectedMotionVector.y(), actualMotionVector.y())
       << "Actual Y: " << actualMotionVector.y() << std::endl;

@@ -3,7 +3,9 @@
 
 add_executable(QueueingSimulator QSMain.cpp)
 target_include_directories(QueueingSimulator PRIVATE "../../Control/inc")
+target_include_directories(QueueingSimulator PRIVATE "../../Visualization/inc")
 target_include_directories(QueueingSimulator PRIVATE ${GLFW_INCLUDE_DIR})
+target_include_directories(QueueingSimulator PRIVATE ${GLM_INCLUDE_DIR})
 target_link_libraries(QueueingSimulator qs-engine)
 target_link_libraries(QueueingSimulator qs-control)
 target_link_libraries(QueueingSimulator qs-visualization)

@@ -195,7 +195,7 @@ GTEST_TEST(ActorTest, testConstruction)
   }
 }
 
-TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
+TEST_F(ActorTestFixture, adjustVectorToMaximums)
 {
   QS::PluginEntity::Properties properties{glbGoodProperties};
   properties.insert({"max speed", "2.0"});
@@ -207,7 +207,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
   // Null case. Vector that doesn't move shouldn't be modified.
   {
     Eigen::Vector2f inputVector(0, 0);
-    std::chrono::milliseconds interval{5};
+    float interval = 0.005;
     auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
     EXPECT_EQ(inputVector, adjustedVector);
   }
@@ -216,7 +216,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
   {
     QS::PluginEntity::Properties propertiesNoMax{glbGoodProperties};
     QS::Actor actorNoMax(propertiesNoMax);
-    std::chrono::milliseconds interval{1};
+    float interval = 0.001;
     // Actor's default orientation is (1,0).
     Eigen::Vector2f inputVector(-50000000.0, 0);
     auto adjustedVector = actorNoMax.adjustVectorToMaximums(
@@ -226,7 +226,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
   // Basic capping of maximum speed.
   {
-    std::chrono::milliseconds interval{1000};
+    float interval = 1.0;
     Eigen::Vector2f inputVector(2.1,0);
     Eigen::Vector2f expectedVector(2.0, 0);
     auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
@@ -237,7 +237,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
   // Test valid counter-clockwise rotation
   {
-    std::chrono::milliseconds interval{1000};
+    float interval = 1.0;
     Eigen::Vector2f inputVector(0, 1.0);
     auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
     EXPECT_EQ(inputVector, adjustedVector);
@@ -245,7 +245,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
   // Test too-far counter-clockwise rotation is adjusted
   {
-    std::chrono::milliseconds interval{1000};
+    float interval = 1.0;
     // 92 degrees
     Eigen::Vector2f inputVector(-0.0349, 0.9994);
     Eigen::Vector2f expectedVector(0.0, 1.0);
@@ -257,7 +257,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
   // Test valid clockwise rotation
   {
-    std::chrono::milliseconds interval{1000};
+    float interval = 1000.0;
     Eigen::Vector2f inputVector(0, -1.0);
     auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
     EXPECT_EQ(inputVector, adjustedVector);
@@ -265,7 +265,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
   // Test too-far clockwise rotation is adjusted
   {
-    std::chrono::milliseconds interval{1000};
+    float interval = 1.0;
     // 245 degrees
     Eigen::Vector2f inputVector(-0.4226, -0.9063);
     Eigen::Vector2f expectedVector(0.0, -1.0);
@@ -277,7 +277,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
   // Capping of maximum speed & rotation of vector with non-zero X and Y.
   {
-    std::chrono::milliseconds interval{1000};
+    float interval = 1.0;
     Eigen::Vector2f inputVector(-2.1, 3.3);
     Eigen::Vector2f expectedVector(0, 2.0);
     auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
@@ -294,7 +294,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
     QS::Actor fastActor(zeroMaxSpeedProperties);
 
-    std::chrono::milliseconds interval{1000};
+    float interval = 1.0;
     Eigen::Vector2f inputVector(-2.0, 1.0);
     Eigen::Vector2f expectedVector(0, 0);
     auto adjustedVector = fastActor.adjustVectorToMaximums(inputVector,
@@ -312,7 +312,7 @@ TEST_F(ActorTestFixture, testAdjustVectorToMaximums)
 
     QS::Actor fastActor(zeroMaxRotationProperties);
 
-    std::chrono::milliseconds interval{1000};
+    float interval = 1.0;
 
     // No rotation, but does allow speed adjustment
     Eigen::Vector2f inputVector(3.0, 0.0);

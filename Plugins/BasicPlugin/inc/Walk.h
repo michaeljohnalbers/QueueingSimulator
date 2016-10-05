@@ -51,13 +51,13 @@ namespace QS
      *
      * @param theActor
      *          Actor this Behavior is working on
-     * @param theInterval
+     * @param theIntervalInSeconds
      *          amount of time elapsed since last simulation update
      * @return vector used to influence the motion of the Actor
      */
     virtual Eigen::Vector2f evaluate(
       const Actor *theActor,
-      const std::chrono::milliseconds &theInterval) override;
+      float theIntervalInSeconds) override;
 
     /**
      * Copy assignment operator.

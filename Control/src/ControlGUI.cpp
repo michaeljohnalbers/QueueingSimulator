@@ -10,6 +10,7 @@
 #include <cstring>
 #undef _GNU_SORUCE
 
+#include <iomanip>
 #include <iostream>
 
 #include "ControlGUI.h"
@@ -38,6 +39,12 @@ QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
   setControlButtonSensitivities(false, false, false);
   setSensitivities(myRealTimeGrid, false);
   setSensitivities(myBatchBox, false);
+
+  // The camera position is set on the visualization thread, so there isn't
+  // a good place to update it in this thread. This callback will hopefully
+  // ensure it stays up-to-date.
+  Glib::signal_timeout().connect(
+    sigc::mem_fun(*this, &ControlGUI::timerFunction), 50);
 
   show_all_children();
 }
@@ -187,35 +194,59 @@ void QS::ControlGUI::buildModeFrame(Gtk::Container &theContainer)
 void QS::ControlGUI::buildRealTime(Gtk::Container &theContainer)
 {
   theContainer.add(myRealTimeFrame);
-  myRealTimeFrame.set_label("Camera Control");
+  myRealTimeFrame.set_label("World View");
 
   myRealTimeUpButton.property_always_show_image() = true;
   myRealTimeUpButton.set_image_from_icon_name("go-up");
   myRealTimeUpButton.set_label("Up");
+  myRealTimeUpButton.signal_pressed().connect(
+    sigc::bind<Visualization::UserInputType>(
+      sigc::mem_fun(*this, &ControlGUI::cameraMoveHandler),
+      Visualization::UserInputType::CAMERA_UP));
 
   myRealTimeLeftButton.property_always_show_image() = true;
   myRealTimeLeftButton.set_image_from_icon_name("go-previous");
   myRealTimeLeftButton.set_label("Left");
+  myRealTimeLeftButton.signal_pressed().connect(
+    sigc::bind<Visualization::UserInputType>(
+      sigc::mem_fun(*this, &ControlGUI::cameraMoveHandler),
+      Visualization::UserInputType::CAMERA_LEFT));
 
   myRealTimeDownButton.property_always_show_image() = true;
   myRealTimeDownButton.set_image_from_icon_name("go-down");
   myRealTimeDownButton.set_label("Down");
+  myRealTimeDownButton.signal_pressed().connect(
+    sigc::bind<Visualization::UserInputType>(
+      sigc::mem_fun(*this, &ControlGUI::cameraMoveHandler),
+      Visualization::UserInputType::CAMERA_DOWN));
 
   myRealTimeRightButton.property_always_show_image() = true;
   myRealTimeRightButton.set_image_from_icon_name("go-next");
   myRealTimeRightButton.set_label("Right");
+  myRealTimeRightButton.signal_pressed().connect(
+    sigc::bind<Visualization::UserInputType>(
+      sigc::mem_fun(*this, &ControlGUI::cameraMoveHandler),
+      Visualization::UserInputType::CAMERA_RIGHT));
 
   myRealTimePositionLabel.set_text("(0,0)");
 
   myRealTimeZoomInButton.property_always_show_image() = true;
   myRealTimeZoomInButton.set_image_from_icon_name("zoom-in");
   myRealTimeZoomInButton.set_label("Zoom In");
+  myRealTimeZoomInButton.signal_pressed().connect(
+    sigc::bind<Visualization::UserInputType>(
+      sigc::mem_fun(*this, &ControlGUI::cameraMoveHandler),
+      Visualization::UserInputType::ZOOM_IN));
 
   myRealTimeZoomOutButton.property_always_show_image() = true;
   myRealTimeZoomOutButton.set_image_from_icon_name("zoom-out");
   myRealTimeZoomOutButton.set_label("Zoom Out");
+  myRealTimeZoomOutButton.signal_pressed().connect(
+    sigc::bind<Visualization::UserInputType>(
+      sigc::mem_fun(*this, &ControlGUI::cameraMoveHandler),
+      Visualization::UserInputType::ZOOM_OUT));
 
-  myRealTimeZoomLabel.set_text("100 %");
+  myRealTimeZoomLabel.set_text("100.0 %");
 
   myRealTimeFrame.add(myRealTimeGrid);
   myRealTimeGrid.attach(myRealTimeUpButton, 1, 0, 1, 1);
@@ -318,6 +349,12 @@ void QS::ControlGUI::buildSimulationStatusFrame(Gtk::Container &theContainer)
   mySimulationStatusBox.add(mySimulationStatusProgressBar);
 }
 
+void QS::ControlGUI::cameraMoveHandler(
+  Visualization::UserInputType theInputType)
+{
+  mySimulation->getVisualization()->userInput(theInputType);
+}  
+
 void QS::ControlGUI::fileOpenHandler()
 {
   Gtk::FileChooserDialog fileChooser("Select a Simulation file",
@@ -393,6 +430,13 @@ void QS::ControlGUI::helpAboutHandler()
   aboutDialog.run();
 }
 
+bool QS::ControlGUI::timerFunction()
+{
+  updateCameraPosition();
+  updateCameraZoom();
+  return true;
+}
+
 void QS::ControlGUI::modeRadioButtonToggled()
 {
   if (myRealTimeButton.get_active())
@@ -417,37 +461,56 @@ void QS::ControlGUI::modeRadioButtonToggled()
 void QS::ControlGUI::pauseButtonHandler()
 {
   setControlButtonSensitivities(true, false, true);
+  mySimulation->getVisualization()->userInput(
+    Visualization::UserInputType::PAUSE);
 }
 
 void QS::ControlGUI::playButtonHandler()
 {
   setControlButtonSensitivities(false, true, true);
   setMenuSensitivities(false, false, false);
-
-  try
+  if (myRealTimeButton.get_active())
   {
-    // TODO: handle batch mode
-    mySimulation.reset(new SimulationPackage(mySimulationConfigFile,
-                                             myBaseDir));
-    mySimulation->startSimulation();
+    setSensitivities(myRealTimeGrid, true);
   }
-  catch (const std::exception &exception)
+  else
   {
-    std::string error{"Error loading simulation: "};
-    error += exception.what();
-    Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
-    errorDialog.run();
+    setSensitivities(myBatchBox, false);
+  }
 
-    // Bad simulation, get rid of it.
-    mySimulation.reset();
-    setControlButtonSensitivities(false, false, false);
-    setMenuSensitivities(true, false, false);
+  if (! mySimulation)
+  {
+    try
+    {
+      // TODO: handle batch mode
+      mySimulation.reset(new SimulationPackage(mySimulationConfigFile,
+                                               myBaseDir));
+      mySimulation->startSimulation();
+    }
+    catch (const std::exception &exception)
+    {
+      std::string error{"Error loading simulation: "};
+      error += exception.what();
+      Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
+      errorDialog.run();
+
+      // Bad simulation, get rid of it.
+      mySimulation.reset();
+      setControlButtonSensitivities(false, false, false);
+      setMenuSensitivities(true, false, false);
+    }
+  }
+  else
+  {
+    // Simulation must be paused.
+    mySimulation->getVisualization()->userInput(
+      Visualization::UserInputType::PLAY);
   }
 }
 
 int QS::ControlGUI::run(int argc, char **argv, const std::string &theBaseDir)
 {
-  auto app = Gtk::Application::create(argc, argv, "gs.Main");
+  auto app = Gtk::Application::create(argc, argv, "qs.Main");
 
   ControlGUI gui{theBaseDir};
 
@@ -488,9 +551,47 @@ void QS::ControlGUI::stopButtonHandler()
 {
   setControlButtonSensitivities(true, false, false);
   setMenuSensitivities(true, true, true);
+  if (myRealTimeButton.get_active())
+  {
+    setSensitivities(myRealTimeGrid, false);
+  }
+  else
+  {
+    setSensitivities(myBatchBox, true);
+  }
 
-  // TODO: may need to be more sophisticated than this in the future.
+  // TODO: this doesn't always stop the simulation. need to investigate why
   mySimulation.reset();
+}
+
+void QS::ControlGUI::updateCameraPosition()
+{
+  float x = 0.0, y = 0.0;
+  if (mySimulation)
+  {
+    std::tie(x, y) = mySimulation->getVisualization()->getCameraPosition();
+  }
+  std::ostringstream positionString;
+  int precision = 2;
+
+  positionString << "(" << std::setprecision(precision) << std::fixed << x
+                 << "," << std::setprecision(precision) << std::fixed << y
+                 << ")";
+  myRealTimePositionLabel.set_text(positionString.str());
+}
+
+void QS::ControlGUI::updateCameraZoom()
+{
+  float zoom = 100;
+  if (mySimulation)
+  {
+    zoom = mySimulation->getVisualization()->getCameraZoom();
+  }
+  std::ostringstream zoomString;
+  int precision = 1;
+
+  zoomString << std::setprecision(precision) << std::fixed << zoom << " %";
+  myRealTimeZoomLabel.set_text(zoomString.str());
 }
 
 void QS::ControlGUI::viewSummaryHandler()

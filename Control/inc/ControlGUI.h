@@ -10,6 +10,7 @@
 #include <gtkmm.h>
 #include <memory>
 #include "SimulationPackage.h"
+#include "Visualization.h"
 
 namespace QS
 {
@@ -143,6 +144,14 @@ namespace QS
     void buildSimulationStatusFrame(Gtk::Container &theContainer);
 
     /**
+     * Callback for clicking any camera move button.
+     *
+     * @param theInputType
+     *          camera direction
+     */
+    void cameraMoveHandler(Visualization::UserInputType theInputType);
+
+    /**
      * Callback for File->Open
      */
     void fileOpenHandler();
@@ -220,6 +229,16 @@ namespace QS
     void stopButtonHandler();
 
     /**
+     * Updates the camera's position coordinates
+     */
+    void updateCameraPosition();
+
+    /**
+     * Updates the camera's zoom percentage.
+     */
+    void updateCameraZoom();
+
+    /**
      * Callback for View->Summary
      */
     void viewSummaryHandler();
@@ -230,6 +249,11 @@ namespace QS
     void viewMessagesHandler();
 
     private:
+
+    /**
+     * Callback for timer expiration.
+     */
+    bool timerFunction();
 
     /** Base directory */
     const std::string myBaseDir;

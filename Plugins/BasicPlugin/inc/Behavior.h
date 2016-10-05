@@ -7,7 +7,6 @@
  * @author Michael Albers
  */
 
-#include <chrono>
 #include <string>
 #include <vector>
 
@@ -84,14 +83,15 @@ namespace QS
      *
      * @param theActor
      *          Actor this Behavior is working on
-     * @param theInterval
+     * @param theIntervalInSeconds
      *          amount of time elapsed since last simulation update
      * @return Vector to where the this Behavior "wants" the Actor to be
-     *         located, relative to the Actor's center point
+     *         located, relative to the Actor's center point, after the update
+     *         interval. So the units of the vector are meters/second.
      */
     virtual Eigen::Vector2f evaluate(
       const Actor *theActor,
-      const std::chrono::milliseconds &theInterval) = 0;
+      float theIntervalInSeconds) = 0;
 
     /**
      * Copy assignment operator.

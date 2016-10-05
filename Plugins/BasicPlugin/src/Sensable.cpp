@@ -8,9 +8,9 @@
 #include "Sensable.h"
 
 QS::Sensable::Sensable(const std::vector<const Actor*> theActors,
-                       const std::chrono::milliseconds &theInterval) noexcept :
+                       float theIntervalInSeconds) noexcept :
   myActors(theActors),
-  myInterval(theInterval)
+  myIntervalInSeconds(theIntervalInSeconds)
 {
 }
 
@@ -19,7 +19,7 @@ std::vector<const QS::Actor*> QS::Sensable::getActors() const noexcept
   return myActors;
 }
 
-std::chrono::milliseconds QS::Sensable::getInterval() const noexcept
+float QS::Sensable::getIntervalInSeconds() const noexcept
 {
-  return myInterval;
+  return myIntervalInSeconds;
 }

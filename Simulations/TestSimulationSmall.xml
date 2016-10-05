@@ -18,7 +18,7 @@
 	<Property key="x" value="1.01" />
 	<Property key="y" value="1.01" />
 	<Property key="color" value="1.0 0.0 0.0" />
-	<Property key="max speed" value="9.5"/>
+	<Property key="max speed" value="0.5"/>
       </Actor>
 
       <!-- Lower right, green-->

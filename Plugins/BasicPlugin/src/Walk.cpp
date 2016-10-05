@@ -14,10 +14,8 @@ QS::Walk::Walk(const Properties &theProperties) :
 
 Eigen::Vector2f QS::Walk::evaluate(
   const Actor *theActor,
-  const std::chrono::milliseconds &theInterval)
+  float theIntervalInSeconds)
 {
-  float intervalInSeconds = theInterval.count() / 1000.0;
-  // 2 MPH converted to meters/second.
-  float twoMPHAsMperSec = 0.89408;
-  return {twoMPHAsMperSec * intervalInSeconds, 0};
+  float speedInMetersPerSecond = 1.0;
+  return {speedInMetersPerSecond * theIntervalInSeconds, 0};
 }
