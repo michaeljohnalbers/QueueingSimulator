@@ -20,7 +20,7 @@ class TestBehavior : public QS::Behavior
 
   virtual Eigen::Vector2f evaluate(
     const QS::Actor *theActor,
-    const std::chrono::milliseconds &theInterval) override
+    float theIntervalInSeconds) override
   {
     return {0.0, 0.0};
   }

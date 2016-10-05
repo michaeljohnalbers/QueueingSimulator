@@ -60,11 +60,9 @@ QS::Actor::Actor(const Properties &theProperties) :
 
 Eigen::Vector2f QS::Actor::adjustVectorToMaximums(
   const Eigen::Vector2f &theVector,
-  const std::chrono::milliseconds &theInterval) const noexcept
+  float theIntervalInSeconds) const noexcept
 {
   Eigen::Vector2f adjustedVector = theVector;
-
-  float seconds = theInterval.count() / 1000;
 
   // Don't use member in case derived class overrides getMaximumSpeed.
   float maximumSpeed = getMaximumSpeed();
@@ -72,15 +70,16 @@ Eigen::Vector2f QS::Actor::adjustVectorToMaximums(
   // Shotcut for fixed Actor. And ensures no floating point precision issues
   // where the Actor moves ever-so-slightly due to near-zero values after the
   // math below.
-  if (0.0 == maximumSpeed)
+  if (0.0 == maximumSpeed || (theVector.x() == 0.0 && theVector.y() == 0.0))
   {
     return Eigen::Vector2f(0, 0);
   }
 
+  maximumSpeed *= theIntervalInSeconds;
+
   if (maximumSpeed > 0.0)
   {
-    float magnitude = theVector.norm();
-    float vectorMetersPerSecond = magnitude / seconds;
+    float vectorMetersPerSecond = theVector.norm();
 
     if (vectorMetersPerSecond > maximumSpeed)
     {
@@ -91,7 +90,7 @@ Eigen::Vector2f QS::Actor::adjustVectorToMaximums(
   }
 
   // Don't use member in case derived class overrides getMaximumRotationSpeed
-  float maximumRotation = getMaximumRotationSpeed();
+  float maximumRotation = getMaximumRotationSpeed() * theIntervalInSeconds;
 
   // Not using FLOAT_TOLERANCE here in cause user wants a very, very small
   // rotation. Also, making sure the adjusted vector isn't 0,0 as rotation isn't
@@ -101,8 +100,8 @@ Eigen::Vector2f QS::Actor::adjustVectorToMaximums(
   {
     Eigen::Vector2f normalizedInput = adjustedVector.normalized();
 
-    float positiveAngle = std::acos(DEFAULT_ORIENTATION.dot(normalizedInput));
-    float vectorRadiansPerSecond = positiveAngle / seconds;
+    float vectorRadiansPerSecond =
+      std::acos(DEFAULT_ORIENTATION.dot(normalizedInput));
     float angleDiff = vectorRadiansPerSecond - maximumRotation;
 
     if (angleDiff > FLOAT_TOLERANCE)

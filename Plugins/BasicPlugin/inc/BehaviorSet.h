@@ -74,7 +74,8 @@ namespace QS
      * @param theSensable
      *          sensable data from the environment
      * @return Vector to where the this BehaviorSet "wants" the Actor to be
-     *         located, relative to the Actor's center point
+     *         located, relative to the Actor's center point, after the update
+     *         interval. So the units of the vector are meters/second.
      */
     virtual Eigen::Vector2f evaluate(const Actor *theActor,
                                      const Sensable &theSensable);
