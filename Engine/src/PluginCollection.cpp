@@ -9,6 +9,7 @@
 #include <cstring>
 #include <dirent.h>
 #include <stdexcept>
+#include "Finally.h"
 #include "Plugin.h"
 #include "PluginCollection.h"
 #include "PluginDefinition.h"
@@ -26,6 +27,8 @@ QS::PluginCollection::PluginCollection(
     error += thePluginBaseDirectory + "': " + std::strerror(thisErrno) + ".";
     throw std::runtime_error(error);
   }
+
+  Finally directoryClean([=]() {::closedir(directory);});
 
   // Directory (expected) layout:
   //  thePluginBaseDirectory
@@ -69,6 +72,8 @@ std::string QS::PluginCollection::checkPluginDirectory(
   DIR *pluginDirectory = ::opendir(thePluginDirectory.c_str());
   if (NULL != pluginDirectory)
   {
+    Finally directoryClean([=]() {::closedir(pluginDirectory);});
+
     auto hasSuffix = [](const std::string &str, const std::string &suffix) ->
       bool
       {

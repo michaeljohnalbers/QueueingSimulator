@@ -9,6 +9,7 @@
 
 #include <string>
 #include "EntityManager.h"
+#include "Metrics.h"
 #include "World.h"
 
 namespace QS
@@ -75,6 +76,18 @@ namespace QS
     ~Simulation() = default;
 
     /**
+     * Returns the metrics for this simulation.
+     *
+     * @return the metrics for this simulation.
+     */
+    const Metrics& getMetrics() const noexcept;
+
+    /**
+     * @see const version
+     */
+    Metrics& getMetrics()noexcept;
+
+    /**
      * Returns the simulation world.
      *
      * @return simulation world
@@ -123,6 +136,9 @@ namespace QS
 
     /** Creator/manager of plugin entities. */
     std::shared_ptr<EntityManager> myEntityManager;
+
+    /** Metrics for the simulation. */
+    Metrics myMetrics;
 
     /** Mode of the simulation. */
     const Mode myMode;

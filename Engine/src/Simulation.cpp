@@ -32,12 +32,23 @@ QS::Simulation::Simulation(const std::string &theBaseDir,
   myBaseDir(theBaseDir),
   myMode(theMode),
   myOutputFile(theOutputFile),
-  mySimulationConfigFile(theSimulationConfigFile)
+  mySimulationConfigFile(theSimulationConfigFile),
+  myWorld(myMetrics)
 {
   std::string pluginsDir{myBaseDir + "/plugins"};
   myPlugins.reset(new PluginCollection{pluginsDir});
 
   myEntityManager.reset(new EntityManager{myPlugins});
+}
+
+const QS::Metrics& QS::Simulation::getMetrics() const noexcept
+{
+  return myMetrics;
+}
+
+QS::Metrics& QS::Simulation::getMetrics() noexcept
+{
+  return myMetrics;
 }
 
 const QS::World& QS::Simulation::getWorld() const noexcept
@@ -58,4 +69,6 @@ void QS::Simulation::readSimulation()
                          myEntityManager, myWorld)};
 
   simulationReader->read();
+
+  myWorld.initializeActorMetrics();
 }

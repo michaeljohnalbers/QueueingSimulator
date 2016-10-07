@@ -19,7 +19,7 @@ QS::Plugin::Plugin(std::shared_ptr<PluginDefinition> theDefinition) :
 
   myBehaviorSetCreatorDestructor = loadCreatorDestructor<BehaviorSet>(
     myDefinition->getBehaviorSetCreatorDestructor(), "Behavior Set");
-
+    
   myBehaviorCreatorDestructor = loadCreatorDestructor<Behavior>(
     myDefinition->getBehaviorCreatorDestructor(), "Behavior");
 

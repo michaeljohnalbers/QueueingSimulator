@@ -6,15 +6,16 @@
  */
 
 #include <stdexcept>
-#include "ActorDefinition.h"
-#include "BehaviorSetDefinition.h"
-#include "PluginDefinition.h"
-#include "PluginReader.h"
-#include "XMLUtilities.h"
 #include "xercesc/sax2/SAX2XMLReader.hpp"
 #include "xercesc/sax2/XMLReaderFactory.hpp"
 #include "xercesc/util/XMLString.hpp"
 #include "xercesc/sax2/Attributes.hpp"
+#include "ActorDefinition.h"
+#include "BehaviorSetDefinition.h"
+#include "Finally.h"
+#include "PluginDefinition.h"
+#include "PluginReader.h"
+#include "XMLUtilities.h"
 
 QS::PluginReader::PluginReader(const std::string &thePluginDirectory,
                                const std::string &theConfigFile,
@@ -46,6 +47,7 @@ std::shared_ptr<QS::PluginDefinition> QS::PluginReader::read()
   try
   {
     SAX2XMLReader* parser = XMLReaderFactory::createXMLReader();
+    Finally parserCleanup([=](){delete parser;});
     std::string schema = myPluginSchemaDirectory + "/" + SCHEMA_FILE;
     parser->loadGrammar(schema.c_str(), Grammar::SchemaGrammarType, true);
     parser->setFeature(XMLUni::fgXercesUseCachedGrammarInParse, true);

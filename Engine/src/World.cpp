@@ -10,9 +10,16 @@
 #include <sstream>
 #include "Eigen/Core"
 #include "Actor.h"
+#include "ActorMetrics.h"
 #include "EigenHelper.h"
+#include "Metrics.h"
 #include "Sensable.h"
 #include "World.h"
+
+QS::World::World(Metrics &theMetrics) :
+  myMetrics(theMetrics)
+{
+}
 
 void QS::World::addActor(Actor *theActor)
 {
@@ -89,9 +96,9 @@ void QS::World::collisionDetection(Actor *theActor,
     }
   }
 
-  for (Actor *collidedActor : collidedActors)
-  {
-  }
+  // for (Actor *collidedActor : collidedActors)
+  // {
+  // }
 }
 
 Eigen::Vector2f QS::World::convertPointToWorld(const Actor *theActor,
@@ -114,6 +121,11 @@ Eigen::Vector2f QS::World::convertPointToWorld(const Actor *theActor,
   return worldPoint;
 }
 
+void QS::World::finalizeActorMetrics() const noexcept
+{
+  myMetrics.finalizeActorMetrics(myActors);
+}
+
 const std::vector<QS::Actor*>& QS::World::getActors() const noexcept
 {
   return myActors;
@@ -122,6 +134,11 @@ const std::vector<QS::Actor*>& QS::World::getActors() const noexcept
 std::tuple<float, float> QS::World::getDimensions() const noexcept
 {
   return std::make_tuple(myWidth_m, myLength_m);
+}
+
+void QS::World::initializeActorMetrics() noexcept
+{
+  myMetrics.initializeActorMetrics(myActors);
 }
 
 void QS::World::setDimensions(float theWidth_m, float theLength_m)
@@ -151,9 +168,14 @@ bool QS::World::update(float theIntervalInSeconds)
 
     collisionDetection(actor, newActorPosition);
 
+    myMetrics.getActorMetrics(actor).addGrossDistance(
+      std::abs(adjustedMotionVector.norm()));
+
     actor->setPosition(newActorPosition);
     // TODO: need to update Actor's velocity, orientation
   }
+
+  myMetrics.addToElapsedTime(theIntervalInSeconds);
 
   return false;
 }
