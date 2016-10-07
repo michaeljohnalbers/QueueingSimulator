@@ -10,12 +10,14 @@
 #include <memory>
 #include "gtest/gtest.h"
 #include "Actor.h"
+#include "Metrics.h"
 #include "World.h"
+
+static QS::Metrics glbMetrics;
 
 GTEST_TEST(WorldTest, construction)
 {
-  // World uses default constructor. So just make sure it exists.
-  ASSERT_NO_THROW(QS::World world);
+  ASSERT_NO_THROW(QS::World world(glbMetrics));
 }
 
 GTEST_TEST(WorldTest, addActor)
@@ -26,7 +28,7 @@ GTEST_TEST(WorldTest, addActor)
     {"x", "0.0"},
     {"y", "0.0"}};
 
-  QS::World world;
+  QS::World world(glbMetrics);
   world.setDimensions(10, 10);
 
   std::vector<std::shared_ptr<QS::Actor>> actors;

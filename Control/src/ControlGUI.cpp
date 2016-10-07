@@ -12,9 +12,11 @@
 
 #include <iomanip>
 #include <iostream>
+#include <fstream>
 
 #include "ControlGUI.h"
 #include "QSConfig.h"
+#include "Simulation.h"
 
 QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
   myBaseDir{theBaseDir}
@@ -34,6 +36,8 @@ QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
 
   buildBatch(myMainBox);
   buildRealTime(myMainBox);
+
+  buildResultsDialog();
 
   setMenuSensitivities(true, false, false);
   setControlButtonSensitivities(false, false, false);
@@ -135,10 +139,10 @@ void QS::ControlGUI::buildMenu(Gtk::Container &theContainer)
   myViewMenuItem.set_label("_View");
   myViewMenuItem.set_use_underline(true);
 
-  myViewSummaryMenuItem.set_label("_Summary");
-  myViewSummaryMenuItem.set_use_underline(true);
-  myViewSummaryMenuItem.signal_activate().connect(
-    sigc::mem_fun(*this, &ControlGUI::viewSummaryHandler));
+  myViewResultsMenuItem.set_label("_Results");
+  myViewResultsMenuItem.set_use_underline(true);
+  myViewResultsMenuItem.signal_activate().connect(
+    sigc::mem_fun(*this, &ControlGUI::viewResultsHandler));
 
   myViewMessagesMenuItem.set_label("_Messages");
   myViewMessagesMenuItem.set_use_underline(true);
@@ -146,7 +150,7 @@ void QS::ControlGUI::buildMenu(Gtk::Container &theContainer)
     sigc::mem_fun(*this, &ControlGUI::viewMessagesHandler));
 
   myViewMenuItem.set_submenu(myViewSubMenu);
-  myViewSubMenu.append(myViewSummaryMenuItem);
+  myViewSubMenu.append(myViewResultsMenuItem);
   myViewSubMenu.append(myViewMessagesMenuItem);
 
   myHelpMenuItem.set_label("_Help");
@@ -260,6 +264,28 @@ void QS::ControlGUI::buildRealTime(Gtk::Container &theContainer)
   myRealTimeGrid.attach(myRealTimeZoomOutButton, 3, 2, 1, 1);
 }
 
+void QS::ControlGUI::buildResultsDialog()
+{
+  myResultsDialog.set_title("Simulation Results");
+  myResultsDialog.add_button("Close", 0);
+  myResultsDialog.get_content_area()->add(myResultsScrolledWindow);
+  myResultsDialog.set_size_request(400, 500);
+
+  myResultsScrolledWindow.set_vexpand(true);
+  myResultsScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC,
+                                     Gtk::POLICY_AUTOMATIC);
+  myResultsScrolledWindow.add(myResultsTextView);
+
+  myResultsTextView.set_editable(false);
+  myResultsTextView.set_cursor_visible(false);
+  myResultsTextView.set_wrap_mode(Gtk::WRAP_NONE);
+
+  myResultsDialog.signal_response().connect(
+    sigc::mem_fun(*this, &QS::ControlGUI::resultsDialogResponse));
+
+  myResultsDialog.show_all_children();
+}
+
 void QS::ControlGUI::buildSimulationFrame(Gtk::Container &theContainer)
 {
   theContainer.add(mySimulationFrame);
@@ -353,7 +379,7 @@ void QS::ControlGUI::cameraMoveHandler(
   Visualization::UserInputType theInputType)
 {
   mySimulation->getVisualization()->userInput(theInputType);
-}  
+}
 
 void QS::ControlGUI::fileOpenHandler()
 {
@@ -395,7 +421,29 @@ void QS::ControlGUI::fileOpenHandler()
 
 void QS::ControlGUI::fileSaveResultsHandler()
 {
-  std::cout << "File->Save Results" << std::endl;
+  Gtk::FileChooserDialog fileChooser("Save Results",
+                                     Gtk::FILE_CHOOSER_ACTION_SAVE);
+  fileChooser.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+  fileChooser.add_button("Save", Gtk::RESPONSE_OK);
+
+  auto filterAny = Gtk::FileFilter::create();
+  filterAny->set_name("All Files");
+  filterAny->add_pattern("*");
+  fileChooser.add_filter(filterAny);
+
+  auto result = fileChooser.run();
+
+  switch (result)
+  {
+    case Gtk::RESPONSE_OK:
+      saveResults(fileChooser.get_filename());
+      break;
+
+    case Gtk::RESPONSE_CANCEL:
+    default:
+      // Do nothing
+      break;
+  }
 }
 
 void QS::ControlGUI::fileExitHandler()
@@ -478,6 +526,14 @@ void QS::ControlGUI::playButtonHandler()
     setSensitivities(myBatchBox, false);
   }
 
+  myResultsTextView.get_buffer()->set_text("");
+  myResultsDialog.hide();
+
+  // Timeout to update simulation times
+  sigc::slot<bool> slot = sigc::mem_fun(*this, &ControlGUI::timeoutCallback);
+  // Non-round number time makes elapsed time update look better.
+  myTimeoutConnection = Glib::signal_timeout().connect(slot, 78);
+
   if (! mySimulation)
   {
     try
@@ -486,6 +542,12 @@ void QS::ControlGUI::playButtonHandler()
       mySimulation.reset(new SimulationPackage(mySimulationConfigFile,
                                                myBaseDir));
       mySimulation->startSimulation();
+
+      auto &metrics = mySimulation->getSimulation()->getMetrics();
+      std::string startTime(Metrics::asISO8601(metrics.getStartTime()));
+      mySimulationStatusStartTimeEntry.set_text(startTime);
+      mySimulationStatusStopTimeEntry.set_text("");
+      mySimulationStatusElapsedTimeEntry.set_text("");
     }
     catch (const std::exception &exception)
     {
@@ -518,6 +580,46 @@ int QS::ControlGUI::run(int argc, char **argv, const std::string &theBaseDir)
   return app->run(gui);
 }
 
+void QS::ControlGUI::resultsDialogResponse(int theResponseId)
+{
+  myResultsDialog.hide();
+}
+
+void QS::ControlGUI::saveResults(const std::string &theFileName)
+{
+  auto fileStatus = ::access(theFileName.c_str(), F_OK);
+  if (0 == fileStatus)
+  {
+    Gtk::MessageDialog questionDialog("File exists. Overwrite?",
+                                      false, Gtk::MESSAGE_QUESTION,
+                                      Gtk::BUTTONS_YES_NO);
+    auto response = questionDialog.run();
+    if (response == Gtk::RESPONSE_NO)
+    {
+      return;
+    }
+  }
+
+  std::ofstream fileWriter(theFileName);
+  if (fileWriter.is_open())
+  {
+    fileWriter << myResultsTextView.get_buffer()->get_text();
+    fileWriter.close();
+  }
+  else
+  {
+    auto thisErrno = errno;
+    std::string error = "Failed to open \"" + theFileName +
+      "\" for saving results: ";
+    // No guarantee errno is set, or set correctly. But this is the best you
+    // get with fstream.
+    error += std::strerror(thisErrno);
+
+    Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
+    errorDialog.run();
+  }
+}
+
 void QS::ControlGUI::setSensitivities(Gtk::Container &theContainer,
                                       bool theSensitive)
 {
@@ -538,13 +640,21 @@ void QS::ControlGUI::setControlButtonSensitivities(bool thePlayButton,
   mySimulationControlStopButton.set_sensitive(theStopButton);
 }
 
+void QS::ControlGUI::setElapsedTime(const Metrics &theMetrics)
+{
+  float elapsedTime = theMetrics.getElapsedTimeInSeconds();
+  std::ostringstream elapsedTimeStr;
+  elapsedTimeStr << std::fixed << std::setprecision(2) << elapsedTime;
+  mySimulationStatusElapsedTimeEntry.set_text(elapsedTimeStr.str());
+}
+
 void QS::ControlGUI::setMenuSensitivities(bool theOpen,
                                           bool theSaveResults,
-                                          bool theSummary)
+                                          bool theResults)
 {
   myFileOpenMenuItem.set_sensitive(theOpen);
   myFileSaveResultsMenuItem.set_sensitive(theSaveResults);
-  myViewSummaryMenuItem.set_sensitive(theSummary);
+  myViewResultsMenuItem.set_sensitive(theResults);
 }
 
 void QS::ControlGUI::stopButtonHandler()
@@ -560,8 +670,34 @@ void QS::ControlGUI::stopButtonHandler()
     setSensitivities(myBatchBox, true);
   }
 
-  // TODO: this doesn't always stop the simulation. need to investigate why
+  myTimeoutConnection.disconnect();
+
+  mySimulation->getSimulation()->getWorld().finalizeActorMetrics();
+  auto &metrics = mySimulation->getSimulation()->getMetrics();
+  metrics.setStopTime();
+
+  std::string stopTime(Metrics::asISO8601(metrics.getStopTime()));
+  mySimulationStatusStopTimeEntry.set_text(stopTime);
+
+  // Need to set elapsed time as the last timeout callback probably won't have
+  // caught the last updates in the simulation.
+  setElapsedTime(metrics);
+
+  std::ostringstream metricsResults;
+  metricsResults << metrics;
+  myResultsTextView.get_buffer()->set_text(metricsResults.str());
+
   mySimulation.reset();
+}
+
+bool QS::ControlGUI::timeoutCallback()
+{
+  if (mySimulation)
+  {
+    auto &metrics = mySimulation->getSimulation()->getMetrics();
+    setElapsedTime(metrics);
+  }
+  return true;
 }
 
 void QS::ControlGUI::updateCameraPosition()
@@ -594,9 +730,9 @@ void QS::ControlGUI::updateCameraZoom()
   myRealTimeZoomLabel.set_text(zoomString.str());
 }
 
-void QS::ControlGUI::viewSummaryHandler()
+void QS::ControlGUI::viewResultsHandler()
 {
-  std::cout << "View->Summary" << std::endl;
+  myResultsDialog.show();
 }
 
 void QS::ControlGUI::viewMessagesHandler()

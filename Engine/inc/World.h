@@ -16,6 +16,7 @@
 namespace QS
 {
   class Actor;
+  class Metrics;
 
   /**
    * The world in the base of a simulation. It contains all of the pieces of
@@ -29,7 +30,15 @@ namespace QS
     /**
      * Default constructor.
      */
-    World() = default;
+    World() = delete;
+
+    /**
+     * Constructor.
+     *
+     * @param theMetrics
+     *          metrics for the simulation, to be updated by this object
+     */
+    World(Metrics &theMetrics);
 
     /**
      * Copy constructor.
@@ -67,6 +76,11 @@ namespace QS
       noexcept;
 
     /**
+     * Finalizes metrics for all Actors.
+     */
+    void finalizeActorMetrics() const noexcept;
+
+    /**
      * Returns all the Actors in the world.
      *
      * @return all the Actors in the world.
@@ -79,6 +93,12 @@ namespace QS
      * @return world dimensions (witdth in meters, legnth in meters)
      */
     std::tuple<float, float> getDimensions() const noexcept;
+
+    /**
+     * Initializes the Actor metrics in the Metrics object. This function should
+     * only be called once all Actors have been added to the world.
+     */
+    void initializeActorMetrics() noexcept;
 
     /**
      * Sets the dimensions of the world.
@@ -149,6 +169,9 @@ namespace QS
 
     /** World length (y dimension), in meters.*/
     float myLength_m = 0.0;
+
+    /** Metrics for the simulation. */
+    Metrics &myMetrics;
 
     /** World width (x dimension), in meters.*/
     float myWidth_m = 0.0;

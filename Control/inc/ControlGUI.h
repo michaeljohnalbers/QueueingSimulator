@@ -14,6 +14,8 @@
 
 namespace QS
 {
+  class Metrics;
+
   /**
    * This class manages the entire control GUI for Queueing Simulator. This is
    * the primary user interface. From this GUI the user can select the
@@ -120,6 +122,11 @@ namespace QS
     void buildRealTime(Gtk::Container &theContainer);
 
     /**
+     * Builds the results dialog and child widgets.
+     */
+    void buildResultsDialog();
+
+    /**
      * Builds the simulation name frame
      *
      * @param theContainer
@@ -187,6 +194,22 @@ namespace QS
     void playButtonHandler();
 
     /**
+     * Callback for closing results dialog.
+     *
+     * @param theResponseId
+     *          response triggering the callback
+     */
+    void resultsDialogResponse(int theResponseId);
+
+    /**
+     * Saves simulation results to the given file.
+     *
+     * @param theFileName
+     *          file name to save results to
+     */
+    void saveResults(const std::string &theFileName);
+
+    /**
      * Helper function to set individual sensitivies of the simulation contol
      * buttons.
      *
@@ -208,12 +231,12 @@ namespace QS
      *          File->Open sensitive
      * @param theSaveResults
      *          File->Save Results sensitive
-     * @param theSummary
-     *          View->Summary sensitive
+     * @param theResults
+     *          View->Results sensitive
      */
     void setMenuSensitivities(bool theOpen,
                               bool theSaveResults,
-                              bool theSummary);
+                              bool theResults);
 
     /**
      * Sets the sensitive value for each child in the given container
@@ -229,6 +252,13 @@ namespace QS
     void stopButtonHandler();
 
     /**
+     * Callback for timeout signal.
+     *
+     * @return true to keep timeout for another duration, false to terminate
+     */
+    bool timeoutCallback();
+
+    /**
      * Updates the camera's position coordinates
      */
     void updateCameraPosition();
@@ -239,9 +269,9 @@ namespace QS
     void updateCameraZoom();
 
     /**
-     * Callback for View->Summary
+     * Callback for View->Results
      */
-    void viewSummaryHandler();
+    void viewResultsHandler();
 
     /**
      * Callback for View->Messages
@@ -254,6 +284,15 @@ namespace QS
      * Callback for timer expiration.
      */
     bool timerFunction();
+
+    /**
+     * Updates the elapsed time widget with the elapsed time from the provided
+     * Metrics object.
+     *
+     * @param theMetrics
+     *          container with elapsed time
+     */
+    void setElapsedTime(const Metrics &theMetrics);
 
     /** Base directory */
     const std::string myBaseDir;
@@ -269,7 +308,7 @@ namespace QS
     Gtk::MenuItem myFileExitMenuItem;
     Gtk::MenuItem myViewMenuItem;
     Gtk::Menu myViewSubMenu;
-    Gtk::MenuItem myViewSummaryMenuItem;
+    Gtk::MenuItem myViewResultsMenuItem;
     Gtk::MenuItem myViewMessagesMenuItem;
     Gtk::MenuItem myHelpMenuItem;
     Gtk::Menu myHelpSubMenu;
@@ -317,6 +356,12 @@ namespace QS
     Gtk::Button myRealTimeZoomInButton;
     Gtk::Button myRealTimeZoomOutButton;
     Gtk::Label myRealTimeZoomLabel;
+
+    Gtk::TextView myResultsTextView;
+    Gtk::ScrolledWindow myResultsScrolledWindow;
+    Gtk::Dialog myResultsDialog;
+
+    sigc::connection myTimeoutConnection;
 
     /** Simulation data */
     std::unique_ptr<SimulationPackage> mySimulation;
