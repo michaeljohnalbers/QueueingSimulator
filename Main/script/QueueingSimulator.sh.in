@@ -8,6 +8,6 @@ export QS_BASE_DIR=@CMAKE_INSTALL_PREFIX@
 qsInstallDir=${QS_BASE_DIR}
 qsLibDir=${qsInstallDir}/@QS_INSTALL_LIB_DIR@
 qsBasicPluginDir=${qsInstallDir}/@QS_INSTALL_PLUGIN_BASE_DIR@/BasicPlugin
-export LD_LIBRARY_PATH=${qsLibDir}:${qsBasicPluginDir}:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${qsLibDir}:${qsBasicPluginDir}
 
 ${QS_BASE_DIR}/@QS_INSTALL_BIN_DIR@/QueueingSimulator "$@"

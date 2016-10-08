@@ -35,6 +35,10 @@ int main(int argc, char **argv)
   {
     std::cerr << argv[0] << ": Fatal error: " << exception.what() << std::endl;
   }
+  catch (const std::logic_error &exception)
+  {
+    std::cerr << argv[0] << ": Fatal error: " << exception.what() << std::endl;
+  }
   catch (const XMLException &exception)
   {
     char *transcodedError = XMLString::transcode(exception.getMessage());
