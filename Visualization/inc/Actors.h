@@ -79,6 +79,9 @@ namespace QS
      */
     static constexpr auto NUM_CIRCLE_VERTICES = 362;
 
+    /** Number of vertices for orientation indicator shape. */
+    static constexpr auto NUM_ORIENTATION_IND_VERTICES = 3;
+
     /**
      * Creates the shader program for the world box.
      */

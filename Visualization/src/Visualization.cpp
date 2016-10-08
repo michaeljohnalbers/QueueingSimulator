@@ -17,6 +17,7 @@
 #include "Visualization.h"
 #include "VisualizationInitialization.h"
 #include "Actors.h"
+#include "Finally.h"
 #include "World.h"
 #include "WorldBox.h"
 
@@ -65,7 +66,12 @@ std::tuple<float, float> QS::Visualization::getCameraPosition() const noexcept
 
 float QS::Visualization::getCameraZoom() const noexcept
 {
-  return (myOriginalZoomDistance / myCameraPosition.z) * 100.0;
+  float zPosition = myCameraPosition.z;
+  if (zPosition == 0.0)
+  {
+    zPosition = 0.00001;
+  }
+  return (myOriginalZoomDistance / zPosition) * 100.0;
 }
 
 std::tuple<int, int> QS::Visualization::getRealTimeWindowDimensions()
@@ -288,6 +294,17 @@ void QS::Visualization::userInput(UserInputType theInputType, float theData)
 void QS::Visualization::visualize()
 {
   initializeGLFW();
+  Finally terminate(
+    [=]()
+    {
+      if (myWindow)
+      {
+        glfwDestroyWindow(myWindow);
+      }
+      VisualizationInitialization::TerminateGLEW();
+      VisualizationInitialization::TerminateGLFW();
+      glfwSetErrorCallback(0);
+    });
 
   myActors.reset(new Actors());
   myWorldBox.reset(new WorldBox(myXDimension_m, myYDimension_m));
@@ -377,8 +394,4 @@ void QS::Visualization::visualize()
 
     glfwSwapBuffers(myWindow);
   }
-
-  glfwDestroyWindow(myWindow);
-  VisualizationInitialization::TerminateGLFW();
-  glfwSetErrorCallback(0);
 }

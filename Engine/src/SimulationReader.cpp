@@ -6,14 +6,15 @@
  */
 
 #include <stdexcept>
-#include "EntityManager.h"
-#include "SimulationReader.h"
-#include "XMLUtilities.h"
-#include "World.h"
 #include "xercesc/sax2/SAX2XMLReader.hpp"
 #include "xercesc/sax2/XMLReaderFactory.hpp"
 #include "xercesc/util/XMLString.hpp"
 #include "xercesc/sax2/Attributes.hpp"
+#include "EntityManager.h"
+#include "Finally.h"
+#include "SimulationReader.h"
+#include "XMLUtilities.h"
+#include "World.h"
 
 QS::SimulationReader::SimulationReader(
   const std::string &theConfigFile,
@@ -33,6 +34,7 @@ void QS::SimulationReader::read()
   try
   {
     SAX2XMLReader* parser = XMLReaderFactory::createXMLReader();
+    Finally parserCleanup([=](){delete parser;});
     std::string schema = mySimulationSchemaDirectory + "/" + SCHEMA_FILE;
     parser->loadGrammar(schema.c_str(), Grammar::SchemaGrammarType, true);
     parser->setFeature(XMLUni::fgXercesUseCachedGrammarInParse, true);

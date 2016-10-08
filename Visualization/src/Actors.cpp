@@ -6,6 +6,7 @@
  */
 
 #include <array>
+#define _USE_MATH_DEFINES // For M_PI
 #include <cmath>
 #include <GL/glew.h>
 
@@ -23,21 +24,41 @@ QS::Actors::Actors()
   glGenBuffers(1, &myCircleVertexBuffer);
   glBindVertexArray(myVAO);
 
-  GLfloat vertices[NUM_CIRCLE_VERTICES * 3];
+  constexpr GLsizei NUM_VERTICES =
+    NUM_CIRCLE_VERTICES + NUM_ORIENTATION_IND_VERTICES;
 
-  vertices[0] = 0.0;
-  vertices[1] = 0.0;
-  vertices[2] = 0.0;
+  GLfloat vertices[NUM_VERTICES * 3];
 
-  constexpr float PI = std::acos(-1);
-  for (int degree = 0, index = 3; degree < NUM_CIRCLE_VERTICES - 1;
-       ++degree, index += 3)
+  // === Circle vertices
+  int index = 0;
+  vertices[index] = 0.0;
+  vertices[++index] = 0.0;
+  vertices[++index] = 0.0;
+  ++index;
+
+#define RADIANS(x) ((x) * M_PI / 180.0)
+
+  for (int degree = 0; degree < NUM_CIRCLE_VERTICES - 1; ++degree, index += 3)
   {
-    float radians = degree * PI / 180.0;
+    float radians = RADIANS(degree);
     vertices[index] = std::cos(radians);
     vertices[index+1] = std::sin(radians);
     vertices[index+2] = 0.0;
   }
+
+  // === Orientation indicator vertices
+  constexpr float degreeOffset = 3.0;
+  vertices[index] = std::cos(RADIANS(degreeOffset));   // x
+  vertices[++index] = std::sin(RADIANS(degreeOffset)); // y
+  vertices[++index] = 0.0; // z
+
+  vertices[++index] = 1.07;
+  vertices[++index] = 0.0;
+  vertices[++index] = 0.0;
+
+  vertices[++index] = std::cos(RADIANS(360 - degreeOffset));
+  vertices[++index] = std::sin(RADIANS(360 - degreeOffset));
+  vertices[++index] = 0.0;
 
   glBindBuffer(GL_ARRAY_BUFFER, myCircleVertexBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
@@ -98,6 +119,8 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   glm::vec3 *colorVectors = new glm::vec3[theActors.size()];
   glm::mat4 *modelMatrices = new glm::mat4[theActors.size()];
 
+  constexpr glm::vec3 rotationAxis(0.0, 0.0, 1.0);
+
   for (auto ii = 0u; ii < theActors.size(); ++ii)
   {
     Actor &actor = *theActors[ii];
@@ -110,12 +133,15 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
     // === Position
     float actorRadius = actor.getRadius();
     Eigen::Vector2f position = actor.getPosition();
+    float orientation = actor.getOrientation();
 
     glm::mat4 modelMatrix;
     modelMatrix = glm::translate(modelMatrix,
                                  glm::vec3(position.x(), position.y(), 0.0));
     modelMatrix = glm::scale(
       modelMatrix, glm::vec3(actorRadius, actorRadius, 1.0));
+
+    modelMatrix = glm::rotate(modelMatrix, orientation, rotationAxis);
 
     modelMatrices[ii] = modelMatrix;
   }
@@ -166,6 +192,10 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   glVertexAttribDivisor(modelLocation, 1);
 
   glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, NUM_CIRCLE_VERTICES,
+                        theActors.size());
+
+  glDrawArraysInstanced(GL_LINE_LOOP, NUM_CIRCLE_VERTICES,
+                        NUM_ORIENTATION_IND_VERTICES,
                         theActors.size());
 
   glBindVertexArray(0);

@@ -572,7 +572,9 @@ void QS::ControlGUI::playButtonHandler()
 
 int QS::ControlGUI::run(int argc, char **argv, const std::string &theBaseDir)
 {
-  auto app = Gtk::Application::create(argc, argv, "qs.Main");
+  // Don't provide an application ID otherwise only one instance of the
+  // executable can be run at one time.
+  auto app = Gtk::Application::create(argc, argv);
 
   ControlGUI gui{theBaseDir};
 
