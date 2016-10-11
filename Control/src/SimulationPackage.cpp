@@ -20,6 +20,10 @@ QS::SimulationPackage::SimulationPackage(
 
 QS::SimulationPackage::~SimulationPackage()
 {
+  if (myVisualization)
+  {
+    myVisualization->stopThread();
+  }
 }
 
 std::shared_ptr<QS::Simulation> QS::SimulationPackage::getSimulation() noexcept
@@ -38,6 +42,6 @@ void QS::SimulationPackage::startSimulation()
   mySimulation.reset(new Simulation(myBaseDir, mySimulationConfigFile));
 
   World &world = mySimulation->getWorld();
-  myVisualization.reset(new Visualization(world));
+  myVisualization.reset(createVisualization(world));
   myVisualization->startThread();
 }

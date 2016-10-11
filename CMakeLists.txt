@@ -37,7 +37,7 @@ include_directories("${PROJECT_SOURCE_DIR}/Common/inc/")
 # -Wextra produces too much output, Eigen uses deprecated features, so turn off
 # that warning
 set(CMAKE_CXX_FLAGS "--std=c++11 -Wall -Wno-deprecated")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -DQS_DEBUG_BUILD")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O")
 SET(CMAKE_EXE_LINKER_FLAGS "-pthread -rdynamic")

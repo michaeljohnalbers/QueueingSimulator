@@ -17,6 +17,7 @@ class CLASS_NAME: public ::testing::Test
   {
     QS::VisualizationInitialization::InitializeGLFW();
 
+    glfwWindowHint(GLFW_VISIBLE, 0);
     myWindow = glfwCreateWindow(1, 1, "DummyWindow", NULL, NULL);
     if (!myWindow)
     {

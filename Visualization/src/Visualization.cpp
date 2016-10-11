@@ -33,17 +33,6 @@ QS::Visualization::Visualization(World &theWorld) :
 
 QS::Visualization::~Visualization()
 {
-  if (myThread)
-  {
-    myThreadControl = false;
-    myThread->join();
-  }
-}
-
-void QS::Visualization::charCallback(GLFWwindow* window, unsigned int codepoint)
-{
-  reinterpret_cast<Visualization*>(
-    glfwGetWindowUserPointer(window))->processChar(codepoint);
 }
 
 void QS::Visualization::errorCallback(int theError, const char *theDescription)
@@ -64,6 +53,11 @@ std::tuple<float, float> QS::Visualization::getCameraPosition() const noexcept
   return std::make_tuple(myCameraPosition.x, myCameraPosition.y);
 }
 
+float QS::Visualization::getAspectRatio() const noexcept
+{
+  return myAspectRatio;
+}
+
 float QS::Visualization::getCameraZoom() const noexcept
 {
   float zPosition = myCameraPosition.z;
@@ -72,29 +66,6 @@ float QS::Visualization::getCameraZoom() const noexcept
     zPosition = 0.00001;
   }
   return (myOriginalZoomDistance / zPosition) * 100.0;
-}
-
-std::tuple<int, int> QS::Visualization::getRealTimeWindowDimensions()
-  const noexcept
-{
-  const float scaleFactor = 0.9;
-  const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-  float maxHeight = mode->height * scaleFactor;
-  float maxWidth = mode->width * scaleFactor;
-
-  // This finds the window size that best fits into the maximums above while
-  // still maintaining the aspect ratio of the world. There are probably more
-  // efficient ways to do this, but I can't think of one and the loop shouldn't
-  // ever be more than a few thousand iterations, which isn't bad at all.
-  float width = myAspectRatio;
-  float height = 1.0;
-  while (width < maxWidth && height < maxHeight)
-  {
-    height++;
-    width = height * myAspectRatio;
-  }
-
-  return std::make_tuple(static_cast<int>(width), static_cast<int>(height));
 }
 
 QS::Visualization::SimulationState QS::Visualization::getState() const noexcept
@@ -112,8 +83,9 @@ void QS::Visualization::initializeGLFW()
   VisualizationInitialization::InitializeGLFW();
 
   int width, height;
-  std::tie(width, height) = getRealTimeWindowDimensions();
+  std::tie(width, height) = getWindowDimensions();
 
+  setWindowHints();
   myWindow = glfwCreateWindow(width, height, "Queueing Simulator", NULL, NULL);
   if (!myWindow)
   {
@@ -121,70 +93,22 @@ void QS::Visualization::initializeGLFW()
   }
   glfwMakeContextCurrent(myWindow);
 
-  glfwSetWindowUserPointer(myWindow, this);
   VisualizationInitialization::InitializeGLEW();
 
   glViewport(0, 0, width, height);
   glfwSetWindowAspectRatio(myWindow, width, height);
   glEnable(GL_DEPTH_TEST);
 
-  // Set callbacks.
+  // Set callbacks. Do derived class first in case it were to set a callback
+  // this class depends upon.
+  setCallbacks(myWindow);
   glfwSetFramebufferSizeCallback(myWindow, &frameBufferCallback);
-  glfwSetCharCallback(myWindow, charCallback);
-  glfwSetMouseButtonCallback(myWindow, mouseButtonCallback);
 
   glfwSwapInterval(1);
 }
 
-void QS::Visualization::mouseButtonCallback(
-  GLFWwindow* window, int button, int action, int mods) noexcept
+void QS::Visualization::preBufferSwap() noexcept
 {
-  reinterpret_cast<Visualization*>(
-    glfwGetWindowUserPointer(window))->processButtonClick(button, action, mods);
-}
-
-void QS::Visualization::processButtonClick(
-  int theButton, int theAction, int theMods) noexcept
-{
-  if (theButton == GLFW_MOUSE_BUTTON_LEFT && theAction == GLFW_PRESS)
-  {
-    const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-    double x, y;
-    glfwGetCursorPos(myWindow, &x, &y);
-    y = mode->height - y; // unProject expects (0,0) to be lower left, whereas
-                          // GLFW has it in upper left.
-
-    // TODO: this doesn't produce anything near the correct results. Will need
-    // to work on it further, time permitting.
-    glm::vec3 windowCoordinate(x, y, 0.0);
-    glm::vec4 viewport(0, 0, mode->width, mode->height);
-    glm::vec3 unprojected = glm::unProject(windowCoordinate,
-                                           myViewMatrix,
-                                           myProjectionMatrix,
-                                           viewport);
-
-    // std::cout << "Mouse at: (" << std::fixed << x
-    //           << "," << std::fixed << y << ") --> ("
-    //           << unprojected.x << "," << unprojected.y << ")"
-    //           << std::endl;
-  }
-}
-
-void QS::Visualization::processChar(unsigned int theCodePoint)
-{
-  switch (theCodePoint)
-  {
-    case 32: // Space
-      if (SimulationState::PAUSED == mySimulationState)
-      {
-        myNeedOneUpdate = true;
-      }
-      break;
-
-    default:
-      break;
-  }
 }
 
 void QS::Visualization::processUserInput() noexcept
@@ -273,9 +197,30 @@ void QS::Visualization::run(Visualization *theVisualizer) noexcept
   }
 }
 
+void QS::Visualization::setCallbacks(GLFWwindow *theWindow)
+{
+}
+
+void QS::Visualization::setWindowHints() noexcept
+{
+}
+
 void QS::Visualization::startThread()
 {
   myThread.reset(new std::thread(run, this));
+}
+
+void QS::Visualization::stopThread()
+{
+  // I don't like this (I'd rather it be in the destructor) but the problem is
+  // that the BatchVisualization class has dynamically allocated memory and it
+  // is getting freed while the thread is still running and this is causing
+  // seg faults and other memory issues.
+  if (myThread)
+  {
+    myThreadControl = false;
+    myThread->join();
+  }
 }
 
 void QS::Visualization::userInput(UserInputType theInputType) noexcept
@@ -322,15 +267,6 @@ void QS::Visualization::visualize()
                                myOriginalZoomDistance);
   myCameraCenter = glm::vec3(myXDimension_m/2, myYDimension_m/2, 0.0f);
 
-  // Constraining the simulation to a maximum FPS does two things. First, it
-  // uses less CPU when running smaller simulations. Second, for smaller
-  // simulations the update interval can be microscopic, or zero, when measured
-  // in milliseconds (as the former implementation did). A zero update can
-  // cause issues with the update math as can be imagined.
-  double savedTime = glfwGetTime();
-  constexpr double MAX_FPS = 60.0;
-  constexpr double TIME_PER_FRAME = 1.0/MAX_FPS;
-
   myThreadControl = true;
   while (myThreadControl)
   {
@@ -341,46 +277,12 @@ void QS::Visualization::visualize()
       processUserInput();
     }
 
-    double currentTime = glfwGetTime();
-    double updateInterval = TIME_PER_FRAME;
-    bool doUpdate = false;
-    if (SimulationState::RUNNING == mySimulationState)
-    {
-      updateInterval = currentTime - savedTime;
-      if (updateInterval >= TIME_PER_FRAME)
-      {
-        doUpdate = true;
-        savedTime = currentTime;
-      }
-      else
-      {
-        double timeToSleep = TIME_PER_FRAME - updateInterval;
-        timespec sleepTimeStruct;
-        sleepTimeStruct.tv_sec = 0;
-        sleepTimeStruct.tv_nsec = static_cast<long>(timeToSleep * 1000000000);
-        ::nanosleep(&sleepTimeStruct, 0);
-      }
-    }
-    else
-    {
-      savedTime = currentTime;
-      if (myNeedOneUpdate)
-      {
-        doUpdate = true;
-        myNeedOneUpdate = false;
-      }
-      else
-      {
-        // Avoid spinning when paused.
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
-      }
-    }
+    float updateInterval = getUpdateInterval();
 
-    if (doUpdate)
+    if (0.0 != updateInterval)
     {
       myThreadControl = (! myWorld.update(static_cast<float>(updateInterval)));
     }
-
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -392,6 +294,17 @@ void QS::Visualization::visualize()
     myWorldBox->draw(myViewMatrix, myProjectionMatrix);
     myActors->draw(myViewMatrix, myProjectionMatrix, actors);
 
+    preBufferSwap();
+
     glfwSwapBuffers(myWindow);
+
+#ifdef QS_DEBUG_BUILD // Set during cmake debug build
+    GLenum lastGlError = glGetError();
+    if (lastGlError != GL_NO_ERROR)
+    {
+      std::cerr << "Post frame OpenGL error: " << gluErrorString(lastGlError)
+                << std::endl;
+    }
+#endif
   }
 }
