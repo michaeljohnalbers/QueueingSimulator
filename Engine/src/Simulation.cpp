@@ -12,26 +12,7 @@
 
 QS::Simulation::Simulation(const std::string &theBaseDir,
                            const std::string &theSimulationConfigFile) :
-  Simulation(theBaseDir, theSimulationConfigFile, "", Mode::RealTime)
-{
-  readSimulation();
-}
-
-QS::Simulation::Simulation(const std::string &theBaseDir,
-                           const std::string &theSimulationConfigFile,
-                           const std::string &theOutputFile) :
-  Simulation(theBaseDir, theSimulationConfigFile, theOutputFile, Mode::Batch)
-{
-  readSimulation();
-}
-
-QS::Simulation::Simulation(const std::string &theBaseDir,
-                           const std::string &theSimulationConfigFile,
-                           const std::string &theOutputFile,
-                           Mode theMode) :
   myBaseDir(theBaseDir),
-  myMode(theMode),
-  myOutputFile(theOutputFile),
   mySimulationConfigFile(theSimulationConfigFile),
   myWorld(myMetrics)
 {
@@ -39,6 +20,8 @@ QS::Simulation::Simulation(const std::string &theBaseDir,
   myPlugins.reset(new PluginCollection{pluginsDir});
 
   myEntityManager.reset(new EntityManager{myPlugins});
+
+  readSimulation();
 }
 
 const QS::Metrics& QS::Simulation::getMetrics() const noexcept

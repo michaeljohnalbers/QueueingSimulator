@@ -73,7 +73,14 @@ namespace QS
     /**
      * Destructor.
      */
-    ~Visualization();
+    virtual ~Visualization();
+
+    /**
+     * Returns the aspect ratio of the world/visualization.
+     *
+     * @return the aspect ratio of the world/visualization.
+     */
+    float getAspectRatio() const noexcept;
 
     /**
      * Returns the camera's position.
@@ -112,6 +119,12 @@ namespace QS
     void startThread();
 
     /**
+     * Stops the visualization thread. This must be called before the object
+     * is destroyed or undefined behaivor will occur.
+     */
+    void stopThread();
+
+    /**
      * Means to send user input to the visualization.
      *
      * @param theInput
@@ -133,12 +146,45 @@ namespace QS
     protected:
 
     /**
+     * Returns the amount of time, in seconds, to pass to the world for the
+     * next update. A value of zero indicates no update should be done yet.
+     *
+     * @return update time
+     */
+    virtual float getUpdateInterval() noexcept = 0;
+
+    /**
+     * Gets the window size for the simulation.
+     *
+     * @return width/height pair
+     */
+    virtual std::tuple<int, int> getWindowDimensions() noexcept = 0;
+
+    /**
+     * Action to take after drawing is finished, but before buffers are swapped.
+     */
+    virtual void preBufferSwap() noexcept;
+
+    /**
      * Thread run function.
      *
      * @param theVisualizer
      *          visualizer to use in the thread.
      */
     static void run(Visualization *theVisualizer) noexcept;
+
+    /**
+     * Sets any callbacks a derived class may need.
+     *
+     * @param theWindow
+     *          window to set callbacks against
+     */
+    virtual void setCallbacks(GLFWwindow *theWindow);
+
+    /**
+     * Sets any hints before creating GLFW window.
+     */
+    virtual void setWindowHints() noexcept;
 
     private:
 
@@ -148,11 +194,6 @@ namespace QS
       UserInputType myType;
       float myData;
     };
-
-    /**
-     * Callback for receiving text input.
-     */
-    static void charCallback(GLFWwindow* window, unsigned int codepoint);
 
     /**
      * GLFW error callback
@@ -167,43 +208,9 @@ namespace QS
                                     int theHeight);
 
     /**
-     * Gets the window sizes for real-time simulations (when the user will
-     * actually see the data on their screen).
-     *
-     * @return width/height pair
-     */
-    std::tuple<int, int> getRealTimeWindowDimensions() const noexcept;
-
-    /**
      * Performs GLFW initialization (creeating window, etc.).
      */
     void initializeGLFW();
-
-    /**
-     * Callback function for when a mouse button is pressed.
-     */
-    static void mouseButtonCallback(GLFWwindow* window, int button, int action,
-                                    int mods) noexcept;
-
-    /**
-     * Member function to handle button clicks.
-     *
-     * @param theButton
-     *          button clicked
-     * @param theAction
-     *          action done on the button
-     * @param theMods
-     *          any modifiers
-     */
-    void processButtonClick(int theButton, int thAction, int theMods) noexcept;
-
-    /**
-     * Member function for handling character input.
-     *
-     * @param theCodePoint
-     *          character input
-     */
-    void processChar(unsigned int theCodePoint);
 
     /**
      * Processes all pending user input.
@@ -226,9 +233,6 @@ namespace QS
 
     /** Position the camera is looking at. */
     glm::vec3 myCameraCenter;
-
-    /** Is one simulation update needed? */
-    bool myNeedOneUpdate = false;
 
     /** Original Z position of camera. */
     float myOriginalZoomDistance;

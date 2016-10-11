@@ -24,19 +24,13 @@ namespace QS
   {
     public:
 
-    enum class Mode
-    {
-      RealTime,
-      Batch
-    };
-
     /**
      * Default constructor.
      */
     Simulation() = delete;
 
     /**
-     * Constructor for real-time simulations.
+     * Constructor.
      *
      * @param theBaseDir
      *          QS base directory (installation directory)
@@ -45,20 +39,6 @@ namespace QS
      */
     Simulation(const std::string &theBaseDir,
                const std::string &theSimulationConfigFile);
-
-    /**
-     * Constructor for batch simulations.
-     *
-     * @param theBaseDir
-     *          QS base directory (installation directory)
-     * @param theSimulationConfigFile
-     *          simulation configuration file
-     * @param theOutputFile
-     *          output file for batch mode
-     */
-    Simulation(const std::string &theBaseDir,
-               const std::string &theSimulationConfigFile,
-               const std::string &theOutputFile);
 
     /**
      * Copy constructor.
@@ -113,14 +93,6 @@ namespace QS
 
     protected:
 
-    /**
-     * Delegation constructor
-     */
-    Simulation(const std::string &theBaseDir,
-               const std::string &theSimulationConfigFile,
-               const std::string &theOutputFile,
-               Mode theMode);
-
     private:
 
     /**
@@ -139,12 +111,6 @@ namespace QS
 
     /** Metrics for the simulation. */
     Metrics myMetrics;
-
-    /** Mode of the simulation. */
-    const Mode myMode;
-
-    /** Output file for batch mode (empty when in real-time mode) */
-    const std::string myOutputFile;
 
     /** All loaded plugins. */
     std::shared_ptr<PluginCollection> myPlugins;

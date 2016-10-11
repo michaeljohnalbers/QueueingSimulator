@@ -281,6 +281,19 @@ namespace QS
     private:
 
     /**
+     * Checks if the file exists, and if it does, prompts the user to overwrite.
+     *
+     * @param theFileName
+     *          full path and name of file to check
+     * @param theDescription
+     *          descriptive text about the file
+     * @return true if the file doesn't exist or it should be overwritten,
+     *         false if the file exists and should not be overwritten
+     */
+    bool checkForOverwrite(const std::string &theFileName,
+                           const std::string &theDescription);
+
+    /**
      * Callback for timer expiration.
      */
     bool timerFunction();
@@ -293,6 +306,11 @@ namespace QS
      *          container with elapsed time
      */
     void setElapsedTime(const Metrics &theMetrics);
+
+    /**
+     * Starts a new simulation.
+     */
+    void startSimulation();
 
     /** Base directory */
     const std::string myBaseDir;

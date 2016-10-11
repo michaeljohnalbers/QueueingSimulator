@@ -22,6 +22,10 @@ void QS::VisualizationInitialization::InitializeGLEW()
           << glewGetErrorString(glewInitError);
     throw std::logic_error(error.str());
   }
+  // According to https://www.opengl.org/wiki/OpenGL_Loading_Library you can
+  // get an GL_INVALID_ENUM error when setting glewExperimental to true with
+  // certain (and unspecified) versions of GLEW. This clears this error.
+  glGetError();
 }
 
 void QS::VisualizationInitialization::InitializeGLFW()

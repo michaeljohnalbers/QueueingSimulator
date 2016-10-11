@@ -13,6 +13,7 @@ namespace QS
 {
   class Simulation;
   class Visualization;
+  class World;
 
   class SimulationPackage
   {
@@ -47,7 +48,7 @@ namespace QS
     /**
      * Destructor.
      */
-    ~SimulationPackage();
+    virtual ~SimulationPackage();
 
     /**
      * Returns the simulation object. Object will be null until
@@ -83,7 +84,15 @@ namespace QS
      */
     void startSimulation();
 
-    protected:
+    /**
+     * Create the appropriate visualization object.
+     *
+     * @param theWorld
+     *          simulation world
+     * @return visualization object, this class will take ownership of the
+     *         pointer
+     */
+    virtual Visualization* createVisualization(World &theWorld) = 0;
 
     private:
 

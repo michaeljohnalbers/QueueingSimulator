@@ -14,9 +14,11 @@
 #include <iostream>
 #include <fstream>
 
+#include "BatchSimulationPackage.h"
 #include "ControlGUI.h"
 #include "QSConfig.h"
 #include "Simulation.h"
+#include "RealTimeSimulationPackage.h"
 
 QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
   myBaseDir{theBaseDir}
@@ -381,6 +383,33 @@ void QS::ControlGUI::cameraMoveHandler(
   mySimulation->getVisualization()->userInput(theInputType);
 }
 
+bool QS::ControlGUI::checkForOverwrite(const std::string &theFileName,
+                                       const std::string &theDescription)
+{
+  bool goAhead = false;
+  auto fileStatus = ::access(theFileName.c_str(), F_OK);
+  if (0 == fileStatus)
+  {
+    std::string promptText{theDescription};
+    promptText += " file, \"" + theFileName + "\" exists. Overwrite?";
+    Gtk::MessageDialog questionDialog(promptText,
+                                      false, Gtk::MESSAGE_QUESTION,
+                                      Gtk::BUTTONS_YES_NO);
+    auto response = questionDialog.run();
+    if (response == Gtk::RESPONSE_YES)
+    {
+      goAhead = true;
+    }
+  }
+  else
+  {
+    // File does not exist
+    goAhead = true;
+  }
+
+  return goAhead;
+}
+
 void QS::ControlGUI::fileOpenHandler()
 {
   Gtk::FileChooserDialog fileChooser("Select a Simulation file",
@@ -529,38 +558,9 @@ void QS::ControlGUI::playButtonHandler()
   myResultsTextView.get_buffer()->set_text("");
   myResultsDialog.hide();
 
-  // Timeout to update simulation times
-  sigc::slot<bool> slot = sigc::mem_fun(*this, &ControlGUI::timeoutCallback);
-  // Non-round number time makes elapsed time update look better.
-  myTimeoutConnection = Glib::signal_timeout().connect(slot, 78);
-
   if (! mySimulation)
   {
-    try
-    {
-      // TODO: handle batch mode
-      mySimulation.reset(new SimulationPackage(mySimulationConfigFile,
-                                               myBaseDir));
-      mySimulation->startSimulation();
-
-      auto &metrics = mySimulation->getSimulation()->getMetrics();
-      std::string startTime(Metrics::asISO8601(metrics.getStartTime()));
-      mySimulationStatusStartTimeEntry.set_text(startTime);
-      mySimulationStatusStopTimeEntry.set_text("");
-      mySimulationStatusElapsedTimeEntry.set_text("");
-    }
-    catch (const std::exception &exception)
-    {
-      std::string error{"Error loading simulation: "};
-      error += exception.what();
-      Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
-      errorDialog.run();
-
-      // Bad simulation, get rid of it.
-      mySimulation.reset();
-      setControlButtonSensitivities(false, false, false);
-      setMenuSensitivities(true, false, false);
-    }
+    startSimulation();
   }
   else
   {
@@ -589,36 +589,28 @@ void QS::ControlGUI::resultsDialogResponse(int theResponseId)
 
 void QS::ControlGUI::saveResults(const std::string &theFileName)
 {
-  auto fileStatus = ::access(theFileName.c_str(), F_OK);
-  if (0 == fileStatus)
+  auto goAhead = checkForOverwrite(theFileName, "Metrics output");
+
+  if (goAhead)
   {
-    Gtk::MessageDialog questionDialog("File exists. Overwrite?",
-                                      false, Gtk::MESSAGE_QUESTION,
-                                      Gtk::BUTTONS_YES_NO);
-    auto response = questionDialog.run();
-    if (response == Gtk::RESPONSE_NO)
+    std::ofstream fileWriter(theFileName);
+    if (fileWriter.is_open())
     {
-      return;
+      fileWriter << myResultsTextView.get_buffer()->get_text();
+      fileWriter.close();
     }
-  }
+    else
+    {
+      auto thisErrno = errno;
+      std::string error = "Failed to open \"" + theFileName +
+        "\" for saving results: ";
+      // No guarantee errno is set, or set correctly. But this is the best you
+      // get with fstream.
+      error += std::strerror(thisErrno);
 
-  std::ofstream fileWriter(theFileName);
-  if (fileWriter.is_open())
-  {
-    fileWriter << myResultsTextView.get_buffer()->get_text();
-    fileWriter.close();
-  }
-  else
-  {
-    auto thisErrno = errno;
-    std::string error = "Failed to open \"" + theFileName +
-      "\" for saving results: ";
-    // No guarantee errno is set, or set correctly. But this is the best you
-    // get with fstream.
-    error += std::strerror(thisErrno);
-
-    Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
-    errorDialog.run();
+      Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
+      errorDialog.run();
+    }
   }
 }
 
@@ -657,6 +649,71 @@ void QS::ControlGUI::setMenuSensitivities(bool theOpen,
   myFileOpenMenuItem.set_sensitive(theOpen);
   myFileSaveResultsMenuItem.set_sensitive(theSaveResults);
   myViewResultsMenuItem.set_sensitive(theResults);
+}
+
+void QS::ControlGUI::startSimulation()
+{
+  bool realTime = myRealTimeButton.get_active();
+
+  auto resetSensitivites = [=]()
+  {
+    setControlButtonSensitivities(true, false, false);
+    setMenuSensitivities(true, false, false);
+    if (! realTime)
+    {
+      setSensitivities(myBatchBox, true);
+    }
+  };
+
+  try
+  {
+    if (realTime)
+    {
+      mySimulation.reset(new RealTimeSimulationPackage(mySimulationConfigFile,
+                                                       myBaseDir));
+    }
+    else
+    {
+      std::string outputFile = myBatchFileEntry.get_text();
+      auto goAhead = checkForOverwrite(outputFile, "Batch mode output");
+      if (!goAhead)
+      {
+        throw 1; // Not the best practice.
+      }
+
+      mySimulation.reset(new BatchSimulationPackage(
+                           mySimulationConfigFile,
+                           myBaseDir,
+                           outputFile));
+    }
+    mySimulation->startSimulation();
+
+    auto &metrics = mySimulation->getSimulation()->getMetrics();
+    std::string startTime(Metrics::asISO8601(metrics.getStartTime()));
+    mySimulationStatusStartTimeEntry.set_text(startTime);
+    mySimulationStatusStopTimeEntry.set_text("");
+    mySimulationStatusElapsedTimeEntry.set_text("");
+
+    // Timeout to update simulation times
+    sigc::slot<bool> slot = sigc::mem_fun(*this, &ControlGUI::timeoutCallback);
+    // Non-round number time makes elapsed time update look better.
+    myTimeoutConnection = Glib::signal_timeout().connect(slot, 78);
+  }
+  catch (const std::exception &exception)
+  {
+    std::string error{"Error loading simulation: "};
+    error += exception.what();
+    Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
+    errorDialog.run();
+
+    // Bad simulation, get rid of it.
+    mySimulation.reset();
+    resetSensitivites();
+  }
+  catch (int)
+  {
+    resetSensitivites();
+  }
 }
 
 void QS::ControlGUI::stopButtonHandler()
