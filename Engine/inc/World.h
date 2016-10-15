@@ -154,15 +154,23 @@ namespace QS
     void checkInitialPlacement(const Actor *theActor) const;
 
     /**
-     * Detects if the Actor has collided with anything in the world.
+     * Detects if the Actor has collided with anything in the world. And, if so
+     * modifies the position vector to the closest non-collision position. This
+     * function will not change the direction of the Actor, just the
+     * magnitude, possibly reducing it to zero (i.e., not moving).
      *
      * @param theActor
      *          Actor to check for collisions
      * @param theNewPosition
-     *          potential new position for the Actor (assuming no collisions)
+     *          new position of the Actor in the world
+     * @param theCollisionDetected
+     *          OUT parameter, true if a collision was detected, false otherwise
+     * @return possibly modified position vector based on any collisions
      */
-    void collisionDetection(Actor *theActor,
-                            const Eigen::Vector2f theNewPosition) const;
+    Eigen::Vector2f collisionDetection(Actor *theActor,
+                                       Eigen::Vector2f theNewPosition,
+                                       bool &theCollisionDetected)
+      const;
 
     /** All of the Actors for the simulation. */
     std::vector<Actor*> myActors;

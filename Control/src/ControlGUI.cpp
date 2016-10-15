@@ -46,11 +46,8 @@ QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
   setSensitivities(myRealTimeGrid, false);
   setSensitivities(myBatchBox, false);
 
-  // The camera position is set on the visualization thread, so there isn't
-  // a good place to update it in this thread. This callback will hopefully
-  // ensure it stays up-to-date.
-  Glib::signal_timeout().connect(
-    sigc::mem_fun(*this, &ControlGUI::timerFunction), 50);
+  // Set initial camera values
+  updateCamera();
 
   show_all_children();
 }
@@ -507,13 +504,6 @@ void QS::ControlGUI::helpAboutHandler()
   aboutDialog.run();
 }
 
-bool QS::ControlGUI::timerFunction()
-{
-  updateCameraPosition();
-  updateCameraZoom();
-  return true;
-}
-
 void QS::ControlGUI::modeRadioButtonToggled()
 {
   if (myRealTimeButton.get_active())
@@ -695,9 +685,15 @@ void QS::ControlGUI::startSimulation()
     mySimulationStatusElapsedTimeEntry.set_text("");
 
     // Timeout to update simulation times
-    sigc::slot<bool> slot = sigc::mem_fun(*this, &ControlGUI::timeoutCallback);
+    sigc::slot<bool> slot = sigc::mem_fun(
+      *this, &ControlGUI::updateSimulationData);
     // Non-round number time makes elapsed time update look better.
-    myTimeoutConnection = Glib::signal_timeout().connect(slot, 78);
+    myUpdateSimulationConnection = Glib::signal_timeout().connect(slot, 78);
+
+    // Timer to update the camera position values.
+    auto updateCameraSlot = sigc::mem_fun(*this, &ControlGUI::updateCamera);
+    myUpdateCameraConnection = Glib::signal_timeout().connect(
+      updateCameraSlot, 250);
   }
   catch (const std::exception &exception)
   {
@@ -729,7 +725,8 @@ void QS::ControlGUI::stopButtonHandler()
     setSensitivities(myBatchBox, true);
   }
 
-  myTimeoutConnection.disconnect();
+  myUpdateSimulationConnection.disconnect();
+  myUpdateCameraConnection.disconnect();
 
   mySimulation->getSimulation()->getWorld().finalizeActorMetrics();
   auto &metrics = mySimulation->getSimulation()->getMetrics();
@@ -747,15 +744,24 @@ void QS::ControlGUI::stopButtonHandler()
   myResultsTextView.get_buffer()->set_text(metricsResults.str());
 
   mySimulation.reset();
+  // Reset camera position values.
+  updateCamera();
 }
 
-bool QS::ControlGUI::timeoutCallback()
+bool QS::ControlGUI::updateSimulationData()
 {
   if (mySimulation)
   {
     auto &metrics = mySimulation->getSimulation()->getMetrics();
     setElapsedTime(metrics);
   }
+  return true;
+}
+
+bool QS::ControlGUI::updateCamera()
+{
+  updateCameraPosition();
+  updateCameraZoom();
   return true;
 }
 
