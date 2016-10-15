@@ -62,7 +62,7 @@ float QS::RealTimeVisualization::getUpdateInterval() noexcept
     else
     {
       // Avoid spinning when paused.
-      std::this_thread::sleep_for(std::chrono::milliseconds(5));
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
       updateInterval = 0.0;
     }
   }

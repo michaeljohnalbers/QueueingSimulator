@@ -252,23 +252,6 @@ namespace QS
     void stopButtonHandler();
 
     /**
-     * Callback for timeout signal.
-     *
-     * @return true to keep timeout for another duration, false to terminate
-     */
-    bool timeoutCallback();
-
-    /**
-     * Updates the camera's position coordinates
-     */
-    void updateCameraPosition();
-
-    /**
-     * Updates the camera's zoom percentage.
-     */
-    void updateCameraZoom();
-
-    /**
      * Callback for View->Results
      */
     void viewResultsHandler();
@@ -294,11 +277,6 @@ namespace QS
                            const std::string &theDescription);
 
     /**
-     * Callback for timer expiration.
-     */
-    bool timerFunction();
-
-    /**
      * Updates the elapsed time widget with the elapsed time from the provided
      * Metrics object.
      *
@@ -311,6 +289,30 @@ namespace QS
      * Starts a new simulation.
      */
     void startSimulation();
+
+    /**
+     * Timer callback which updates the camera values.
+     *
+     * @return true to keep timeout for another duration, false to terminate
+     */
+    bool updateCamera();
+
+    /**
+     * Updates the camera's position coordinates
+     */
+    void updateCameraPosition();
+
+    /**
+     * Updates the camera's zoom percentage.
+     */
+    void updateCameraZoom();
+
+    /**
+     * Timer callback which updates simulation data (not the simulation itself).
+     *
+     * @return true to keep timeout for another duration, false to terminate
+     */
+    bool updateSimulationData();
 
     /** Base directory */
     const std::string myBaseDir;
@@ -379,7 +381,8 @@ namespace QS
     Gtk::ScrolledWindow myResultsScrolledWindow;
     Gtk::Dialog myResultsDialog;
 
-    sigc::connection myTimeoutConnection;
+    sigc::connection myUpdateSimulationConnection;
+    sigc::connection myUpdateCameraConnection;
 
     /** Simulation data */
     std::unique_ptr<SimulationPackage> mySimulation;
