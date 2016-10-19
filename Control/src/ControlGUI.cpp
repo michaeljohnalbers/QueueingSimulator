@@ -20,11 +20,15 @@
 #include "Simulation.h"
 #include "RealTimeSimulationPackage.h"
 
+#include "qs_icon.xpm"
+
 QS::ControlGUI::ControlGUI(const std::string &theBaseDir) :
-  myBaseDir{theBaseDir}
+  myBaseDir{theBaseDir},
+  myLogo(Gdk::Pixbuf::create_from_xpm_data(qs_icon_xpm))
 {
   set_title("Queueing Simulator");
   set_border_width(5);
+  set_icon(myLogo);
 
   add(myMainBox);
   myMainBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
@@ -60,6 +64,7 @@ void QS::ControlGUI::batchFileActive()
 {
   Gtk::FileChooserDialog fileChooser("Select an output file",
                                      Gtk::FILE_CHOOSER_ACTION_SAVE);
+  fileChooser.set_icon(myLogo);
   fileChooser.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
   fileChooser.add_button("Select", Gtk::RESPONSE_OK);
 
@@ -266,6 +271,7 @@ void QS::ControlGUI::buildRealTime(Gtk::Container &theContainer)
 void QS::ControlGUI::buildResultsDialog()
 {
   myResultsDialog.set_title("Simulation Results");
+  myResultsDialog.set_icon(myLogo);
   myResultsDialog.add_button("Close", 0);
   myResultsDialog.get_content_area()->add(myResultsScrolledWindow);
   myResultsDialog.set_size_request(400, 500);
@@ -392,6 +398,7 @@ bool QS::ControlGUI::checkForOverwrite(const std::string &theFileName,
     Gtk::MessageDialog questionDialog(promptText,
                                       false, Gtk::MESSAGE_QUESTION,
                                       Gtk::BUTTONS_YES_NO);
+    questionDialog.set_icon(myLogo);
     auto response = questionDialog.run();
     if (response == Gtk::RESPONSE_YES)
     {
@@ -411,6 +418,7 @@ void QS::ControlGUI::fileOpenHandler()
 {
   Gtk::FileChooserDialog fileChooser("Select a Simulation file",
                                      Gtk::FILE_CHOOSER_ACTION_OPEN);
+  fileChooser.set_icon(myLogo);
   fileChooser.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
   fileChooser.add_button("Open", Gtk::RESPONSE_OK);
 
@@ -449,6 +457,7 @@ void QS::ControlGUI::fileSaveResultsHandler()
 {
   Gtk::FileChooserDialog fileChooser("Save Results",
                                      Gtk::FILE_CHOOSER_ACTION_SAVE);
+  fileChooser.set_icon(myLogo);
   fileChooser.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
   fileChooser.add_button("Save", Gtk::RESPONSE_OK);
 
@@ -482,10 +491,12 @@ void QS::ControlGUI::helpAboutHandler()
 {
   Gtk::AboutDialog aboutDialog;
 
-  // TODO: create icon for QS
-
   aboutDialog.set_authors({"Michael Albers"});
   aboutDialog.add_credit_section("Advisor", {"Dr. Gita Alaghband"});
+  aboutDialog.set_artists({"Ronnie Genova"});
+
+  aboutDialog.set_logo(myLogo);
+  aboutDialog.set_icon(myLogo);
 
   std::string version{std::to_string(QS_VERSION_MAJOR)};
   version += "." + std::to_string(QS_VERSION_MINOR);
@@ -700,6 +711,7 @@ void QS::ControlGUI::startSimulation()
     std::string error{"Error loading simulation: "};
     error += exception.what();
     Gtk::MessageDialog errorDialog(error, false, Gtk::MESSAGE_ERROR);
+    errorDialog.set_icon(myLogo);
     errorDialog.run();
 
     // Bad simulation, get rid of it.
