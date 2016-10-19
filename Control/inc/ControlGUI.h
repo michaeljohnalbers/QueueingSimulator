@@ -384,6 +384,8 @@ namespace QS
     sigc::connection myUpdateSimulationConnection;
     sigc::connection myUpdateCameraConnection;
 
+    Glib::RefPtr<Gdk::Pixbuf> myLogo;
+
     /** Simulation data */
     std::unique_ptr<SimulationPackage> mySimulation;
 

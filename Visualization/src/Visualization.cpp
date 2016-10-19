@@ -93,6 +93,9 @@ void QS::Visualization::initializeGLFW()
   }
   glfwMakeContextCurrent(myWindow);
 
+  // Not using an icon for this window as GLFW's icon ability is very primitive
+  // (you can only load pixel data at run time).
+
   VisualizationInitialization::InitializeGLEW();
 
   glViewport(0, 0, width, height);
