@@ -7,8 +7,9 @@
 
 #include "NullSensor.h"
 
-QS::NullSensor::NullSensor(const Properties &theProperties) :
-  Sensor(theProperties)
+QS::NullSensor::NullSensor(const Properties &theProperties,
+                           const std::string &theTag) :
+  Sensor(theProperties, theTag)
 {
 }
 

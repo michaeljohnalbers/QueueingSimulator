@@ -21,8 +21,8 @@ static std::function<float(const std::string&)> toFloat =
   return std::stof(value);
 };
 
-QS::Actor::Actor(const Properties &theProperties) :
-  PluginEntity(theProperties),
+QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
+  PluginEntity(theProperties, theTag),
   myColor(1.0, 1.0, 1.0), // Use white as OpenGL clear color is black
   myPosition(0.0, 0.0),
   myVelocity_ms(0.0, 0.0)

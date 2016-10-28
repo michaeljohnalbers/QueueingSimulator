@@ -29,10 +29,10 @@ namespace QS
     /**
      * Constructor
      *
-     * @param theProperties
-     *           properties for the sensor
+     * @see Sensor.h for parameter detail 
      */
-    NullSensor(const Properties &theProperties);
+    NullSensor(const Properties &theProperties,
+               const std::string &theTag);
 
     /**
      * Destructor.

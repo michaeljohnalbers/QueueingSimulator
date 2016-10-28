@@ -95,6 +95,15 @@ namespace QS
      */
     std::string getPluginSource(const Attributes &theAttributes) const noexcept;
 
+    /**
+     * Returns the tag attribute, or empty string if the attribute doesn't
+     * exist. This is just a convenience functions to avoid a lot of
+     * try/catches.
+     *
+     * @return tag attribute or empty string if no attribute
+     */
+    std::string getTag(const Attributes &theAttributes) const noexcept;
+    
     /** Current actor definition */
     std::shared_ptr<ActorDefinition> myActorDefinition;
 

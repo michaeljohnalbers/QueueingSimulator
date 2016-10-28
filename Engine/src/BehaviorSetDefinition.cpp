@@ -16,10 +16,11 @@ QS::BehaviorSetDefinition::BehaviorSetDefinition(
 }
 
 void QS::BehaviorSetDefinition::addBehavior(const std::string &theBehavior,
-                                            const std::string &theSource)
+                                            const std::string &theSource,
+                                            const std::string &theTag)
   noexcept
 {
-  myBehaviors.insert({theBehavior, theSource});
+  myBehaviors.insert({theBehavior, theSource, theTag});
 }
 
 std::string QS::BehaviorSetDefinition::getName() const noexcept
@@ -27,7 +28,7 @@ std::string QS::BehaviorSetDefinition::getName() const noexcept
   return myName;
 }
 
-std::set<QS::DefinitionPair> QS::BehaviorSetDefinition::getBehaviors()
+std::set<QS::PluginDependencySet> QS::BehaviorSetDefinition::getBehaviors()
   const noexcept
 {
   return myBehaviors;

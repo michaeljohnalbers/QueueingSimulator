@@ -40,8 +40,11 @@ namespace QS
      *
      * @param theProperties
      *          all properties for this behavior set
+     * @param theTag
+     *          optional user-defined tag for differentiating BehaviorSets of
+     *          the same type
      */
-    BehaviorSet(const Properties &theProperties);
+    BehaviorSet(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Copy constructor.

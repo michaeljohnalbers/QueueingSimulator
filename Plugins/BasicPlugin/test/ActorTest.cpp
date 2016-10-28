@@ -30,7 +30,7 @@ class ActorTestFixture : public ::testing::Test
 
   virtual void SetUp() override
   {
-    ASSERT_NO_THROW(myActor = new QS::Actor(glbGoodProperties));
+    ASSERT_NO_THROW(myActor = new QS::Actor(glbGoodProperties, ""));
   }
 
   virtual void TearDown() override
@@ -53,7 +53,7 @@ GTEST_TEST(ActorTest, testConstruction)
   // Test nominal construction
   try
   {
-    QS::Actor actor(glbGoodProperties);
+    QS::Actor actor(glbGoodProperties, "");
 
     // Test initial values are set
     EXPECT_FLOAT_EQ(0.1, actor.getRadius());
@@ -79,7 +79,7 @@ GTEST_TEST(ActorTest, testConstruction)
       properties.insert({"radius", "1.0"});
       properties.insert({"x", "0.5"});
       properties.insert({"y", "0.5"});
-      QS::Actor actor(properties);
+      QS::Actor actor(properties, "");
       FAIL();
     }
     catch (const std::invalid_argument &e)
@@ -101,7 +101,7 @@ GTEST_TEST(ActorTest, testConstruction)
       properties.insert({"mass", "1.0"});
       properties.insert({"x", "0.5"});
       properties.insert({"y", "0.5"});
-      QS::Actor actor(properties);
+      QS::Actor actor(properties, "ActorInstance1");
       FAIL();
     }
     catch (const std::invalid_argument &e)
@@ -123,7 +123,7 @@ GTEST_TEST(ActorTest, testConstruction)
       properties.insert({"mass", "1.0"});
       properties.insert({"radius", "0.1"});
       properties.insert({"y", "0.5"});
-      QS::Actor actor(properties);
+      QS::Actor actor(properties, "");
       FAIL();
     }
     catch (const std::invalid_argument &e)
@@ -145,7 +145,7 @@ GTEST_TEST(ActorTest, testConstruction)
       properties.insert({"mass", "1.0"});
       properties.insert({"radius", "0.1"});
       properties.insert({"x", "0.5"});
-      QS::Actor actor(properties);
+      QS::Actor actor(properties, "");
       FAIL();
     }
     catch (const std::invalid_argument &e)
@@ -178,7 +178,7 @@ GTEST_TEST(ActorTest, testConstruction)
       {
         std::map<std::string, std::string> badProperties{glbGoodProperties};
         badProperties[std::get<0>(invalidTuple)] = std::get<1>(invalidTuple);
-        QS::Actor actor(badProperties);
+        QS::Actor actor(badProperties, "");
         FAIL() << "Unexpectedly passed with bad property: "
                << std::get<0>(invalidTuple) << ", with value: "
                << std::get<1>(invalidTuple);
@@ -202,7 +202,7 @@ TEST_F(ActorTestFixture, adjustVectorToMaximums)
   // 1/4 rotation
   properties.insert({"max rotation", std::to_string(M_PI / 2.0)});
 
-  QS::Actor actor(properties);
+  QS::Actor actor(properties, "");
 
   // Null case. Vector that doesn't move shouldn't be modified.
   {
@@ -215,7 +215,7 @@ TEST_F(ActorTestFixture, adjustVectorToMaximums)
   // Test case with no maximums defined.
   {
     QS::PluginEntity::Properties propertiesNoMax{glbGoodProperties};
-    QS::Actor actorNoMax(propertiesNoMax);
+    QS::Actor actorNoMax(propertiesNoMax, "");
     float interval = 0.001;
     // Actor's default orientation is (1,0).
     Eigen::Vector2f inputVector(-50000000.0, 0);
@@ -292,7 +292,7 @@ TEST_F(ActorTestFixture, adjustVectorToMaximums)
     zeroMaxSpeedProperties.insert({"max speed", "0.0"});
     zeroMaxSpeedProperties.insert({"max rotation", std::to_string(M_PI / 2.0)});
 
-    QS::Actor fastActor(zeroMaxSpeedProperties);
+    QS::Actor fastActor(zeroMaxSpeedProperties, "");
 
     float interval = 1.0;
     Eigen::Vector2f inputVector(-2.0, 1.0);
@@ -310,7 +310,7 @@ TEST_F(ActorTestFixture, adjustVectorToMaximums)
     zeroMaxRotationProperties.insert({"max speed", "2.0"});
     zeroMaxRotationProperties.insert({"max rotation", "0.0"});
 
-    QS::Actor fastActor(zeroMaxRotationProperties);
+    QS::Actor fastActor(zeroMaxRotationProperties, "");
 
     float interval = 1.0;
 
@@ -343,7 +343,7 @@ TEST_F(ActorTestFixture, getGetMaximumRotationSpeed)
   QS::PluginEntity::Properties properties{glbGoodProperties};
   properties.insert({"max rotation", "3.5"});
 
-  QS::Actor actor(properties);
+  QS::Actor actor(properties, "");
   EXPECT_FLOAT_EQ(3.5, actor.getMaximumRotationSpeed());
 }
 
@@ -352,7 +352,7 @@ TEST_F(ActorTestFixture, getGetMaximumSpeed)
   QS::PluginEntity::Properties properties{glbGoodProperties};
   properties.insert({"max speed", "1.0"});
 
-  QS::Actor actor(properties);
+  QS::Actor actor(properties, "");
   EXPECT_FLOAT_EQ(1.0, actor.getMaximumSpeed());
 }
 

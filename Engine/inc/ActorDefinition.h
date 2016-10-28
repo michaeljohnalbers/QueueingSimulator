@@ -9,7 +9,7 @@
 
 #include <string>
 #include <set>
-#include "DefinitionPair.h"
+#include "PluginDependencySet.h"
 
 namespace QS
 {
@@ -56,16 +56,20 @@ namespace QS
      *          behavior set to add
      * @param theSource
      *          source of the behavior set
+     * @param theTag
+     *          optional identifier to allow multiple BehaviorSets of the same
+     *          type for a single Actor
      */
     void addBehaviorSet(const std::string &theBehaviorSet,
-                        const std::string &theSource) noexcept;
+                        const std::string &theSource,
+                        const std::string &theTag) noexcept;
 
     /**
      * Returns the list of behavior sets this actor uses.
      *
      * @return behavior set list
      */
-    std::set<DefinitionPair> getBehaviorSets() const noexcept;
+    std::set<PluginDependencySet> getBehaviorSets() const noexcept;
 
     /**
      * Returns the name of the name of Actor.
@@ -98,7 +102,7 @@ namespace QS
     private:
 
     /** Names of all of the behavior sets that this actor uses as input. */
-    std::set<DefinitionPair> myBehaviorSets;
+    std::set<PluginDependencySet> myBehaviorSets;
 
     /** Name of the actor */
     std::string myName;

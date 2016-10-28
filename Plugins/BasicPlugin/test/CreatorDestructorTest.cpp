@@ -18,22 +18,26 @@ extern "C"
 {
   QS::Actor* actorCreator(
     const std::string&,
-    const QS::PluginEntity::Properties&);
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
   void actorDestructor(QS::Actor*);
 
   QS::BehaviorSet* behaviorSetCreator(
     const std::string&,
-    const QS::PluginEntity::Properties&);
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
   void behaviorSetDestructor(QS::BehaviorSet*);
 
   QS::Behavior* behaviorCreator(
     const std::string&,
-    const QS::PluginEntity::Properties&);
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
   void behaviorDestructor(QS::Behavior*);
 
   QS::Sensor* sensorCreator(
     const std::string&,
-    const QS::PluginEntity::Properties&);
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
   void sensorDestructor(QS::Sensor*);
 }
 
@@ -44,19 +48,19 @@ GTEST_TEST(CreatorDestructor, testActor)
   properties.insert({"radius", "0.1"});
   properties.insert({"x", "0.11"});
   properties.insert({"y", "0.11"});
-  QS::Actor *actor = actorCreator("", properties);
+  QS::Actor *actor = actorCreator("", properties, "");
   EXPECT_NE(nullptr, actor);
 
   EXPECT_NO_THROW(actorDestructor(actor));
 
   // Test catching an exception on Actor construction
-  EXPECT_THROW(actorCreator("", {}), std::invalid_argument);
+  EXPECT_THROW(actorCreator("", {}, ""), std::invalid_argument);
 }
 
 GTEST_TEST(CreatorDestructor, testBehaviorSet)
 {
   QS::PluginEntity::Properties properties{{"BehaviorSet", "Property"}};
-  QS::BehaviorSet* behaviorSet = behaviorSetCreator("", properties);
+  QS::BehaviorSet* behaviorSet = behaviorSetCreator("", properties, "");
   EXPECT_NE(nullptr, behaviorSet);
 
   EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
@@ -65,7 +69,7 @@ GTEST_TEST(CreatorDestructor, testBehaviorSet)
 GTEST_TEST(CreatorDestructor, testBehavior)
 {
   QS::PluginEntity::Properties properties{{"Behavior", "Property"}};
-  QS::Behavior *behavior = behaviorCreator("", properties);
+  QS::Behavior *behavior = behaviorCreator("", properties, "");
   EXPECT_NE(nullptr, behavior);
 
   EXPECT_NO_THROW(behaviorDestructor(behavior));
@@ -74,7 +78,7 @@ GTEST_TEST(CreatorDestructor, testBehavior)
 GTEST_TEST(CreatorDestructor, testSensor)
 {
   QS::PluginEntity::Properties properties{{"Sensor", "Property"}};
-  QS::Sensor *sensor = sensorCreator("", properties);
+  QS::Sensor *sensor = sensorCreator("", properties, "");
   EXPECT_NE(nullptr, sensor);
 
   EXPECT_NO_THROW(sensorDestructor(sensor));

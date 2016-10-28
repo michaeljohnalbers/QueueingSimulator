@@ -16,12 +16,13 @@ QS::ActorDefinition::ActorDefinition(const std::string &theName) :
 }
 
 void QS::ActorDefinition::addBehaviorSet(const std::string &theBehaviorSet,
-                                         const std::string &theSource) noexcept
+                                         const std::string &theSource,
+                                         const std::string &theTag) noexcept
 {
-  myBehaviorSets.insert({theBehaviorSet, theSource});
+  myBehaviorSets.insert({theBehaviorSet, theSource, theTag});
 }
 
-std::set<QS::DefinitionPair> QS::ActorDefinition::getBehaviorSets()
+std::set<QS::PluginDependencySet> QS::ActorDefinition::getBehaviorSets()
   const noexcept
 {
   return myBehaviorSets;

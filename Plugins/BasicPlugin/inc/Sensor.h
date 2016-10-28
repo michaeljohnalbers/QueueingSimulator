@@ -19,12 +19,6 @@ namespace QS
    * A sensor is an object which senses data within the simulation world. It
    * stores that information and is then used by steering behaviors in
    * determining Actor motion.
-   *
-   * Each sensor has a "type name". This is a loose concept. It doesn't not
-   * necessarily mean the actual data type. Rather this is a name used in the
-   * configuration files to tie a sensor to a steering behavior. A sensor
-   * defines that it has a certain type name. Then a steering behavior
-   * indicates that it needs a sensor of that type name.
    */
   class Sensor : public PluginEntity
   {
@@ -40,10 +34,11 @@ namespace QS
      *
      * @param theProperties
      *           properties for the sensor
-     * @throws std::invalid_argument
-     *           on empty type name
+     * @param theTag
+     *          optional user-defined tag for differentiating Sensors of the
+     *          same type
      */
-    Sensor(const Properties &theProperties);
+    Sensor(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Destructor.

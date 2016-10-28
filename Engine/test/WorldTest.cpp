@@ -35,25 +35,25 @@ GTEST_TEST(WorldTest, addActor)
 
   // Test just inside each corner of the world.
   {
-    std::shared_ptr<QS::Actor> actor( new QS::Actor(properties));
+    std::shared_ptr<QS::Actor> actor( new QS::Actor(properties, ""));
     actors.push_back(actor);
     actor->setPosition({0.1, 0.1});
     EXPECT_NO_THROW(world.addActor(actor.get()));
   }
   {
-    std::shared_ptr<QS::Actor> actor( new QS::Actor(properties));
+    std::shared_ptr<QS::Actor> actor( new QS::Actor(properties, ""));
     actors.push_back(actor);
     actor->setPosition({9.9, 0.1});
     EXPECT_NO_THROW(world.addActor(actor.get()));
   }
   {
-    std::shared_ptr<QS::Actor> actor( new QS::Actor(properties));
+    std::shared_ptr<QS::Actor> actor( new QS::Actor(properties, ""));
     actors.push_back(actor);
     actor->setPosition({9.9, 9.9});
     EXPECT_NO_THROW(world.addActor(actor.get()));
   }
   {
-    std::shared_ptr<QS::Actor> actor(new QS::Actor(properties));
+    std::shared_ptr<QS::Actor> actor(new QS::Actor(properties, ""));
     actors.push_back(actor);
     actor->setPosition({0.1, 9.9});
     EXPECT_NO_THROW(world.addActor(actor.get()));
@@ -61,7 +61,7 @@ GTEST_TEST(WorldTest, addActor)
 
   // Test just outside the world
   {
-    QS::Actor actor(properties);
+    QS::Actor actor(properties, "");
     actor.setPosition({0.0, 0.1}); // Bad X (low), good y
     EXPECT_THROW(world.addActor(&actor), std::logic_error);
     actor.setPosition({10.0, 0.1}); // Bad X (high), good y
@@ -77,13 +77,13 @@ GTEST_TEST(WorldTest, addActor)
 
   // Test actor overlap
   {
-    std::shared_ptr<QS::Actor> actor1(new QS::Actor(properties));
+    std::shared_ptr<QS::Actor> actor1(new QS::Actor(properties, ""));
     actors.push_back(actor1);
     actor1->setPosition({5.0, 5.0});
 
     auto newProperties{properties};
     newProperties["radius"] = "1.0";
-    std::shared_ptr<QS::Actor> actor2(new QS::Actor(newProperties));
+    std::shared_ptr<QS::Actor> actor2(new QS::Actor(newProperties, ""));
     actors.push_back(actor2);
 
     EXPECT_NO_THROW(world.addActor(actor1.get()));
@@ -112,7 +112,7 @@ GTEST_TEST(WorldTest, convertPointToWorld)
     {"x", "0.0"},
     {"y", "0.0"}};
 
-  QS::Actor actor{properties};
+  QS::Actor actor{properties, ""};
 
   Eigen::Vector2f localPoint(1,0);
   Eigen::Vector2f expectedPoint(1,0);

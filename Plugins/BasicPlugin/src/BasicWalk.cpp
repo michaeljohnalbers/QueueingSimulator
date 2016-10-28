@@ -9,8 +9,9 @@
 #include "Sensable.h"
 #include "Walk.h"
 
-QS::BasicWalk::BasicWalk(const Properties &theProperties) :
-  BehaviorSet(theProperties)
+QS::BasicWalk::BasicWalk(const Properties &theProperties,
+                         const std::string &theTag) :
+  BehaviorSet(theProperties, theTag)
 {
 }
 

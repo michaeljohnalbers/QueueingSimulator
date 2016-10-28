@@ -37,7 +37,8 @@ namespace QS
     template<class T>
     using CreatorFunction = T*(*)(
       const std::string &theType,
-      const std::map<std::string, std::string> &theProperties);
+      const std::map<std::string, std::string> &theProperties,
+      const std::string &theTag);
 
     /**
      * Definition of a destructor function. This function must be able to
@@ -91,13 +92,17 @@ namespace QS
      * @param theProperties
      *          key/value pairs of properties specific to the type of actor
      *          being created.
+     * @param theTag
+     *          optional user-defined tag for differentiating Actors of the
+     *          same type
      * @throw std::invalid_argument On invalid actor type
      * @throw std::logic_error If no creator function defined (this shouldn't
      *          happend and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     Actor* createActor(const std::string &theType,
-                       const std::map<std::string, std::string> &theProperties);
+                       const std::map<std::string, std::string> &theProperties,
+                       const std::string &theTag);
 
     /**
      * Creates the Behavior with the given name. The caller owns the pointer,
@@ -108,6 +113,9 @@ namespace QS
      * @param theProperties
      *          key/value pairs of properties specific to the type of behavior
      *          being created.
+     * @param theTag
+     *          optional user-defined tag for differentiating Behaviors of the
+     *          same type
      * @throw std::invalid_argument On invalid behavior name
      * @throw std::logic_error If no creator function defined (this shouldn't
      *          happend and is indicative of an internal error, it might be
@@ -115,7 +123,8 @@ namespace QS
      */
     Behavior* createBehavior(
       const std::string &theBehavior,
-      const std::map<std::string, std::string> &theProperties);
+      const std::map<std::string, std::string> &theProperties,
+      const std::string &theTag);
 
     /**
      * Creates the BehaviorSet with the given name. The caller owns the pointer,
@@ -126,6 +135,9 @@ namespace QS
      * @param theProperties
      *          key/value pairs of properties specific to the type of behavior
      *          set being created.
+     * @param theTag
+     *          optional user-defined tag for differentiating BehaviorSets of
+     *          the same type
      * @throw std::invalid_argument On invalid behavior name
      * @throw std::logic_error If no creator function defined (this shouldn't
      *          happend and is indicative of an internal error, it might be
@@ -133,7 +145,8 @@ namespace QS
      */
     BehaviorSet* createBehaviorSet(
       const std::string &theBehaviorSet,
-      const std::map<std::string, std::string> &theProperties);
+      const std::map<std::string, std::string> &theProperties,
+      const std::string &theTag);
 
     /**
      * Creates the Sensor with the given name. The caller owns the pointer, but
@@ -144,6 +157,9 @@ namespace QS
      * @param theProperties
      *          key/value pairs of properties specific to the type of sensor
      *          being created.
+     * @param theTag
+     *          optional user-defined tag for differentiating Sensors of the
+     *          same type
      * @throw std::invalid_argument On invalid sensor name
      * @throw std::logic_error If no creator function defined (this shouldn't
      *          happend and is indicative of an internal error, it might be
@@ -151,7 +167,8 @@ namespace QS
      */
     Sensor* createSensor(
       const std::string &theSensor,
-      const std::map<std::string, std::string> &theProperties);
+      const std::map<std::string, std::string> &theProperties,
+      const std::string &theTag);
 
     /**
      * Destroys actors created from createActor.
@@ -231,6 +248,9 @@ namespace QS
      * @param theProperties
      *          key/value pairs of properties specific to the type of thing
      *          being created.
+     * @param theTag
+     *          optional user-defined tag for differentiating things of the
+     *          same type
      * @param theCreatorDestructor
      *          creator/destructor functions
      * @param theName
@@ -243,6 +263,7 @@ namespace QS
     template<class T>
     T* create(const std::string &theType,
               const std::map<std::string, std::string> &theProperties,
+              const std::string &theTag,
               CreatorDestructor<T> theCreatorDestructor,
               const std::string &theName);
 

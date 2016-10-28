@@ -15,10 +15,10 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
 {
   // BasicWalk just returns the value of Walk.
   QS::PluginEntity::Properties properties;
-  ASSERT_NO_THROW(QS::BasicWalk temp(properties));
+  ASSERT_NO_THROW(QS::BasicWalk temp(properties, ""));
 
-  QS::BasicWalk basicWalk(properties);
-  QS::Walk walk(properties);
+  QS::BasicWalk basicWalk(properties, "");
+  QS::Walk walk(properties, "");
   QS::EntityDependency<QS::Behavior> basicWalkDependencies{"Walk", &walk, ""};
   basicWalk.setDependencies({basicWalkDependencies});
 
