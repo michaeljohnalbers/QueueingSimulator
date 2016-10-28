@@ -9,8 +9,11 @@
 
 #include <map>
 #include <memory>
+#include <stack>
 #include <string>
 #include "xercesc/sax2/DefaultHandler.hpp"
+#include "PluginEntity.h"
+#include "SimulationEntityConfiguration.h"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -20,6 +23,8 @@ namespace QS
   class World;
 
   /**
+   * Instances of this class read a simulation configuration file and populate
+   * the provided word with simulation entities defined by the file.
    */
   class SimulationReader : public DefaultHandler
   {
@@ -76,10 +81,8 @@ namespace QS
     SimulationReader& operator=(SimulationReader&&) = delete;
 
     /**
-     * Reads the simulation configuration file returning a populated definition
-     * object.
+     * Reads the simulation configuration file.
      *
-     * @return definition object for the simulation configuration file just read
      * @throws std::logic_error
      *           on any error reading/parsing the file.
      */
@@ -113,11 +116,14 @@ namespace QS
     /** Simulation config file */
     const std::string myConfigFile;
 
+    /**
+     * Entity configurations, as a new dependency is encountered, it will be
+     * added to the stack, and removed when finished.
+     */
+    std::stack<SimulationEntityConfiguration> myEntityConfigurations;
+
     /** Creator of plugin entities. */
     std::shared_ptr<EntityManager> myEntityManager;
-
-    /** Map of properties to fill while parsing config file. */
-    std::map<std::string, std::string> myProperties;
 
     /** Directory in which the schema is located. */
     const std::string mySimulationSchemaDirectory;

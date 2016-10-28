@@ -30,7 +30,7 @@ GTEST_TEST(MetricsTest, actorMetrics)
   {
     properties["x"] = std::to_string(ii);
     properties["y"] = std::to_string(ii);
-    actors.push_back(new QS::Actor(properties));
+    actors.push_back(new QS::Actor(properties, ""));
   }
 
   QS::Metrics metrics;
@@ -41,7 +41,7 @@ GTEST_TEST(MetricsTest, actorMetrics)
     EXPECT_NO_THROW(metrics.getActorMetrics(actor));
   }
   EXPECT_THROW(metrics.getActorMetrics(nullptr), std::out_of_range);
-  QS::Actor *actor = new QS::Actor(properties);
+  QS::Actor *actor = new QS::Actor(properties, "");
   EXPECT_THROW(metrics.getActorMetrics(actor), std::out_of_range);
   delete actor;
 

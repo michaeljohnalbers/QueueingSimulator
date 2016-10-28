@@ -15,7 +15,7 @@ class TestSensor : public QS::Sensor
 {
   public:
   TestSensor() :
-    Sensor(QS::PluginEntity::Properties{})
+    Sensor(QS::PluginEntity::Properties{}, "")
   {
   }
 

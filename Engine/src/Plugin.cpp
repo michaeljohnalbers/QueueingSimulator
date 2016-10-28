@@ -36,6 +36,7 @@ QS::Plugin::~Plugin()
 template<class T>
 T* QS::Plugin::create(const std::string &theType,
                       const std::map<std::string, std::string> &theProperties,
+                      const std::string &theTag,
                       CreatorDestructor<T> theCreatorDestructor,
                       const std::string &theName)
 {
@@ -46,39 +47,43 @@ T* QS::Plugin::create(const std::string &theType,
       getName() + " with no creator function defined.");
   }
 
-  return theCreatorDestructor.first(theType, theProperties);
+  return theCreatorDestructor.first(theType, theProperties, theTag);
 }
 
 QS::Actor* QS::Plugin::createActor(
   const std::string &theType,
-  const std::map<std::string, std::string> &theProperties)
+  const std::map<std::string, std::string> &theProperties,
+  const std::string &theTag)
 {
-  return create<Actor>(theType, theProperties, myActorCreatorDestructor,
+  return create<Actor>(theType, theProperties, theTag, myActorCreatorDestructor,
                        "Actor");
 }
 
 QS::Behavior* QS::Plugin::createBehavior(
   const std::string &theType,
-  const std::map<std::string, std::string> &theProperties)
+  const std::map<std::string, std::string> &theProperties,
+  const std::string &theTag)
 {
-  return create<Behavior>(theType, theProperties, myBehaviorCreatorDestructor,
-                          "Behavior");
+  return create<Behavior>(theType, theProperties, theTag,
+                          myBehaviorCreatorDestructor, "Behavior");
 }
 
 QS::BehaviorSet* QS::Plugin::createBehaviorSet(
   const std::string &theType,
-  const std::map<std::string, std::string> &theProperties)
+  const std::map<std::string, std::string> &theProperties,
+  const std::string &theTag)
 {
-  return create<BehaviorSet>(theType, theProperties,
+  return create<BehaviorSet>(theType, theProperties, theTag,
                              myBehaviorSetCreatorDestructor, "BehaviorSet");
 }
 
 QS::Sensor* QS::Plugin::createSensor(
   const std::string &theType,
-  const std::map<std::string, std::string> &theProperties)
+  const std::map<std::string, std::string> &theProperties,
+  const std::string &theTag)
 {
-  return create<Sensor>(theType, theProperties, mySensorCreatorDestructor,
-                        "Sensor");
+  return create<Sensor>(theType, theProperties, theTag,
+                        mySensorCreatorDestructor, "Sensor");
 }
 
 template<class T>

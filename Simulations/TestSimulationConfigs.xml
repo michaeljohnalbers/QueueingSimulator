@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  Simulation used to test configuration values.
+-->
+
+<Simulation>
+  <Seed value="1" />
+  <World width="20" length="20">
+    <Actors>
+
+      <!-- Lower left -->
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="x" value="7" />
+	<Property key="y" value="7" />
+        <Property key="orientation" value="0.786598" />
+	<Property key="color" value="1.0 0.0 0.0" />
+	<BehaviorSet type="BasicWalk" source="BasicPlugin">
+	  <Behavior type="Walk" source="BasicPlugin">
+	    <Property key="speed" value="3.0" />
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="x" value="5" />
+	<Property key="y" value="5" />
+        <Property key="orientation" value="3.92699" />
+	<Property key="color" value="0.5 0.0 0.0" />
+      </Actor>
+
+      <!-- Lower right-->
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="13" />
+      	<Property key="y" value="7" />
+      	<Property key="color" value="0.0 1.0 0.0" />
+      	<Property key="orientation" value="2.35619" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="15" />
+      	<Property key="y" value="5" />
+      	<Property key="color" value="0.0 0.5 0.0" />
+      	<Property key="orientation" value="5.49779" />
+	<BehaviorSet type="BasicWalk" source="BasicPlugin">
+	  <Behavior type="Walk" source="BasicPlugin">
+	    <Property key="speed" value="0.3" />
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <!-- Upper right-->
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="13" />
+      	<Property key="y" value="13" />
+      	<Property key="color" value="0.0 0.0 1.0" />
+      	<Property key="orientation" value="3.92699" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="15" />
+      	<Property key="y" value="15" />
+      	<Property key="color" value="0.0 0.0 0.5" />
+      	<Property key="orientation" value="0.786598" />
+	<!-- Test that max speed overrides behaviors -->
+      	<Property key="max speed" value="0.8" />
+	<BehaviorSet type="BasicWalk" source="BasicPlugin">
+	  <Behavior type="Walk" source="BasicPlugin">
+	    <Property key="speed" value="12.0" />
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <!-- Upper left-->
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="5" />
+      	<Property key="y" value="15" />
+      	<Property key="color" value="1.0 1.0 1.0" />
+      	<Property key="orientation" value="2.35619" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="7" />
+      	<Property key="y" value="13" />
+      	<Property key="color" value="0.5 0.5 0.5" />
+      	<Property key="orientation" value="5.49779" />
+	<BehaviorSet type="BasicWalk" source="BasicPlugin">
+	  <Behavior type="Walk" source="BasicPlugin">
+	    <Property key="speed" value="12.0" />
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+    </Actors>
+  </World>
+</Simulation>

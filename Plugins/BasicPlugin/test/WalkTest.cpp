@@ -12,9 +12,9 @@
 GTEST_TEST(WalkTest, testWalk)
 {
   QS::PluginEntity::Properties properties;
-  ASSERT_NO_THROW(QS::Walk temp(properties));
+  ASSERT_NO_THROW(QS::Walk temp(properties, ""));
 
-  QS::Walk walkBehavior(properties);
+  QS::Walk walkBehavior(properties, "");
   float oneSecond = 1.0;
   Eigen::Vector2f expectedMotionVector(1.0, 0);
   auto actualMotionVector = walkBehavior.evaluate(nullptr, oneSecond);
@@ -38,4 +38,16 @@ GTEST_TEST(WalkTest, testWalk)
     << "Actual X: " << actualMotionVector.x() << std::endl;
   EXPECT_FLOAT_EQ(expectedMotionVector.y(), actualMotionVector.y())
     << "Actual Y: " << actualMotionVector.y() << std::endl;
+
+
+  // Test using the speed property.
+  properties["speed"] = "2.5";
+  QS::Walk walkBehavior2(properties, "");
+  expectedMotionVector << 2.5, 0;
+  actualMotionVector = walkBehavior2.evaluate(nullptr, oneSecond);
+  EXPECT_EQ(expectedMotionVector, actualMotionVector);
+
+  // Test using invalid speed property.
+  properties["speed"] = "r1.2";
+  EXPECT_THROW(QS::Walk(properties, ""), std::logic_error);
 }

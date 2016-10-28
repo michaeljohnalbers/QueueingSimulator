@@ -16,8 +16,8 @@ GTEST_TEST(BehaviorDefinitionTest, testConstruction)
 GTEST_TEST(BehaviorDefinition, testCopyMove)
 {
   QS::BehaviorDefinition behaviorDef("StandardBehavior");
-  behaviorDef.addSensor("Sensor1", "Source");
-  behaviorDef.addSensor("Sensor2", "Source");
+  behaviorDef.addSensor("Sensor1", "Source", "");
+  behaviorDef.addSensor("Sensor2", "Source", "");
 
   // Test copy constructor
   QS::BehaviorDefinition behaviorCopy(behaviorDef);
@@ -44,14 +44,14 @@ GTEST_TEST(BehaviorDefinition, testCopyMove)
 
 GTEST_TEST(BehaviorDefinition, testSensors)
 {
-  std::set<QS::DefinitionPair> sensors{
-    {"Sensor1", "Source1"},
-    {"Sensor2", "Source2"}};
+  std::set<QS::PluginDependencySet> sensors{
+    {"Sensor1", "Source1", "Tag1"},
+    {"Sensor2", "Source2", "Tag2"}};
 
   QS::BehaviorDefinition behaviorDef("StandardBehavior");
-  for (auto pair : sensors)
+  for (auto set : sensors)
   {
-    behaviorDef.addSensor(pair.myName, pair.mySource);
+    behaviorDef.addSensor(set.myName, set.mySource, set.myTag);
   }
 
   EXPECT_EQ(sensors, behaviorDef.getSensors());
@@ -66,8 +66,8 @@ GTEST_TEST(BehaviorDefinition, testGetName)
 GTEST_TEST(BehaviorDefinition, testEqualityOperator)
 {
   QS::BehaviorDefinition behaviorDef("StandardBehavior");
-  behaviorDef.addSensor("Sensor1", "Source");
-  behaviorDef.addSensor("Sensor2", "Source");
+  behaviorDef.addSensor("Sensor1", "Source", "Tag");
+  behaviorDef.addSensor("Sensor2", "Source", "Tag");
 
   auto behaviorCopy(behaviorDef);
   EXPECT_TRUE(behaviorDef == behaviorCopy);
@@ -76,8 +76,8 @@ GTEST_TEST(BehaviorDefinition, testEqualityOperator)
   // Test behavior with a different name.
   {
     QS::BehaviorDefinition behaviorDiff("Standardbehavior");
-    behaviorDiff.addSensor("Sensor1", "Source");
-    behaviorDiff.addSensor("Sensor2", "Source");
+    behaviorDiff.addSensor("Sensor1", "Source", "Tag1");
+    behaviorDiff.addSensor("Sensor2", "Source", "Tag2");
 
     EXPECT_FALSE(behaviorDef == behaviorDiff);
     EXPECT_FALSE(behaviorDiff == behaviorDef);
@@ -86,7 +86,7 @@ GTEST_TEST(BehaviorDefinition, testEqualityOperator)
   // Test behavior with a different number of sensors
   {
     QS::BehaviorDefinition behaviorDiff("StandardBehavior");
-    behaviorDiff.addSensor("Sensor1", "Source");
+    behaviorDiff.addSensor("Sensor1", "Source", "Tag");
 
     EXPECT_FALSE(behaviorDef == behaviorDiff);
     EXPECT_FALSE(behaviorDiff == behaviorDef);
@@ -95,8 +95,8 @@ GTEST_TEST(BehaviorDefinition, testEqualityOperator)
   // Test behavior with a different sensor names
   {
     QS::BehaviorDefinition behaviorDiff("StandardBehavior");
-    behaviorDiff.addSensor("sensor1", "Source");
-    behaviorDiff.addSensor("Sensor2", "Source");
+    behaviorDiff.addSensor("sensor1", "Source", "Tag2");
+    behaviorDiff.addSensor("Sensor2", "Source", "Tag1");
 
     EXPECT_FALSE(behaviorDef == behaviorDiff);
     EXPECT_FALSE(behaviorDiff == behaviorDef);

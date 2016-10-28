@@ -9,7 +9,7 @@
 
 #include <string>
 #include <set>
-#include "DefinitionPair.h"
+#include "PluginDependencySet.h"
 
 namespace QS
 {
@@ -56,9 +56,13 @@ namespace QS
      *          sensor to add
      * @param theSource
      *          source of the sensor
+     * @param theTag
+     *          optional identifier to allow multiple Sensors of the same
+     *          type for a single Behavior
      */
     void addSensor(const std::string &theSensor,
-                   const std::string &theSource) noexcept;
+                   const std::string &theSource,
+                   const std::string &theTag) noexcept;
 
     /**
      * Returns the name of the type of Behavior.
@@ -72,7 +76,7 @@ namespace QS
      *
      * @return sensor list
      */
-    std::set<DefinitionPair> getSensors() const noexcept;
+    std::set<PluginDependencySet> getSensors() const noexcept;
 
     /**
      * Equality operator.
@@ -101,6 +105,6 @@ namespace QS
     std::string myName;
 
     /** Names of all of the sensor that this behavior uses as input. */
-    std::set<DefinitionPair> mySensors;
+    std::set<PluginDependencySet> mySensors;
   };
 }

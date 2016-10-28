@@ -82,9 +82,18 @@ void QS::SimulationReader::endElement(const XMLCh *const uri,
   std::string elementName{XMLUtilities::cStr(localname).get()};
   if ("Actor" == elementName)
   {
-    auto newActor = myEntityManager->createActor(
-      myActorTypeName, myProperties, myActorSource);
+    auto actorConfiguration = myEntityConfigurations.top();
+    auto newActor = myEntityManager->createActor(actorConfiguration);
     myWorld.addActor(newActor);
+    myEntityConfigurations.pop();
+  }
+  else if ("BehaviorSet" == elementName || "Behavior" == elementName ||
+           "Sensor" == elementName)
+  {
+    auto entityDependencyConfiguration = myEntityConfigurations.top();
+    myEntityConfigurations.pop();
+    myEntityConfigurations.top().addDependencyConfiguration(
+      entityDependencyConfiguration);
   }
 }
 
@@ -106,17 +115,24 @@ void QS::SimulationReader::startElement(const XMLCh *const uri,
     auto widthString = XMLUtilities::getAttribute(attrs, "width");
     myWorld.setDimensions(std::stof(widthString), std::stof(lengthString));
   }
-  else if ("Actor" == elementName)
+  else if ("Actor" == elementName || "BehaviorSet" == elementName ||
+           "Behavior" == elementName || "Sensor" == elementName)
   {
-    myActorTypeName = XMLUtilities::getAttribute(attrs, "type");
-    myActorSource = XMLUtilities::getAttribute(attrs, "source");
+    auto type = XMLUtilities::getAttribute(attrs, "type");
+    auto source = XMLUtilities::getAttribute(attrs, "source");
+    std::string tag;
+    try
+    {
+      tag = XMLUtilities::getAttribute(attrs, "tag");
+    } catch (...) {}
 
-    myProperties.clear();
+    myEntityConfigurations.emplace(type, tag, source);
   }
   else if ("Property" == elementName)
   {
-    myProperties.emplace(XMLUtilities::getAttribute(attrs, "key"),
-                         XMLUtilities::getAttribute(attrs, "value"));
+    myEntityConfigurations.top().addProperty(
+      XMLUtilities::getAttribute(attrs, "key"),
+      XMLUtilities::getAttribute(attrs, "value"));
   }
 }
 

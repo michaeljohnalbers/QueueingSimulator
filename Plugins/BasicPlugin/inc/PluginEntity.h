@@ -29,8 +29,11 @@ namespace QS
      *
      * @param theProperties
      *          properties of this entity
+     * @param theTag
+     *          optional user-defined tag for differentiating Actors of the
+     *          same type
      */
-    PluginEntity(const Properties &theProperties);
+    PluginEntity(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Copy constructor.
@@ -55,6 +58,14 @@ namespace QS
     Properties getProperties() const noexcept;
 
     /**
+     * Returns the Entity's tag. The tag is an optional user-defined string that
+     * can be used to differentiate different entities of the same type.
+     *
+     * @return tag
+     */
+    std::string getTag() const noexcept;
+
+    /**
      * Copy assignment operator
      */
     PluginEntity& operator=(const PluginEntity&) = default;
@@ -68,6 +79,12 @@ namespace QS
 
     /** Properties. */
     Properties myProperties;
+
+    /**
+     * Optional user-defined string for differentiating multiple Actors of the
+     * same type.
+     */
+    std::string myTag;
 
     private:
   };

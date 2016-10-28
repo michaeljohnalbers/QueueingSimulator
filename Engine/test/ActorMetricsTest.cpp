@@ -22,7 +22,7 @@ class ActorMetricsTestFixture : public ::testing::Test
       {"x", "0.0"},
       {"y", "0.0"}};
 
-    myActor = new QS::Actor(properties);
+    myActor = new QS::Actor(properties, "");
   }
 
   void TearDown() override

@@ -16,9 +16,10 @@ QS::BehaviorDefinition::BehaviorDefinition(
 }
 
 void QS::BehaviorDefinition::addSensor(const std::string &theSensor,
-                                       const std::string &theSource)  noexcept
+                                       const std::string &theSource,
+                                       const std::string &theTag) noexcept
 {
-  mySensors.insert({theSensor, theSource});
+  mySensors.insert({theSensor, theSource, theTag});
 }
 
 std::string QS::BehaviorDefinition::getName() const noexcept
@@ -26,7 +27,7 @@ std::string QS::BehaviorDefinition::getName() const noexcept
   return myName;
 }
 
-std::set<QS::DefinitionPair> QS::BehaviorDefinition::getSensors()
+std::set<QS::PluginDependencySet> QS::BehaviorDefinition::getSensors()
   const noexcept
 {
   return mySensors;

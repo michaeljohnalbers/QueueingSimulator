@@ -16,7 +16,7 @@ GTEST_TEST(ActorDefinitionTest, testConstruction)
 GTEST_TEST(ActorDefinition, testCopyMove)
 {
   QS::ActorDefinition actorDef("StandardActor");
-  actorDef.addBehaviorSet("BehaviorSet", "Source");
+  actorDef.addBehaviorSet("BehaviorSet", "Source", "Tag");
 
   // Test copy constructor
   QS::ActorDefinition actorCopy(actorDef);
@@ -43,14 +43,14 @@ GTEST_TEST(ActorDefinition, testCopyMove)
 
 GTEST_TEST(ActorDefinition, testBehaviorSets)
 {
-  std::set<QS::DefinitionPair> behaviorSets{
-    {"BehaviorSet1", "Source1"},
-    {"BehaviorSet2", "Source2"}};
+  std::set<QS::PluginDependencySet> behaviorSets{
+    {"BehaviorSet1", "Source1", "Tag1"},
+    {"BehaviorSet2", "Source2", "Tag2"}};
 
   QS::ActorDefinition actorDef("StandardActor");
-  for (auto pair : behaviorSets)
+  for (auto set : behaviorSets)
   {
-    actorDef.addBehaviorSet(pair.myName, pair.mySource);
+    actorDef.addBehaviorSet(set.myName, set.mySource, set.myTag);
   }
 
   EXPECT_EQ(behaviorSets, actorDef.getBehaviorSets());
@@ -65,8 +65,8 @@ GTEST_TEST(ActorDefinition, testGetName)
 GTEST_TEST(ActorDefinition, testEqualityOperator)
 {
   QS::ActorDefinition actorDef("StandardActor");
-  actorDef.addBehaviorSet("BehaviorSet1", "Source");
-  actorDef.addBehaviorSet("BehaviorSet2", "Source");
+  actorDef.addBehaviorSet("BehaviorSet1", "Source", "Tag");
+  actorDef.addBehaviorSet("BehaviorSet2", "Source", "Tag");
 
   auto actorCopy(actorDef);
   EXPECT_TRUE(actorDef == actorCopy);
@@ -75,8 +75,8 @@ GTEST_TEST(ActorDefinition, testEqualityOperator)
   // Test actor with a different name.
   {
     QS::ActorDefinition actorDiff("Standardactor");
-    actorDiff.addBehaviorSet("BehaviorSet1", "Source");
-    actorDiff.addBehaviorSet("BehaviorSet2", "Source");
+    actorDiff.addBehaviorSet("BehaviorSet1", "Source", "Tag");
+    actorDiff.addBehaviorSet("BehaviorSet2", "Source", "Tag");
     
     EXPECT_FALSE(actorDef == actorDiff);
     EXPECT_FALSE(actorDiff == actorDef);
@@ -85,7 +85,7 @@ GTEST_TEST(ActorDefinition, testEqualityOperator)
   // Test actor with a different number of behaviorSets
   {
     QS::ActorDefinition actorDiff("StandardActor");
-    actorDiff.addBehaviorSet("BehaviorSet1", "Source");
+    actorDiff.addBehaviorSet("BehaviorSet1", "Source", "Tag");
     EXPECT_TRUE(actorDef == actorDiff);
     EXPECT_TRUE(actorDiff == actorDef);
   }
@@ -93,8 +93,8 @@ GTEST_TEST(ActorDefinition, testEqualityOperator)
   // Test actor with a different behaviorSet names
   {
     QS::ActorDefinition actorDiff("StandardActor");
-    actorDiff.addBehaviorSet("behaviorset1", "source");
-    actorDiff.addBehaviorSet("Behaviorset2", "source");
+    actorDiff.addBehaviorSet("behaviorset1", "source", "Tag");
+    actorDiff.addBehaviorSet("Behaviorset2", "source", "Tag");
     EXPECT_TRUE(actorDef == actorDiff);
     EXPECT_TRUE(actorDiff == actorDef);
   }

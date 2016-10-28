@@ -72,11 +72,14 @@ namespace QS
      *               Actor from moving. This maximum is direction neutral,
      *               meaning it is a maximum in both clockwise and
      *               counter-clockwise rotations.
+     * @param theTag
+     *          optional user-defined tag for differentiating Actors of the
+     *          same type
      * @throws std::invalid_argument
      *           if map is missing any required propertu listed above, or if
      *           any property has an invalid value
      */
-    Actor(const Properties &theProperties);
+    Actor(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Destructor.

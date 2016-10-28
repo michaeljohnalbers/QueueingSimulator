@@ -19,7 +19,62 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:element name="Simulation" minOccurs="1" maxOccurs="1">
+  <!-- Common attributes for an entity (i.e, Actor, Behavior, etc.) -->
+  <xs:attributeGroup name="entityMetaData">
+    <!-- Type name of the Entity. -->
+    <xs:attribute name="type" type="nonEmptyString" use="required"/>
+    <!-- Name of the plugin in which the Entity is found. -->
+    <xs:attribute name="source" type="nonEmptyString" use="required"/>
+    <!-- User defined string to differentiate multiple
+	 Entities of the same type. Useful in plugin code. -->
+    <xs:attribute name="tag" type="nonEmptyString" use="optional"/>
+  </xs:attributeGroup>
+
+  <xs:complexType name="Property">
+    <xs:attribute name="key" type="nonEmptyString" use="required"/>
+    <xs:attribute name="value" type="nonEmptyString" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Sensor">
+    <xs:sequence>
+      <xs:element name="Property" type="Property"
+		  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="entityMetaData" />
+  </xs:complexType>
+  
+  <xs:complexType name="Behavior">
+    <xs:sequence>
+      <xs:element name="Property" type="Property"
+		  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Sensor" type="Sensor"
+		  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="entityMetaData" />
+  </xs:complexType>
+  
+  <xs:complexType name="BehaviorSet">
+    <xs:sequence>
+      <xs:element name="Property" type="Property"
+		  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Behavior" type="Behavior"
+		  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="entityMetaData" />
+  </xs:complexType>
+  
+  <xs:complexType name="Actor">
+    <xs:sequence>
+      <xs:element name="Property" type="Property"
+		  minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="BehaviorSet" type="BehaviorSet"
+		  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="entityMetaData" />
+  </xs:complexType>
+  
+
+  <xs:element name="Simulation">
     <xs:complexType>
       <xs:sequence>
 
@@ -38,31 +93,8 @@
 	      <xs:element name="Actors">
 		<xs:complexType>
 		  <xs:sequence>
-
-		    <xs:element name="Actor" minOccurs="1"
-				maxOccurs="unbounded">
-		      <xs:complexType>
-			<xs:sequence>
-			  <xs:element name="Property" minOccurs="0"
-				      maxOccurs="unbounded">
-			    <xs:complexType>
-			      <xs:attribute name="key" type="nonEmptyString"
-					    use="required"/>
-			      <xs:attribute name="value" type="nonEmptyString"
-					    use="required"/>
-			    </xs:complexType>
-			  </xs:element>
-			</xs:sequence>
-
-			<!-- Name of the type of the actor. -->
-			<xs:attribute name="type" type="nonEmptyString"
-				      use="required"/>
-			<!-- Name of the plugin in which the actor is found. -->
-			<xs:attribute name="source" type="nonEmptyString"
-				      use="required"/>
-		      </xs:complexType>
-		    </xs:element>
-
+		    <xs:element name="Actor" type="Actor"
+				minOccurs="1" maxOccurs="unbounded"/>
 		  </xs:sequence>
 		</xs:complexType>
 	      </xs:element>

@@ -24,10 +24,10 @@ namespace QS
     /**
      * Constructor
      *
-     * @param theProperties
-     *          all properties for this behavior set
+     * @see BehaviorSet.h for parameter detail
      */
-    BasicWalk(const Properties &theProperties);
+    BasicWalk(const Properties &theProperties,
+              const std::string &theTag);
 
     /**
      * Copy constructor.

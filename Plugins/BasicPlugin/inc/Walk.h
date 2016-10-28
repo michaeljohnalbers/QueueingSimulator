@@ -27,19 +27,26 @@ namespace QS
      * Constructor.
      *
      * @param theProperties
-     *          properties for this Walk
+     *          properties for this Behavior
+     *
+     *          Optional properties:
+     *            "speed", speed to walk in meters per second. If not
+     *            specified, 1.0 is used.
+     * @throw std::invalid_argument
+     *          if "speed" property cannot be converted to a float
      */
-    Walk(const Properties &theProperties);
+    Walk(const Properties &theProperties,
+              const std::string &theTag);
 
     /**
      * Copy constructor.
      */
-    Walk(const Walk&) = delete;
+    Walk(const Walk&) = default;
 
     /**
      * Move constructor.
      */
-    Walk(Walk&&) = delete;
+    Walk(Walk&&) = default;
 
     /**
      * Destructor.
@@ -62,14 +69,17 @@ namespace QS
     /**
      * Copy assignment operator.
      */
-    Walk& operator=(const Walk&) = delete;
+    Walk& operator=(const Walk&) = default;
 
     /**
      * Move assignment operator.
      */
-    Walk& operator=(Walk&&) = delete;
+    Walk& operator=(Walk&&) = default;
 
     protected:
+
+    /** Speed, in meters per second. */
+    float mySpeed_ms;
 
     private:
   };

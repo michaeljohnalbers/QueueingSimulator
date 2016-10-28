@@ -7,7 +7,8 @@
 
 #include "Behavior.h"
 
-QS::Behavior::Behavior(const Properties &theProperties) :
-  PluginEntity(theProperties)
+QS::Behavior::Behavior(const Properties &theProperties,
+                       const std::string &theTag) :
+  PluginEntity(theProperties, theTag)
 {
 }

@@ -42,6 +42,17 @@ std::string QS::PluginReader::getPluginSource(const Attributes &theAttributes)
   return source;
 }
 
+std::string QS::PluginReader::getTag(const Attributes &theAttributes)
+  const noexcept
+{
+  std::string tag;
+  try
+  {
+    tag = XMLUtilities::getAttribute(theAttributes, "tag");
+  } catch (...) {}
+  return tag;
+}
+
 std::shared_ptr<QS::PluginDefinition> QS::PluginReader::read()
 {
   try
@@ -190,7 +201,9 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
     if (myActorDefinition)
     {
       auto behaviorSetSource = getPluginSource(attrs);
-      myActorDefinition->addBehaviorSet(behaviorSetName, behaviorSetSource);
+      auto behaviorSetTag = getTag(attrs);
+      myActorDefinition->addBehaviorSet(behaviorSetName, behaviorSetSource,
+                                        behaviorSetTag);
     }
     else
     {
@@ -210,7 +223,9 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
     if (myBehaviorSetDefinition)
     {
       auto behaviorSource = getPluginSource(attrs);
-      myBehaviorSetDefinition->addBehavior(behaviorName, behaviorSource);
+      auto behaviorTag = getTag(attrs);
+      myBehaviorSetDefinition->addBehavior(behaviorName, behaviorSource,
+                                           behaviorTag);
     }
     else
     {
@@ -230,7 +245,8 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
     if (myBehaviorDefinition)
     {
       auto sensorSource = getPluginSource(attrs);
-      myBehaviorDefinition->addSensor(sensorName, sensorSource);
+      auto sensorTag = getTag(attrs);
+      myBehaviorDefinition->addSensor(sensorName, sensorSource, sensorTag);
     }
     else
     {

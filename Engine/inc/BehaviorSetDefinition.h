@@ -9,7 +9,7 @@
 
 #include <string>
 #include <set>
-#include "DefinitionPair.h"
+#include "PluginDependencySet.h"
 
 namespace QS
 {
@@ -56,16 +56,20 @@ namespace QS
      *          behavior to add
      * @param theSource
      *          source of the behavior
+     * @param theTag
+     *          optional identifier to allow multiple Behaviors of the same
+     *          type for a single BehaviorSet
      */
     void addBehavior(const std::string &theBehavior,
-                     const std::string &theSource) noexcept;
+                     const std::string &theSource,
+                     const std::string &theTag) noexcept;
 
     /**
      * Returns the list of behaviors this behavior set uses.
      *
      * @return behavior list
      */
-    std::set<DefinitionPair> getBehaviors() const noexcept;
+    std::set<PluginDependencySet> getBehaviors() const noexcept;
 
     /**
      * Returns the name of the BehaviorSet.
@@ -101,6 +105,6 @@ namespace QS
     std::string myName;
 
     /** Names of all of the behaviors that this set uses. */
-    std::set<DefinitionPair> myBehaviors;
+    std::set<PluginDependencySet> myBehaviors;
   };
 }

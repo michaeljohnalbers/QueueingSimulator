@@ -16,10 +16,11 @@ extern "C"
 {
   QS::Actor* actorCreator(
     const std::string &theActorName,
-    const QS::PluginEntity::Properties &theProperties)
+    const QS::PluginEntity::Properties &theProperties,
+    const std::string &theTag)
   {
     // Only one type of Actor in this plugin, so just ignore the name.
-    return new QS::Actor(theProperties);
+    return new QS::Actor(theProperties, theTag);
   }
 
   void actorDestructor(QS::Actor *theActor)
@@ -29,10 +30,11 @@ extern "C"
 
   QS::BehaviorSet* behaviorSetCreator(
     const std::string &theBehaviorSetName,
-    const QS::PluginEntity::Properties &theProperties)
+    const QS::PluginEntity::Properties &theProperties,
+    const std::string &theTag)
   {
     // Only one behavior set in this plugin, so just ignore the name.
-    return new QS::BasicWalk(theProperties);
+    return new QS::BasicWalk(theProperties, theTag);
   }
 
   void behaviorSetDestructor(QS::BehaviorSet *theBehaviorSet)
@@ -42,10 +44,11 @@ extern "C"
 
   QS::Behavior* behaviorCreator(
     const std::string &theBehaviorName,
-    const QS::PluginEntity::Properties &theProperties)
+    const QS::PluginEntity::Properties &theProperties,
+    const std::string &theTag)
   {
     // Only one Behavior in this plugin, so ignore the name.
-    return new QS::Walk(theProperties);
+    return new QS::Walk(theProperties, theTag);
   }
 
   void behaviorDestructor(QS::Behavior *theBehavior)
@@ -55,10 +58,11 @@ extern "C"
 
   QS::Sensor* sensorCreator(
     const std::string &theSensorName,
-    const QS::PluginEntity::Properties &theProperties)
+    const QS::PluginEntity::Properties &theProperties,
+    const std::string &theTag)
   {
     // Only one sensor in this plugin, so ignore the name.
-    return new QS::NullSensor(theProperties);
+    return new QS::NullSensor(theProperties, theTag);
   }
 
   void sensorDestructor(QS::Sensor *theSensor)

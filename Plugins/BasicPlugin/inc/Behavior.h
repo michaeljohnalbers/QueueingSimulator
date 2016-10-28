@@ -52,18 +52,21 @@ namespace QS
      *
      * @param theProperties
      *          properties for this Behavior
+     * @param theTag
+     *          optional user-defined tag for differentiating Behaviors of the
+     *          same type
      */
-    Behavior(const Properties &theProperties);
+    Behavior(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Copy constructor.
      */
-    Behavior(const Behavior&) = delete;
+    Behavior(const Behavior&) = default;
 
     /**
      * Move constructor.
      */
-    Behavior(Behavior&&) = delete;
+    Behavior(Behavior&&) = default;
 
     /**
      * Destructor.
@@ -96,12 +99,12 @@ namespace QS
     /**
      * Copy assignment operator.
      */
-    Behavior& operator=(const Behavior&) = delete;
+    Behavior& operator=(const Behavior&) = default;
 
     /**
      * Move assignment operator.
      */
-    Behavior& operator=(Behavior&&) = delete;
+    Behavior& operator=(Behavior&&) = default;
 
     protected:
 
