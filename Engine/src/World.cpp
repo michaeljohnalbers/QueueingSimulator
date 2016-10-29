@@ -121,8 +121,34 @@ Eigen::Vector2f QS::World::collisionDetection(
       collidedActor->getPosition() - theNewPosition;
     float distance = distanceVector.norm();
     float r = collidedActor->getRadius() + actorRadius;
-    if (distance <= r)
+    if (distance < r)
     {
+#if 0
+      Eigen::Vector2f motionVector = theNewPosition - theActor->getPosition();
+      motionVector.normalize();
+      distanceVector.normalize();
+      auto cosTheta = motionVector.dot(distanceVector);
+      auto theta = std::acos(cosTheta);
+
+      Eigen::Vector2f motionVector2 = theActor->getPosition() - theNewPosition;
+      motionVector2.normalize();
+      auto cosTheta2 = motionVector2.dot(distanceVector);
+      auto theta2 = std::acos(cosTheta2);
+
+      // Only check collisions happening on the "front" of the circle (i.e.,
+      // the 180 degrees in the direction of motion)
+      std::cout << "Theta: " << std::fixed << theta
+                << ", theta2: " << std::fixed << theta2
+                << " (" << std::fixed << (M_PI/2) << "," << std::fixed
+                << (3*M_PI/2) << ")"
+                << ". Actor: " << theActor->getProperties()["color"]
+                << ". Collided: "<< collidedActor->getProperties()["color"]
+                << std::endl;
+      if (theta >= M_PI/2 && theta < 3 * M_PI / 2)
+      {
+        continue;
+      }
+#endif
       theCollisionDetected = true;
 
       // The current Actor (A1) has collided with some other Actor (A2).
@@ -178,18 +204,22 @@ Eigen::Vector2f QS::World::collisionDetection(
       if (discriminant < 0.0f)
       {
         std::ostringstream error;
-        error << "Unexpected value in collision resolution. discriminant == "
-              << std::fixed << discriminant
-              << ". Line start: " << lineStart.format(prettyPrint)
-              << ". Line end: " << lineEnd.format(prettyPrint)
-              << ". Original circle center: "
-              << collidedActor->getPosition().format(prettyPrint)
-              << ". Radius: " << std::fixed << r;
+        error << "Unexpected value in collision resolution. " << std::endl
+              << "  discriminant == " << std::fixed << discriminant << std::endl
+              << "  Line start: " << lineStart.format(prettyPrint) << std::endl
+              << "  Line end: " << lineEnd.format(prettyPrint) << std::endl
+              << "  Original circle center: "
+              << collidedActor->getPosition().format(prettyPrint) << std::endl
+              << "  Radius: " << std::fixed << r;
         // Not all of this information may be displayed in an error dialog so
         // dump it to stderr.
         // TODO: if/when messages are implemented, log this
         std::cerr << error.str() << std::endl;
-        throw std::logic_error(error.str());
+
+        // Something went wrong with the math, try to keep going by just keeping
+        // the Actor in place.
+        theNewPosition = theActor->getPosition();
+        break;
       }
 
       auto sgn = [](float val) {return (val < 0.0f ? -1.0f : 1.0);};

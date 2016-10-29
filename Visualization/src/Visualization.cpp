@@ -68,9 +68,19 @@ float QS::Visualization::getCameraZoom() const noexcept
   return (myOriginalZoomDistance / zPosition) * 100.0;
 }
 
+glm::mat4 QS::Visualization::getProjectionMatrix() const noexcept
+{
+  return myProjectionMatrix;
+}
+
 QS::Visualization::SimulationState QS::Visualization::getState() const noexcept
 {
   return mySimulationState;
+}
+
+glm::mat4 QS::Visualization::getViewMatrix() const noexcept
+{
+  return myViewMatrix;
 }
 
 void QS::Visualization::initializeGLFW()

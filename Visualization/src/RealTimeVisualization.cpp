@@ -6,6 +6,7 @@
  */
 
 #include "RealTimeVisualization.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 QS::RealTimeVisualization::RealTimeVisualization(World &theWorld) :
   Visualization(theWorld),
@@ -91,30 +92,37 @@ std::tuple<int, int> QS::RealTimeVisualization::getWindowDimensions()
     width = height * aspectRatio;
   }
 
-  return std::make_tuple(static_cast<int>(width), static_cast<int>(height));
+  myWindowWidth = static_cast<int>(width);
+  myWindowHeight = static_cast<int>(height);
+
+  return std::make_tuple(myWindowWidth, myWindowHeight);
 }
 
 void QS::RealTimeVisualization::mouseButtonCallback(
   GLFWwindow* window, int button, int action, int mods) noexcept
 {
+  RealTimeVisualization *visualization =
+    reinterpret_cast<RealTimeVisualization*>(glfwGetWindowUserPointer(window));
+
   if (GLFW_MOUSE_BUTTON_LEFT == button && GLFW_PRESS == action)
   {
-    const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
     double x, y;
     glfwGetCursorPos(window, &x, &y);
-    y = mode->height - y; // unProject expects (0,0) to be lower left, whereas
-                          // GLFW has it in upper left.
+    // unProject expects (0,0) to be lower left, whereas GLFW has it in upper
+    // left.
+    y = visualization->myWindowHeight - y;
 
     // TODO: this doesn't produce anything near the correct results. Will need
     // to work on it further, time permitting.
     glm::vec3 windowCoordinate(x, y, 0.0);
-    glm::vec4 viewport(0, 0, mode->width, mode->height);
-    // glm::vec3 unprojected = glm::unProject(windowCoordinate,
-    //                                        myViewMatrix,
-    //                                        myProjectionMatrix,
-    //                                        viewport);
-    // unprojected = unprojected;
+    glm::vec4 viewport(
+      0, 0, visualization->myWindowWidth, visualization->myWindowHeight);
+    glm::vec3 unprojected = glm::unProject(windowCoordinate,
+                                           visualization->getViewMatrix(),
+                                           visualization->getProjectionMatrix(),
+                                           viewport);
+
+    unprojected = unprojected;
 
     // std::cout << "Mouse at: (" << std::fixed << x
     //           << "," << std::fixed << y << ") --> ("
