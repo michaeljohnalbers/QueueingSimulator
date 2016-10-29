@@ -146,12 +146,26 @@ namespace QS
     protected:
 
     /**
+     * Returns the projection matrix.
+     *
+     * @return projection matrix
+     */
+    glm::mat4 getProjectionMatrix() const noexcept;
+
+    /**
      * Returns the amount of time, in seconds, to pass to the world for the
      * next update. A value of zero indicates no update should be done yet.
      *
      * @return update time
      */
     virtual float getUpdateInterval() noexcept = 0;
+
+    /**
+     * Returns the view matrix.
+     *
+     * @return view matrix
+     */
+    glm::mat4 getViewMatrix() const noexcept;
 
     /**
      * Gets the window size for the simulation.

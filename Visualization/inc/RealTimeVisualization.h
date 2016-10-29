@@ -110,5 +110,11 @@ namespace QS
 
     /** Saved time for update interval calculation*/
     double mySavedTime;
+
+    /** Window height (pixels) */
+    int myWindowHeight;
+
+    /** Window width (pixels) */
+    int myWindowWidth;
   };
 }
