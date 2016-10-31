@@ -294,6 +294,12 @@ std::tuple<float, float> QS::World::getDimensions() const noexcept
   return std::make_tuple(myWidth_m, myLength_m);
 }
 
+float QS::World::getRandomNumber(
+  std::uniform_real_distribution<float> &theDistribution) noexcept
+{
+  return theDistribution(myRNGEngine);
+}
+
 void QS::World::initializeActorMetrics() noexcept
 {
   myMetrics.initializeActorMetrics(myActors);

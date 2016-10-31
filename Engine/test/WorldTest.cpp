@@ -1,5 +1,5 @@
 /**
- * @file WorldTets.cpp
+ * @file WorldTest.cpp
  * @brief Unit test of World class
  *
  * @author Michael Albers
@@ -127,4 +127,16 @@ GTEST_TEST(WorldTest, convertPointToWorld)
   float tolerance = 0.0001;
   EXPECT_NEAR(expectedPoint.x(), actualPoint.x(), tolerance) << actualPoint;
   EXPECT_NEAR(expectedPoint.y(), actualPoint.y(), tolerance) << actualPoint;
+}
+
+GTEST_TEST(WorldTest, randomNumbers)
+{
+  QS::World world(glbMetrics);
+  world.setSeed(45);
+  std::uniform_real_distribution<float> distribution(3.0, 4.5);
+  float rng = world.getRandomNumber(distribution);
+
+  // Not much to test since getRandomNumber is just a call to the RNG engine.
+  // All the real work is done by the C++ library.
+  EXPECT_FLOAT_EQ(4.4835172, rng);
 }

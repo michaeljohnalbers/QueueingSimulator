@@ -24,6 +24,7 @@ QS::SimulationReader::SimulationReader(
 
   myConfigFile(theConfigFile),
   myEntityManager(theEntityManager),
+  myPropertyGenerator(theWorld),
   mySimulationSchemaDirectory(theSimulationSchemaDirectory),
   myWorld(theWorld)
 {
@@ -130,9 +131,13 @@ void QS::SimulationReader::startElement(const XMLCh *const uri,
   }
   else if ("Property" == elementName)
   {
+    std::string property = XMLUtilities::getAttribute(attrs, "value");
+    property = myPropertyGenerator.generateProperty(
+      property, myEntityConfigurations.top());
+
     myEntityConfigurations.top().addProperty(
       XMLUtilities::getAttribute(attrs, "key"),
-      XMLUtilities::getAttribute(attrs, "value"));
+      property);
   }
 }
 

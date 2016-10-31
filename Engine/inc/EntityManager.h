@@ -73,10 +73,9 @@ namespace QS
      * @param theActorConfiguration
      *          configuration of the Actor and its dependencies
      * @throws std::invalid_argument
-     // TODO: fill in
-     *          if theType does not refer to a valid Actor type or
-     *          theProperties contain invalid values
-     *          theSource does not refer to a loaded plugin or
+     *          if, in the configuration data, type does not refer to a valid
+     *          Actor type or the properties contain invalid values
+     *          the source does not refer to a loaded plugin or
      */
     Actor* createActor(
       const SimulationEntityConfiguration &theActorConfiguration);
@@ -87,10 +86,9 @@ namespace QS
      * @param theBehaviorConfiguration
      *          configuration of the Behavior and its dependencies
      * @throws std::invalid_argument
-     // TODO: fill in
-     *          if theType does not refer to a valid Behavior type or
-     *          theProperties contain invalid values
-     *          theSource does not refer to a loaded plugin or
+     *          if, in the configuration data, type does not refer to a valid
+     *          Behavior type or the properties contain invalid values
+     *          the source does not refer to a loaded plugin or
      */
     Behavior* createBehavior(
       const SimulationEntityConfiguration &theBehaviorConfiguration);
@@ -98,29 +96,12 @@ namespace QS
     /**
      * Creates the specified BehaviorSet.
      *
-     * @param theType
-     *          BehaviorSet type name, passed to plugin creator function
-     * @param theProperties
-     *          properties of the BehaviorSet
-     * @param theSource
-     *          name of the plugin where the BehaviorSet class is found
-     * @throws std::invalid_argument
-     */
-    BehaviorSet* createBehaviorSet(
-      const std::string &theType,
-      const PluginEntity::Properties &theProperties,
-      const std::string &theSource);
-
-    /**
-     * Creates the specified BehaviorSet.
-     *
      * @param theBehaviorSetConfiguration
      *          configuration of the BehaviorSet and its dependencies
      * @throws std::invalid_argument
-     // TODO: fill in
-     *          if theType does not refer to a valid Behaviorset type or
-     *          theProperties contain invalid values
-     *          theSource does not refer to a loaded plugin or
+     *          if, in the configuration data, type does not refer to a valid
+     *          BehaviorSet type or the properties contain invalid values
+     *          the source does not refer to a loaded plugin or
      */
     BehaviorSet* createBehaviorSet(
       const SimulationEntityConfiguration &theBehaviorSetConfiguration);
@@ -131,10 +112,9 @@ namespace QS
      * @param theSensorConfiguration
      *          configuration of the Sensor
      * @throws std::invalid_argument
-     // TODO: fill in
-     *          if theType does not refer to a valid Sensor type or
-     *          theProperties contain invalid values
-     *          theSource does not refer to a loaded plugin or
+     *          if, in the configuration data, type does not refer to a valid
+     *          Sensor type or the properties contain invalid values
+     *          the source does not refer to a loaded plugin or
      */
     Sensor* createSensor(
       const SimulationEntityConfiguration &theSensorConfiguration);
