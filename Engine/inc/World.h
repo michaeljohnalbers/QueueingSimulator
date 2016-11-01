@@ -95,6 +95,18 @@ namespace QS
     std::tuple<float, float> getDimensions() const noexcept;
 
     /**
+     * Returns a random number using the given distribution. Be sure to have
+     * called setSeed before using this function. If it hasn't been called
+     * the RNG will use the RNG implementation default seed.
+     *
+     * @param theDistribution
+     *          distribution to use
+     * @return random number
+     */
+    float getRandomNumber(
+      std::uniform_real_distribution<float> &theDistribution) noexcept;
+
+    /**
      * Initializes the Actor metrics in the Metrics object. This function should
      * only be called once all Actors have been added to the world.
      */

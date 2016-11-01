@@ -13,6 +13,7 @@
 #include <string>
 #include "xercesc/sax2/DefaultHandler.hpp"
 #include "PluginEntity.h"
+#include "PropertyGenerator.h"
 #include "SimulationEntityConfiguration.h"
 
 XERCES_CPP_NAMESPACE_USE
@@ -124,6 +125,12 @@ namespace QS
 
     /** Creator of plugin entities. */
     std::shared_ptr<EntityManager> myEntityManager;
+
+    /**
+     * Generates properties based on small language which can be embedded in
+     * the configuration file.
+     */
+    PropertyGenerator myPropertyGenerator;
 
     /** Directory in which the schema is located. */
     const std::string mySimulationSchemaDirectory;
