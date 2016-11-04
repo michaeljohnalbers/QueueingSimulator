@@ -50,7 +50,7 @@ void QS::PropertyGenerator::checkInput(const TokenSet &theValidSet)
   if (theValidSet.find(nextToken.getToken()) == theValidSet.end())
   {
     std::ostringstream errorStr;
-    errorStr << "Expected one of: ";
+    errorStr << "Recieved token " << nextToken << ". Expected one of: ";
     bool first = true;
     for (auto validToken : theValidSet)
     {

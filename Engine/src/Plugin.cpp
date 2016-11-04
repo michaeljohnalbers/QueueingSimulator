@@ -19,12 +19,15 @@ QS::Plugin::Plugin(std::shared_ptr<PluginDefinition> theDefinition) :
 
   myBehaviorSetCreatorDestructor = loadCreatorDestructor<BehaviorSet>(
     myDefinition->getBehaviorSetCreatorDestructor(), "Behavior Set");
-    
+
   myBehaviorCreatorDestructor = loadCreatorDestructor<Behavior>(
     myDefinition->getBehaviorCreatorDestructor(), "Behavior");
 
   mySensorCreatorDestructor = loadCreatorDestructor<Sensor>(
     myDefinition->getSensorCreatorDestructor(), "Sensor");
+
+  myExitCreatorDestructor = loadCreatorDestructor<Exit>(
+    myDefinition->getExitCreatorDestructor(), "Exit");
 }
 
 QS::Plugin::~Plugin()
@@ -86,6 +89,15 @@ QS::Sensor* QS::Plugin::createSensor(
                         mySensorCreatorDestructor, "Sensor");
 }
 
+QS::Exit* QS::Plugin::createExit(
+  const std::string &theType,
+  const std::map<std::string, std::string> &theProperties,
+  const std::string &theTag)
+{
+  return create<Exit>(theType, theProperties, theTag,
+                        myExitCreatorDestructor, "Exit");
+}
+
 template<class T>
 void QS::Plugin::destroy(T *theObject,
                          CreatorDestructor<T> theCreatorDestructor,
@@ -115,6 +127,11 @@ void QS::Plugin::destroyBehaviorSet(QS::BehaviorSet *theBehaviorSet) const
 {
   destroy<BehaviorSet>(theBehaviorSet, myBehaviorSetCreatorDestructor,
                        "BehaviorSet");
+}
+
+void QS::Plugin::destroyExit(QS::Exit *theExit) const
+{
+  destroy<Exit>(theExit, myExitCreatorDestructor, "Exit");
 }
 
 void QS::Plugin::destroySensor(QS::Sensor *theSensor) const

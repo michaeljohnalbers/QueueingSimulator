@@ -24,7 +24,7 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
 
   {
     float oneSecond = 1.0;
-    QS::Sensable sensable({}, oneSecond);
+    QS::Sensable sensable({}, {}, oneSecond);
     Eigen::Vector2f expectedMotionVector(1.0, 0);
     auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
     EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
@@ -35,7 +35,7 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
 
   {
     float oneMillisecond = 0.001;
-    QS::Sensable sensable({}, oneMillisecond);
+    QS::Sensable sensable({}, {}, oneMillisecond);
     Eigen::Vector2f expectedMotionVector(0.001, 0);
     auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
     EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
@@ -47,7 +47,7 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
   {
     // Test at a movie-type frame rate (think batch mode).
     float twentyFourFramesPerSecond = 1.0/24.0;
-    QS::Sensable sensable({}, twentyFourFramesPerSecond);
+    QS::Sensable sensable({}, {}, twentyFourFramesPerSecond);
     Eigen::Vector2f expectedMotionVector(0.041666, 0);
     auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
     EXPECT_NEAR(expectedMotionVector.x(), actualMotionVector.x(),

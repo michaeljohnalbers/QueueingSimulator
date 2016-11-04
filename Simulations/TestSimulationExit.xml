@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  Small world used to check exits.
+-->
+
+<Simulation>
+  <Seed value="1" />
+  <World width="20" length="20">
+    <Actors>
+
+      <!-- Heading towards upper left exit -->
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="x" value="3" />
+	<Property key="y" value="17" />
+        <Property key="orientation" value="2.35619" />
+	<Property key="color" value="0.0 0.0 1.0" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="x" value="5" />
+	<Property key="y" value="15" />
+        <Property key="orientation" value="2.35619" />
+	<Property key="color" value="0.0 0.0 0.8" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="x" value="7" />
+	<Property key="y" value="13" />
+        <Property key="orientation" value="2.35619" />
+	<Property key="color" value="0.0 0.0 0.6" />
+      </Actor>
+
+      <!-- Heading towards lower right exit-->
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="17" />
+      	<Property key="y" value="3" />
+      	<Property key="color" value="0.0 1.0 0.0" />
+      	<Property key="orientation" value="5.49779" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="15" />
+      	<Property key="y" value="5" />
+      	<Property key="color" value="0.0 0.8 0.0" />
+      	<Property key="orientation" value="5.49779" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+      	<Property key="mass" value="1.0" />
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="13" />
+      	<Property key="y" value="7" />
+      	<Property key="color" value="0.0 0.6 0.0" />
+      	<Property key="orientation" value="5.49779" />
+      </Actor>
+    </Actors>
+
+    <Exits>
+      <Exit type="Exit" source="BasicPlugin">
+      	<Property key="radius" value="0.5" />
+      	<Property key="x" value="1" />
+      	<Property key="y" value="19" />
+      	<Property key="color" value="0.35 0.6 0.1" />
+      </Exit>
+      <Exit type="Exit" source="BasicPlugin">
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="19" />
+      	<Property key="y" value="1" />
+      	<Property key="color" value="0.87 0.2 0.55" />
+      </Exit>
+    </Exits>
+  </World>
+</Simulation>

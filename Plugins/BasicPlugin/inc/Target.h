@@ -2,13 +2,14 @@
 
 /**
  * @file Target.h
- * @brief Defines a single point in the world which can actors can move toward
- * or away from.
+ * @brief Defines a single position in the world which can actors can move
+ *        toward or away from.
  *
  * @author Michael Albers
  */
 
-#include <Eigen/Core>
+#include "Eigen/Core"
+#include "PluginEntity.h"
 
 namespace QS
 {
@@ -16,7 +17,7 @@ namespace QS
    * A Target is simply a circular area within the simulation the Actors can
    * move towards or away from. Nothing more.
    */
-  class Target
+  class Target : public PluginEntity
   {
     public:
 
@@ -26,18 +27,23 @@ namespace QS
     Target() = delete;
 
     /**
-     * Constructor
+     * Constructor. Initializes the the Target from the properties map.
      *
-     * @param thePoint
-     *          point of the target
-     * @param theRadius
-     *          size of the target, in meters, can be 0
+     * @param theProperties
+     *          Map of property name (key) to property value (value).
+     *
+     *          Required properties:
+     *            "radius", value in meters
+     *            "x", value in meters
+     *            "y", value in meters.
+     * @param theTag
+     *          optional user-defined tag for differentiating Targets of the
+     *          same type
      * @throws std::invalid_argument
-     *          if theRadius is negative.
-     * TODO: can thePoint values be negative?
+     *           if map is missing any required propertu listed above, or if
+     *           any property has an invalid value
      */
-    Target(const Eigen::Vector2f &thePoint,
-           const float theRadius);
+    Target(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Copy constructor.
@@ -55,11 +61,11 @@ namespace QS
     virtual ~Target() = default;
 
     /**
-     * Returns the target's point.
+     * Returns the target's position.
      *
-     * @return target's point
+     * @return target's position
      */
-    Eigen::Vector2f getPoint() const noexcept;
+    Eigen::Vector2f getPosition() const noexcept;
 
     /**
      * Return the target's radius, in meters.
@@ -83,9 +89,9 @@ namespace QS
     private:
 
     /** Target's location. */
-    const Eigen::Vector2f myPoint;
+    Eigen::Vector2f myPosition;
 
     /** Radius of the target, in meters. */
-    const float myRadius_m;
+    float myRadius_m;
   };
 }

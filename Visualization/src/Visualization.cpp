@@ -17,6 +17,7 @@
 #include "Visualization.h"
 #include "VisualizationInitialization.h"
 #include "Actors.h"
+#include "Exits.h"
 #include "Finally.h"
 #include "World.h"
 #include "WorldBox.h"
@@ -265,9 +266,8 @@ void QS::Visualization::visualize()
     });
 
   myActors.reset(new Actors());
+  myExits.reset(new Exits());
   myWorldBox.reset(new WorldBox(myXDimension_m, myYDimension_m));
-
-  const std::vector<Actor*> &actors = myWorld.getActors();
 
   // TODO: Absolutely no idea how the near/far values work.
   float zFar = 1000.0;
@@ -305,7 +305,12 @@ void QS::Visualization::visualize()
                                glm::vec3(0.0f, 1.0f, 0.0f));
 
     myWorldBox->draw(myViewMatrix, myProjectionMatrix);
+
+    const std::vector<const Actor*> &actors = myWorld.getActorsInWorld();
     myActors->draw(myViewMatrix, myProjectionMatrix, actors);
+
+    const std::vector<Exit*> &exits = myWorld.getExits();
+    myExits->draw(myViewMatrix, myProjectionMatrix, exits);
 
     preBufferSwap();
 

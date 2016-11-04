@@ -1,6 +1,6 @@
 /**
- * @file Actors.cpp
- * @brief Definition of Actors
+ * @file Exits.cpp
+ * @brief Definition of Exits
  *
  * @author Michael Albers
  */
@@ -14,31 +14,26 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "Actor.h"
-#include "Actors.h"
+#include "Exit.h"
+#include "Exits.h"
 #include "Shader.h"
 
-QS::Actors::Actors()
+QS::Exits::Exits()
 {
   glGenVertexArrays(1, &myVAO);
   glGenBuffers(1, &myCircleVertexBuffer);
   glBindVertexArray(myVAO);
 
   constexpr GLsizei NUM_VERTICES =
-    NUM_CIRCLE_VERTICES + NUM_ORIENTATION_IND_VERTICES;
+    NUM_CIRCLE_VERTICES + NUM_CROSS_VERTICES;
 
   GLfloat vertices[NUM_VERTICES * 3];
 
   // === Circle vertices
-  int index = 0;
-  vertices[index] = 0.0;
-  vertices[++index] = 0.0;
-  vertices[++index] = 0.0;
-  ++index;
-
 #define RADIANS(x) ((x) * M_PI / 180.0)
 
-  for (int degree = 0; degree < NUM_CIRCLE_VERTICES - 1; ++degree, index += 3)
+  int index = 0;
+  for (int degree = 0; degree < NUM_CIRCLE_VERTICES; ++degree, index += 3)
   {
     float radians = RADIANS(degree);
     vertices[index] = std::cos(radians);
@@ -46,18 +41,21 @@ QS::Actors::Actors()
     vertices[index+2] = 0.0;
   }
 
-  // === Orientation indicator vertices
-  constexpr float degreeOffset = 3.0;
-  vertices[index] = std::cos(RADIANS(degreeOffset));   // x
-  vertices[++index] = std::sin(RADIANS(degreeOffset)); // y
+  // === Cross vertices
+  vertices[index] = -1.0; // x
+  vertices[++index] = 0.0; //y
   vertices[++index] = 0.0; // z
 
-  vertices[++index] = 1.07;
+  vertices[++index] = 1.0;
   vertices[++index] = 0.0;
   vertices[++index] = 0.0;
 
-  vertices[++index] = std::cos(RADIANS(360 - degreeOffset));
-  vertices[++index] = std::sin(RADIANS(360 - degreeOffset));
+  vertices[++index] = 0.0;
+  vertices[++index] = -1.0;
+  vertices[++index] = 0.0;
+
+  vertices[++index] = 0.0;
+  vertices[++index] = 1.0;
   vertices[++index] = 0.0;
 
   glBindBuffer(GL_ARRAY_BUFFER, myCircleVertexBuffer);
@@ -72,13 +70,13 @@ QS::Actors::Actors()
   glBindVertexArray(0);
 }
 
-QS::Actors::~Actors()
+QS::Exits::~Exits()
 {
   glDeleteVertexArrays(1, &myVAO);
   glDeleteBuffers(1, &myCircleVertexBuffer);
 }
 
-void QS::Actors::createShader()
+void QS::Exits::createShader()
 {
   std::string vertexShaderSource =
     #include "Actor.vert"
@@ -101,9 +99,9 @@ void QS::Actors::createShader()
   myShaderProgram.link();
 }
 
-void QS::Actors::draw(glm::mat4 &theViewMatrix,
-                      glm::mat4 &theProjectionMatrix,
-                      const std::vector<const Actor*> &theActors)
+void QS::Exits::draw(glm::mat4 &theViewMatrix,
+                     glm::mat4 &theProjectionMatrix,
+                     const std::vector<Exit*> &theExits)
 {
   glBindVertexArray(myVAO);
   myShaderProgram.use();
@@ -116,32 +114,29 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   glUniformMatrix4fv(projectionLocation, 1, GL_FALSE,
                      glm::value_ptr(theProjectionMatrix));
 
-  glm::vec3 *colorVectors = new glm::vec3[theActors.size()];
-  glm::mat4 *modelMatrices = new glm::mat4[theActors.size()];
+  glm::vec3 *colorVectors = new glm::vec3[theExits.size()];
+  glm::mat4 *modelMatrices = new glm::mat4[theExits.size()];
 
   constexpr glm::vec3 rotationAxis(0.0, 0.0, 1.0);
 
-  for (auto ii = 0u; ii < theActors.size(); ++ii)
+  for (auto ii = 0u; ii < theExits.size(); ++ii)
   {
-    const Actor &actor = *theActors[ii];
+    Exit &exit = *theExits[ii];
 
     // === Color
-    Eigen::Vector3f color = actor.getColor();
+    Eigen::Vector3f color = exit.getColor();
     // x == r, y == g, z == b
     colorVectors[ii] = glm::vec3(color.x(), color.y(), color.z());
 
     // === Position
-    float actorRadius = actor.getRadius();
-    Eigen::Vector2f position = actor.getPosition();
-    float orientation = actor.getOrientation();
+    float exitRadius = exit.getRadius();
+    Eigen::Vector2f position = exit.getPosition();
 
     glm::mat4 modelMatrix;
     modelMatrix = glm::translate(modelMatrix,
                                  glm::vec3(position.x(), position.y(), 0.0));
     modelMatrix = glm::scale(
-      modelMatrix, glm::vec3(actorRadius, actorRadius, 1.0));
-
-    modelMatrix = glm::rotate(modelMatrix, orientation, rotationAxis);
+      modelMatrix, glm::vec3(exitRadius, exitRadius, 1.0));
 
     modelMatrices[ii] = modelMatrix;
   }
@@ -150,7 +145,7 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   GLuint colorVectorsBuffer;
   glGenBuffers(1, &colorVectorsBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, colorVectorsBuffer);
-  glBufferData(GL_ARRAY_BUFFER, theActors.size() * sizeof(glm::vec3),
+  glBufferData(GL_ARRAY_BUFFER, theExits.size() * sizeof(glm::vec3),
                &colorVectors[0], GL_STREAM_DRAW);
 
   GLint colorLocation = glGetAttribLocation(myShaderProgram, "inColor");
@@ -163,11 +158,12 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   GLuint modelMatricesBuffer;
   glGenBuffers(1, &modelMatricesBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, modelMatricesBuffer);
-  glBufferData(GL_ARRAY_BUFFER, theActors.size() * sizeof(glm::mat4),
+  glBufferData(GL_ARRAY_BUFFER, theExits.size() * sizeof(glm::mat4),
                &modelMatrices[0], GL_STREAM_DRAW);
 
   GLint modelLocation = glGetAttribLocation(myShaderProgram, "inModelMatrix");
 
+  // Send Model matrix(s) to shader(s)
   constexpr GLsizei vec4Size = sizeof(glm::vec4);
   glEnableVertexAttribArray(modelLocation);
   glVertexAttribPointer(modelLocation, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, 0);
@@ -191,12 +187,17 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
                         reinterpret_cast<GLvoid*>(3 * vec4Size));
   glVertexAttribDivisor(modelLocation, 1);
 
-  glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, NUM_CIRCLE_VERTICES,
-                        theActors.size());
+  glDrawArraysInstanced(GL_LINE_LOOP, 0, NUM_CIRCLE_VERTICES,
+                        theExits.size());
 
-  glDrawArraysInstanced(GL_LINE_LOOP, NUM_CIRCLE_VERTICES,
-                        NUM_ORIENTATION_IND_VERTICES,
-                        theActors.size());
+  glDrawArraysInstanced(GL_LINES, NUM_CIRCLE_VERTICES,
+                        NUM_CROSS_VERTICES / 2,
+                        theExits.size());
+
+  glDrawArraysInstanced(GL_LINE_LOOP,
+                        NUM_CIRCLE_VERTICES + NUM_CROSS_VERTICES / 2,
+                        NUM_CROSS_VERTICES / 2,
+                        theExits.size());
 
   glBindVertexArray(0);
   glUseProgram(0);

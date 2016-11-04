@@ -12,6 +12,8 @@
 
 #include "PropertyGeneratorScanner.h"
 
+#include <iostream>
+
 // Static Variables
 QS::PropertyGeneratorScanner::ReservedWordMap
 QS::PropertyGeneratorScanner::ourReservedWords{
@@ -58,7 +60,14 @@ QS::PropertyGeneratorToken QS::PropertyGeneratorScanner::idOrReserved(
 
 char QS::PropertyGeneratorScanner::inspectCharacter()
 {
-  return myInput[myIndex];
+  // Last iteration through the input has myIndex == myInput.size(), this
+  // prevents an unitialized memory read.
+  char c = 0;
+  if (myIndex < myInput.size())
+  {
+    c = myInput[myIndex];
+  }
+  return c;
 }
 
 void QS::PropertyGeneratorScanner::newLine()

@@ -50,6 +50,12 @@ void QS::PluginDefinition::addSensorDefinition(
   addItem(mySensors, theSensorDefinition, "sensor");
 }
 
+void QS::PluginDefinition::addExitDefinition(
+  const ExitDefinition &theExitDefinition)
+{
+  addItem(myExits, theExitDefinition, "exit");
+}
+
 QS::PluginDefinition::CreatorDestructorPair
 QS::PluginDefinition::getActorCreatorDestructor() const noexcept
 {
@@ -89,6 +95,18 @@ QS::PluginDefinition::getBehaviorSetDefinitions() const noexcept
 std::string QS::PluginDefinition::getDirectory() const noexcept
 {
   return myDirectory;
+}
+
+QS::PluginDefinition::CreatorDestructorPair
+QS::PluginDefinition::getExitCreatorDestructor() const noexcept
+{
+  return myExitCreatorDestructor;
+}
+
+std::vector<QS::ExitDefinition>
+QS::PluginDefinition::getExitDefinitions() const noexcept
+{
+  return myExits;
 }
 
 std::string QS::PluginDefinition::getLibrary() const noexcept
@@ -135,6 +153,14 @@ void QS::PluginDefinition::setBehaviorSetCreatorDestructor(
 {
   myBehaviorSetCreatorDestructor.first = theCreator;
   myBehaviorSetCreatorDestructor.second = theDestructor;
+}
+
+void QS::PluginDefinition::setExitCreatorDestructor(
+  const std::string &theCreator,
+  const std::string &theDestructor) noexcept
+{
+  myExitCreatorDestructor.first = theCreator;
+  myExitCreatorDestructor.second = theDestructor;
 }
 
 void QS::PluginDefinition::setLibrary(const std::string &theLibrary) noexcept

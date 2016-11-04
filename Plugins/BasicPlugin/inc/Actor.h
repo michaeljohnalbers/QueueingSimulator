@@ -247,29 +247,6 @@ namespace QS
      */
     void setPositionFromProperty();
 
-    /**
-     * Returns the property with the given name.
-     *
-     * @param thePropertyName
-     *          property name
-     * @param theRequired
-     *          true if the property is required
-     * @param theConversionFunction
-     *          function to convert the string to the type T
-     * @param theDefault
-     *          default value if the property isn't given or the conversion
-     *          fails on an invalid optional property
-     * @return property value of defined type
-     * @throws std::invalid_argument if theRequired is true and the property
-     *         doesn't exist.
-     * @throws &lt;unknown&gt; whatever the converter might throw
-     */
-    template<class T>
-    T getProperty(const std::string &thePropertyName, bool theRequired,
-                  std::function<T(const std::string&)> theConversionFunction,
-                  T theDefault = T())
-      const;
-
     private:
 
     /** Actor color, in RGB suitable for OpenGL (each value is 0.0-1.0)*/

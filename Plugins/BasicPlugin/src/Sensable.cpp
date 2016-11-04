@@ -7,16 +7,23 @@
 
 #include "Sensable.h"
 
-QS::Sensable::Sensable(const std::vector<const Actor*> theActors,
+QS::Sensable::Sensable(const std::vector<const Actor*> &theActors,
+                       const std::vector<const Exit*> &theExits,
                        float theIntervalInSeconds) noexcept :
   myActors(theActors),
+  myExits(theExits),
   myIntervalInSeconds(theIntervalInSeconds)
 {
 }
 
-std::vector<const QS::Actor*> QS::Sensable::getActors() const noexcept
+const std::vector<const QS::Actor*>& QS::Sensable::getActors() const noexcept
 {
   return myActors;
+}
+
+const std::vector<const QS::Exit*>& QS::Sensable::getExits() const noexcept
+{
+  return myExits;
 }
 
 float QS::Sensable::getIntervalInSeconds() const noexcept

@@ -18,6 +18,7 @@ namespace QS
   class ActorDefinition;
   class BehaviorDefinition;
   class BehaviorSetDefinition;
+  class ExitDefinition;
   class SensorDefinition;
   class PluginDefinition;
 
@@ -115,6 +116,9 @@ namespace QS
 
     /** Plugin config file */
     const std::string myConfigFile;
+
+    /** Current Exit definition */
+    std::shared_ptr<ExitDefinition> myExitDefinition;
 
     /** Plugin definition to populate while reading. */
     std::shared_ptr<PluginDefinition> myPluginDefinition;

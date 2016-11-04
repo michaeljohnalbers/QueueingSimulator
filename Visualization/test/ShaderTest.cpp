@@ -12,6 +12,7 @@
 
 #define CLASS_NAME ShaderTest
 #include "ShaderSetup.h"
+std::string CLASS_NAME::myLatestError;
 #undef CLASS_NAME
 
 static std::string goodShaderSource =

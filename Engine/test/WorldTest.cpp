@@ -102,6 +102,19 @@ GTEST_TEST(WorldTest, addActor)
           actor1->getPosition().y() + actor1->getRadius()});
     EXPECT_THROW(world.addActor(actor2.get()), std::logic_error);
   }
+
+  // Test that getActors and getActorsInWorld are the same.
+  {
+    auto actors = world.getActors();
+    auto actorsInWorld = world.getActorsInWorld();
+
+    ASSERT_EQ(actors.size(), actorsInWorld.size());
+
+    for (auto ii = 0u; ii < actors.size(); ++ii)
+    {
+      EXPECT_EQ(actors[ii], actorsInWorld[ii]) << "ii == " << ii;
+    }
+  }
 }
 
 GTEST_TEST(WorldTest, convertPointToWorld)

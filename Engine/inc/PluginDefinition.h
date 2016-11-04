@@ -15,6 +15,7 @@
 #include "ActorDefinition.h"
 #include "BehaviorDefinition.h"
 #include "BehaviorSetDefinition.h"
+#include "ExitDefinition.h"
 #include "SensorDefinition.h"
 
 namespace QS
@@ -94,6 +95,16 @@ namespace QS
       const BehaviorSetDefinition &theBehaviorSetDefinition);
 
     /**
+     * Adds a new Exit definition to this plugin.
+     *
+     * @param theExitDefinition
+     *          Exit definition to add
+     * @throws std::invalid_argument
+     *           if another definition with the same type name already exists
+     */
+    void addExitDefinition(const ExitDefinition &theExitDefinition);
+
+    /**
      * Adds a new sensor definition to this plugin.
      *
      * @param theSensorDefinition
@@ -139,7 +150,7 @@ namespace QS
     CreatorDestructorPair getBehaviorSetCreatorDestructor() const noexcept;
 
     /**
-     * Returns the list of all Behavior sets defined in this plugin.
+     * Returns the list of all BehaviorSets defined in this plugin.
      *
      * @return custom behavior sets
      */
@@ -152,6 +163,20 @@ namespace QS
      * @return plugin directory
      */
     std::string getDirectory() const noexcept;
+
+    /**
+     * Returns the creator/destructor function namess for Exits.
+     *
+     * @return creator/destructor functions
+     */
+    CreatorDestructorPair getExitCreatorDestructor() const noexcept;
+
+    /**
+     * Returns the list of all Exits defined in this plugin.
+     *
+     * @return custom Exits
+     */
+    std::vector<ExitDefinition> getExitDefinitions() const noexcept;
 
     /**
      * Returns the name of the library which implements this plugin.
@@ -227,6 +252,17 @@ namespace QS
       noexcept;
 
     /**
+     * Sets the creator/destructor function names for Exits.
+     *
+     * @param theCreator
+     *          creator function
+     * @param theDestructor
+     *          destructor function
+     */
+    void setExitCreatorDestructor(const std::string &theCreator,
+                                  const std::string &theDestructor) noexcept;
+
+    /**
      * Sets the name of the implementing library.
      *
      * @param theLibrary
@@ -251,8 +287,7 @@ namespace QS
      *          destructor function
      */
     void setSensorCreatorDestructor(const std::string &theCreator,
-                                    const std::string &theDestructor)
-      noexcept;
+                                    const std::string &theDestructor) noexcept;
 
     protected:
 
@@ -277,7 +312,7 @@ namespace QS
     /** Creator/destructor functions for Behaviors. */
     CreatorDestructorPair myBehaviorCreatorDestructor;
 
-    /** All types of behavior sets defined in this plugin. */
+    /** All types of BehaviorSets defined in this plugin. */
     std::vector<BehaviorSetDefinition> myBehaviorSets;
 
     /** Creator/destructor functions for BehaviorSets. */
@@ -286,16 +321,22 @@ namespace QS
     /** Directory containing plugin files. */
     std::string myDirectory;
 
-    /** All types of sensors defined in this plugin. */
-    std::vector<SensorDefinition> mySensors;
+    /** All types of Exits defined in this plugin. */
+    std::vector<ExitDefinition> myExits;
 
-    /** Creator/destructor functions for Sensors. */
-    CreatorDestructorPair mySensorCreatorDestructor;
+    /** Creator/destructor functions for Exits. */
+    CreatorDestructorPair myExitCreatorDestructor;
 
     /** Library implementing the plugin. */
     std::string myLibrary;
 
     /** Name of the plugin. */
     std::string myName;
+
+    /** All types of sensors defined in this plugin. */
+    std::vector<SensorDefinition> mySensors;
+
+    /** Creator/destructor functions for Sensors. */
+    CreatorDestructorPair mySensorCreatorDestructor;
   };
 }

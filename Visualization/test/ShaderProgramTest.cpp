@@ -14,6 +14,7 @@
 
 #define CLASS_NAME ShaderProgramTest
 #include "ShaderSetup.h"
+std::string CLASS_NAME::myLatestError;
 #undef CLASS_NAME
 
 static std::string vertexShaderSource =

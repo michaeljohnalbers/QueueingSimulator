@@ -12,14 +12,9 @@
 #include "Actor.h"
 #include "BehaviorSet.h"
 #include "EigenHelper.h"
+#include "PluginHelper.h"
 
 const Eigen::Vector2f QS::Actor::DEFAULT_ORIENTATION(1, 0);
-
-static std::function<float(const std::string&)> toFloat =
-  [](const std::string &value)
-{
-  return std::stof(value);
-};
 
 QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
   PluginEntity(theProperties, theTag),
@@ -33,7 +28,8 @@ QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
       return std::stof(value);
     };
 
-  myMass_grams = getProperty("mass", true, toFloat);
+  myMass_grams = PluginHelper::getProperty(
+    theProperties, "mass", true, PluginHelper::toFloat);
   if (myMass_grams <= 0.0)
   {
     throw std::invalid_argument(
@@ -41,7 +37,8 @@ QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
       ", must be > 0 in Actor constructor.");
   }
 
-  myRadius_m = getProperty("radius", true, toFloat);
+  myRadius_m = PluginHelper::getProperty(
+    theProperties,"radius", true, PluginHelper::toFloat);
   if (myRadius_m <= 0.0)
   {
     throw std::invalid_argument(
@@ -49,10 +46,12 @@ QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
       ", must be > 0 in Actor constructor.");
   }
 
-  myOrientation_radians = getProperty("orientation", false, toFloat);
-  myMaximumRotationSpeed_rs = getProperty("max rotation", false, toFloat,
-                                          -1.0f);
-  myMaximumSpeed_ms = getProperty("max speed", false, toFloat, -1.0f);
+  myOrientation_radians = PluginHelper::getProperty(
+    theProperties, "orientation", false, PluginHelper::toFloat);
+  myMaximumRotationSpeed_rs = PluginHelper::getProperty(
+    theProperties, "max rotation", false, PluginHelper::toFloat, -1.0f);
+  myMaximumSpeed_ms = PluginHelper::getProperty(
+    theProperties, "max speed", false, PluginHelper::toFloat, -1.0f);
 
   setPositionFromProperty();
   setColorFromProperty();
@@ -182,29 +181,6 @@ Eigen::Vector2f QS::Actor::getPosition() const noexcept
   return myPosition;
 }
 
-template<class T>
-T QS::Actor::getProperty(
-  const std::string &thePropertyName, bool theRequired,
-  std::function<T(const std::string&)> theConversionFunction,
-  T theDefault) const
-{
-  T value = theDefault;
-  auto propertyIter = myProperties.find(thePropertyName);
-  if (myProperties.end() == propertyIter)
-  {
-    if (theRequired)
-    {
-      throw std::invalid_argument(
-        "Missing '" + thePropertyName + "' property in Actor constructor.");
-    }
-  }
-  else
-  {
-    value = theConversionFunction(propertyIter->second);
-  }
-  return value;
-}
-
 float QS::Actor::getRadius() const noexcept
 {
   return myRadius_m;
@@ -244,7 +220,8 @@ void QS::Actor::setColorFromProperty()
       return color;
     };
 
-  myColor = getProperty("color", false, toColor, {1,1,1});
+  myColor = PluginHelper::getProperty(
+    myProperties, "color", false, toColor, {1,1,1});
 }
 
 void QS::Actor::setOrientation(float theOrientationAngle_radians) noexcept
@@ -266,8 +243,10 @@ void QS::Actor::setPosition(const Eigen::Vector2f &thePosition) noexcept
 
 void QS::Actor::setPositionFromProperty()
 {
-  myPosition.x() = getProperty("x", true, toFloat);
-  myPosition.y() = getProperty("y", true, toFloat);
+  myPosition.x() = PluginHelper::getProperty(
+    myProperties, "x", true, PluginHelper::toFloat);
+  myPosition.y() = PluginHelper::getProperty(
+    myProperties, "y", true, PluginHelper::toFloat);
 }
 
 void QS::Actor::setVelocity(const Eigen::Vector2f &theVelocity) noexcept
