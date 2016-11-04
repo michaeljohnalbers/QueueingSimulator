@@ -1,8 +1,8 @@
 #pragma once
 
 /**
- * @file Actors.h
- * @brief Draws all the actors in the world.
+ * @file Exits.h
+ * @brief Draws all the exits in the world.
  *
  * @author Michael Albers
  */
@@ -15,72 +15,71 @@
 
 namespace QS
 {
-  class Actor;
+  class Exit;
   class Shader;
 
   /**
-   * This class draws all of the Actors in the world.
+   * This class draws all of the Exits in the world.
    */
-  class Actors
+  class Exits
   {
     public:
 
     /**
      * Default constructor
      */
-    Actors();
+    Exits();
 
     /**
      * Copy constructor.
      */
-    Actors(const Actors&) = delete;
+    Exits(const Exits&) = delete;
 
     /**
      * Move constructor.
      */
-    Actors(Actors&&) = delete;
+    Exits(Exits&&) = delete;
 
     /**
      * Destructor.
      */
-    ~Actors();
+    ~Exits();
 
     /**
-     * Draws all of the provided Actors.
+     * Draws all of the provided Exits.
      *
      * @param theViewMatrix
      *          view matrix
      * @param theProjectionMatrix
      *          projection matrix
-     * @param theActors
-     *          actors to draw
+     * @param theExits
+     *          exits to draw
      */ 
     void draw(glm::mat4 &theViewMatrix,
               glm::mat4 &theProjectionMatrix,
-              const std::vector<const Actor*> &theActors);
+              const std::vector<Exit*> &theExits);
     /**
      * Copy assignment operator.
      */
-    Actors& operator=(const Actors&) = delete;
+    Exits& operator=(const Exits&) = delete;
 
     /**
      * Move assignment operator.
      */
-    Actors& operator=(Actors&&) = delete;
+    Exits& operator=(Exits&&) = delete;
 
     protected:
 
     private:
 
     /**
-     * Points in the circle. Center point, 361 circumference points (extra
-     * point is a duplicate of the first circumference point, but it closes the
-     * circle).
+     * Points in the circle. 361 circumference points (extra point is a
+     * duplicate of the first circumference point, but it closes the circle).
      */
-    static constexpr auto NUM_CIRCLE_VERTICES = 362;
+    static constexpr auto NUM_CIRCLE_VERTICES = 361;
 
-    /** Number of vertices for orientation indicator shape. */
-    static constexpr auto NUM_ORIENTATION_IND_VERTICES = 3;
+    /** Number of vertices for cross. */
+    static constexpr auto NUM_CROSS_VERTICES = 4;
 
     /**
      * Creates the shader program for the world box.
@@ -90,7 +89,7 @@ namespace QS
     /** Buffer to hold circle verticies. */
     GLuint myCircleVertexBuffer;
 
-    /** Shader for the Actor. */
+    /** Shader for the Exit. */
     ShaderProgram myShaderProgram;
 
     /** Shaders which comprise the program. */

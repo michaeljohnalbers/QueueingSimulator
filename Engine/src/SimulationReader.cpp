@@ -96,6 +96,13 @@ void QS::SimulationReader::endElement(const XMLCh *const uri,
     myEntityConfigurations.top().addDependencyConfiguration(
       entityDependencyConfiguration);
   }
+  else if ("Exit" == elementName)
+  {
+    auto exitConfiguration = myEntityConfigurations.top();
+    auto newExit = myEntityManager->createExit(exitConfiguration);
+    myWorld.addExit(newExit);
+    myEntityConfigurations.pop();
+  }
 }
 
 void QS::SimulationReader::startElement(const XMLCh *const uri,
@@ -117,7 +124,8 @@ void QS::SimulationReader::startElement(const XMLCh *const uri,
     myWorld.setDimensions(std::stof(widthString), std::stof(lengthString));
   }
   else if ("Actor" == elementName || "BehaviorSet" == elementName ||
-           "Behavior" == elementName || "Sensor" == elementName)
+           "Behavior" == elementName || "Sensor" == elementName ||
+           "Exit" == elementName)
   {
     auto type = XMLUtilities::getAttribute(attrs, "type");
     auto source = XMLUtilities::getAttribute(attrs, "source");

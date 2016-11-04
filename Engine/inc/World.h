@@ -16,6 +16,7 @@
 namespace QS
 {
   class Actor;
+  class Exit;
   class Metrics;
 
   /**
@@ -60,8 +61,22 @@ namespace QS
      *
      * @param theActor
      *          Actor to add
+     * @throw std::logic_error
+     *          if the Actor has already been added or it's position is in any
+     *          way invalid
      */
     void addActor(Actor *theActor);
+
+    /**
+     * Add the given Exit to the world.
+     *
+     * @param theExit
+     *          Exit to add
+     * @throw std::logic_error
+     *          if the Exit has already been added or it's position is in any
+     *          way invalid
+     */
+    void addExit(Exit *theExit);
 
     /**
      * Converts the given point in Actor local space to world space coordinates.
@@ -81,11 +96,20 @@ namespace QS
     void finalizeActorMetrics() const noexcept;
 
     /**
-     * Returns all the Actors in the world.
+     * Returns all the Actors in the simulation.
      *
-     * @return all the Actors in the world.
+     * @return all the Actors in the simulation.
      */
     const std::vector<Actor*>& getActors() const noexcept;
+
+    /**
+     * Returns all the Actors still in the world. This is a subset of the
+     * return of getActors. Actors can be removed from the world if they
+     * exit it.
+     *
+     * @return all the Actors in the world
+     */
+    const std::vector<const Actor*>& getActorsInWorld() const noexcept;
 
     /**
      * Returns the dimensions of the world.
@@ -93,6 +117,13 @@ namespace QS
      * @return world dimensions (witdth in meters, legnth in meters)
      */
     std::tuple<float, float> getDimensions() const noexcept;
+
+    /**
+     * Returns all the Exits in the world.
+     *
+     * @return all the Exits in the world.
+     */
+    const std::vector<Exit*>& getExits() const noexcept;
 
     /**
      * Returns a random number using the given distribution. Be sure to have
@@ -184,8 +215,28 @@ namespace QS
                                        bool &theCollisionDetected)
       const;
 
+    /**
+     * Checks if the given entity is wholly within the world.
+     *
+     * @param theEntity
+     *          entity to check
+     * @return true if the entity is completely within the world, false
+     *         otherwise
+     */
+    template<class T>
+    bool isInWorld(const T &theEntity) const noexcept;
+
     /** All of the Actors for the simulation. */
     std::vector<Actor*> myActors;
+
+    /** Actors which are still in the world. */
+    std::vector<const Actor*> myActorsInWorld;
+
+    /** All of the Exits in the simulation. */
+    std::vector<Exit*> myExits;
+
+    /** Exits specifically for Sensable*/
+    std::vector<const Exit*> myExitsForSensable;
 
     /** World length (y dimension), in meters.*/
     float myLength_m = 0.0;
@@ -201,8 +252,5 @@ namespace QS
 
     /** Distribution of pseudo-random numbers. */
     std::uniform_real_distribution<> myRNGDistribution{0, 1};
-
-    /** Actors for use in Sensable objects. */
-    std::vector<const Actor*> mySensableActors;
   };
 }

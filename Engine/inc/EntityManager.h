@@ -20,6 +20,7 @@ namespace QS
   class Actor;
   class Behavior;
   class BehaviorSet;
+  class Exit;
   class Plugin;
   class PluginCollection;
   class SimulationEntityConfiguration;
@@ -107,6 +108,18 @@ namespace QS
       const SimulationEntityConfiguration &theBehaviorSetConfiguration);
 
     /**
+     * Creates the specified Exit.
+     *
+     * @param theExitConfiguration
+     *          configuration of the Exit
+     * @throws std::invalid_argument
+     *          if, in the configuration data, type does not refer to a valid
+     *          Exit type or the properties contain invalid values
+     *          the source does not refer to a loaded plugin or
+     */
+    Exit* createExit(const SimulationEntityConfiguration &theExitConfiguration);
+
+    /**
      * Creates the specified Sensor.
      *
      * @param theSensorConfiguration
@@ -142,6 +155,9 @@ namespace QS
     /** All created behaviors and the plugins which created them. */
     std::vector<std::pair<BehaviorSet*, std::shared_ptr<Plugin>>>
       myBehaviorSets;
+
+    /** All created Exits and the plugins which created them. */
+    std::vector<std::pair<Exit*, std::shared_ptr<Plugin>>> myExits;
 
     /** Collection of loaded plugins for creation/destruction of entities. */
     std::shared_ptr<PluginCollection> myPlugins;

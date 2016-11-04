@@ -130,6 +130,25 @@
 	  </xs:complexType>
 	</xs:element>
 
+
+	<!-- Exits section-->
+	<xs:element name="Exits" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="Exit" minOccurs="0"
+			  maxOccurs="unbounded">
+		<xs:complexType>
+		  <xs:attribute name="name" type="nonEmptyString"
+				use="required" />
+		</xs:complexType>
+	      </xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="creator" type="nonEmptyString" use="required"/>
+	    <xs:attribute name="destructor" type="nonEmptyString"
+			  use="required"/>
+	  </xs:complexType>
+	</xs:element>
+
       </xs:sequence>
       <xs:attribute name="library" type="nonEmptyString" use="required"/>
       <xs:attribute name="name" type="nonEmptyString" use="required"/>

@@ -73,6 +73,14 @@
     <xs:attributeGroup ref="entityMetaData" />
   </xs:complexType>
   
+  <xs:complexType name="Exit">
+    <xs:sequence>
+      <xs:element name="Property" type="Property"
+		  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="entityMetaData" />
+  </xs:complexType>
+  
 
   <xs:element name="Simulation">
     <xs:complexType>
@@ -90,11 +98,20 @@
 	  <xs:complexType>
 	    <xs:sequence>
 	      <!-- List of all the actors in the simulation. -->
-	      <xs:element name="Actors">
+	      <xs:element name="Actors" minOccurs="1" maxOccurs="1">
 		<xs:complexType>
 		  <xs:sequence>
 		    <xs:element name="Actor" type="Actor"
 				minOccurs="1" maxOccurs="unbounded"/>
+		  </xs:sequence>
+		</xs:complexType>
+	      </xs:element>
+
+	      <xs:element name="Exits" minOccurs="0" maxOccurs="1">
+		<xs:complexType>
+		  <xs:sequence>
+		    <xs:element name="Exit" type="Exit"
+				minOccurs="0" maxOccurs="unbounded"/>
 		  </xs:sequence>
 		</xs:complexType>
 	      </xs:element>

@@ -13,6 +13,7 @@
 #include "Actor.h"
 #include "ActorMetrics.h"
 #include "EigenHelper.h"
+#include "Exit.h"
 #include "Metrics.h"
 #include "Sensable.h"
 #include "World.h"
@@ -26,7 +27,36 @@ void QS::World::addActor(Actor *theActor)
 {
   checkInitialPlacement(theActor);
   myActors.push_back(theActor);
-  mySensableActors.push_back(theActor);
+  myActorsInWorld.push_back(theActor);
+}
+
+void QS::World::addExit(Exit *theExit)
+{
+  if (! isInWorld(*theExit))
+  {
+    std::ostringstream error;
+    error << "Exit at position "
+          << theExit->getPosition().format(QS::prettyPrint)
+          << " is not fully within the world bounds given its radius of "
+          << std::setprecision(5) << theExit->getRadius() << ".";
+    throw std::logic_error(error.str());
+  }
+
+  // TODO: parallelize
+  for (auto exit : myExits)
+  {
+    if (exit == theExit)
+    {
+      std::ostringstream error;
+      error << "Attempting to add the Exit at position "
+            << theExit->getPosition().format(QS::prettyPrint)
+            << " to the world more than once.";
+      throw std::logic_error(error.str());
+    }
+  }
+
+  myExits.push_back(theExit);
+  myExitsForSensable.push_back(theExit);
 }
 
 void QS::World::checkInitialPlacement(const Actor *theActor) const
@@ -35,10 +65,7 @@ void QS::World::checkInitialPlacement(const Actor *theActor) const
   float actorRadius = theActor->getRadius();
 
   // First check the world boundaries.
-  if (actorPosition.x() - actorRadius < 0.0 ||
-      actorPosition.x() + actorRadius > myWidth_m ||
-      actorPosition.y() - actorRadius < 0.0 ||
-      actorPosition.y() + actorRadius > myLength_m)
+  if (! isInWorld(*theActor))
   {
     std::ostringstream error;
     error << "Actor at position " << actorPosition.format(QS::prettyPrint)
@@ -47,6 +74,7 @@ void QS::World::checkInitialPlacement(const Actor *theActor) const
     throw std::logic_error(error.str());
   }
 
+  // TODO: parallelize
   for (auto currentActor : myActors)
   {
     // Check if actor is already in the world
@@ -55,8 +83,7 @@ void QS::World::checkInitialPlacement(const Actor *theActor) const
       std::ostringstream error;
       error << "Attempting to add the Actor at position "
             << actorPosition.format(QS::prettyPrint)
-            << " to the world more than once. "
-            << "Can only add the Actor once.";
+            << " to the world more than once.";
       throw std::logic_error(error.str());
     }
 
@@ -109,7 +136,7 @@ Eigen::Vector2f QS::World::collisionDetection(
     theCollisionDetected = true;
   }
 
-  for (Actor *collidedActor : myActors)
+  for (const Actor *collidedActor : myActorsInWorld)
   {
     // Don't check theActor against itself.
     if (theActor == collidedActor)
@@ -289,9 +316,20 @@ const std::vector<QS::Actor*>& QS::World::getActors() const noexcept
   return myActors;
 }
 
+const std::vector<const QS::Actor*>& QS::World::getActorsInWorld()
+  const noexcept
+{
+  return myActorsInWorld;
+}
+
 std::tuple<float, float> QS::World::getDimensions() const noexcept
 {
   return std::make_tuple(myWidth_m, myLength_m);
+}
+
+const std::vector<QS::Exit*>& QS::World::getExits() const noexcept
+{
+  return myExits;
 }
 
 float QS::World::getRandomNumber(
@@ -303,6 +341,23 @@ float QS::World::getRandomNumber(
 void QS::World::initializeActorMetrics() noexcept
 {
   myMetrics.initializeActorMetrics(myActors);
+}
+
+template<class T>
+bool QS::World::isInWorld(const T &theEntity) const noexcept
+{
+  Eigen::Vector2f position = theEntity.getPosition();
+  float radius = theEntity.getRadius();
+
+  bool isInWorld = true;
+  if (position.x() - radius < 0.0 ||
+      position.x() + radius > myWidth_m ||
+      position.y() - radius < 0.0 ||
+      position.y() + radius > myLength_m)
+  {
+    isInWorld = false;
+  }
+  return isInWorld;
 }
 
 void QS::World::setDimensions(float theWidth_m, float theLength_m)
@@ -318,10 +373,17 @@ void QS::World::setSeed(uint64_t theSeed)
 
 bool QS::World::update(float theIntervalInSeconds)
 {
-  Sensable sensable(mySensableActors, theIntervalInSeconds);
+  Sensable sensable(myActorsInWorld, myExitsForSensable, theIntervalInSeconds);
 
-  for (Actor *actor : myActors)
+  auto actorIter = myActorsInWorld.begin();
+
+  while (actorIter != myActorsInWorld.end())
   {
+    // I don't really like the const cast, but I like the "const Actor*"
+    // template type of myActorsInWorld better (to make sure the Sensable and
+    // users of the Sensable don't mess with the Actor).
+    Actor *actor = const_cast<Actor*>(*actorIter);
+
     Eigen::Vector2f currentPosition = actor->getPosition();
 
     Eigen::Vector2f motionVector = actor->calculateMotionVector(sensable);
@@ -361,8 +423,30 @@ bool QS::World::update(float theIntervalInSeconds)
       // Have to convert point again since that uses orientation.
       actor->setVelocity(actor->convertPointToLocal(newPosition));
     }
+
+    // Check if the Actor has exited.
+    bool actorExited = false;
+    for (auto exit : myExits)
+    {
+      exit->update(theIntervalInSeconds);
+      if (exit->canActorExit(actor))
+      {
+        actorExited = true;
+        break;
+      }
+    }
+
+    if (actorExited)
+    {
+      actorIter = myActorsInWorld.erase(actorIter);
+    }
+    else
+    {
+      ++actorIter;
+    }
   }
+
   myMetrics.addToElapsedTime(theIntervalInSeconds);
 
-  return false;
+  return myActorsInWorld.empty();
 }

@@ -19,6 +19,7 @@ namespace QS
   class Actor;
   class Behavior;
   class BehaviorSet;
+  class Exit;
   class Sensor;
 
   /**
@@ -97,7 +98,7 @@ namespace QS
      *          same type
      * @throw std::invalid_argument On invalid actor type
      * @throw std::logic_error If no creator function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     Actor* createActor(const std::string &theType,
@@ -118,7 +119,7 @@ namespace QS
      *          same type
      * @throw std::invalid_argument On invalid behavior name
      * @throw std::logic_error If no creator function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     Behavior* createBehavior(
@@ -140,11 +141,33 @@ namespace QS
      *          the same type
      * @throw std::invalid_argument On invalid behavior name
      * @throw std::logic_error If no creator function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     BehaviorSet* createBehaviorSet(
       const std::string &theBehaviorSet,
+      const std::map<std::string, std::string> &theProperties,
+      const std::string &theTag);
+
+    /**
+     * Creates the Exit with the given name. The caller owns the pointer, but
+     * must use destroyExit to destroy the returned object.
+     *
+     * @param theExit
+     *          name of the exit
+     * @param theProperties
+     *          key/value pairs of properties specific to the type of exit
+     *          being created.
+     * @param theTag
+     *          optional user-defined tag for differentiating Exits of the
+     *          same type
+     * @throw std::invalid_argument On invalid exit name
+     * @throw std::logic_error If no creator function defined (this shouldn't
+     *          happen and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
+     */
+    Exit* createExit(
+      const std::string &theExit,
       const std::map<std::string, std::string> &theProperties,
       const std::string &theTag);
 
@@ -162,7 +185,7 @@ namespace QS
      *          same type
      * @throw std::invalid_argument On invalid sensor name
      * @throw std::logic_error If no creator function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     Sensor* createSensor(
@@ -176,7 +199,7 @@ namespace QS
      * @param theActor
      *          actor to destroy
      * @throw std::logic_error If no destructor function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     void destroyActor(Actor *theActor) const;
@@ -187,7 +210,7 @@ namespace QS
      * @param theBehavior
      *          behavior to destroy
      * @throw std::logic_error If no destructor function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     void destroyBehavior(Behavior *theBehavior) const;
@@ -198,10 +221,21 @@ namespace QS
      * @param theBehaviorSet
      *          behavior set to destroy
      * @throw std::logic_error If no destructor function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     void destroyBehaviorSet(BehaviorSet *theBehaviorSet) const;
+
+    /**
+     * Destroys the exit from createExit.
+     *
+     * @param theExit
+     *          exit to destroy
+     * @throw std::logic_error If no destructor function defined (this shouldn't
+     *          happen and is indicative of an internal error, it might be
+     *          best to ignore this exception and let it percolate up)
+     */
+    void destroyExit(Exit *theExit) const;
 
     /**
      * Destroys the sensor from createSensor.
@@ -209,7 +243,7 @@ namespace QS
      * @param theSensor
      *          sensor to destroy
      * @throw std::logic_error If no destructor function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     void destroySensor(Sensor *theSensor) const;
@@ -257,7 +291,7 @@ namespace QS
      *          description of the thing being created
      * @throw std::invalid_argument On invalid type name
      * @throw std::logic_error If no creator function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     template<class T>
@@ -277,7 +311,7 @@ namespace QS
      * @param theName
      *          description of the thing being destroyed
      * @throw std::logic_error If no destructor function defined (this shouldn't
-     *          happend and is indicative of an internal error, it might be
+     *          happen and is indicative of an internal error, it might be
      *          best to ignore this exception and let it percolate up)
      */
     template<class T>
@@ -320,6 +354,9 @@ namespace QS
     /** Creator/destructor functions for BehaviorSets. */
     CreatorDestructor<BehaviorSet> myBehaviorSetCreatorDestructor{
       nullptr, nullptr};
+
+    /** Creator/destructor functions for Exits. */
+    CreatorDestructor<Exit> myExitCreatorDestructor{nullptr, nullptr};
 
     /** Creator/destructor functions for Sensors. */
     CreatorDestructor<Sensor> mySensorCreatorDestructor{nullptr, nullptr};

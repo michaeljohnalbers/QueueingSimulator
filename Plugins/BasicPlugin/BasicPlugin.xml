@@ -29,4 +29,8 @@
   <Sensors creator="sensorCreator" destructor="sensorDestructor">
     <Sensor name="NullSensor" />
   </Sensors>
+
+  <Exits creator="exitCreator" destructor="exitDestructor">
+    <Exit name="Exit" />
+  </Exits>
 </Plugin>

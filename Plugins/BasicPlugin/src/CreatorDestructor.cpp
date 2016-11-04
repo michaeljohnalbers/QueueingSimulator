@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include "Actor.h"
+#include "Exit.h"
 #include "Walk.h"
 #include "BasicWalk.h"
 #include "NullSensor.h"
@@ -69,5 +70,18 @@ extern "C"
   {
     delete theSensor;
   }
-}
 
+  QS::Exit* exitCreator(
+    const std::string &theExitName,
+    const QS::PluginEntity::Properties &theProperties,
+    const std::string &theTag)
+  {
+    // Only one exit in this plugin, so ignore the name.
+    return new QS::Exit(theProperties, theTag);
+  }
+
+  void exitDestructor(QS::Exit *theExit)
+  {
+    delete theExit;
+  }
+}

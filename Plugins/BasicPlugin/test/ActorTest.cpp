@@ -84,8 +84,7 @@ GTEST_TEST(ActorTest, testConstruction)
     }
     catch (const std::invalid_argument &e)
     {
-      EXPECT_EQ(std::string("Missing 'mass' property in Actor constructor."),
-                e.what());
+      EXPECT_EQ(std::string("Missing 'mass' property."), e.what());
     }
     catch(...)
     {
@@ -106,8 +105,7 @@ GTEST_TEST(ActorTest, testConstruction)
     }
     catch (const std::invalid_argument &e)
     {
-      EXPECT_EQ(std::string("Missing 'radius' property in Actor constructor."),
-                e.what());
+      EXPECT_EQ(std::string("Missing 'radius' property."), e.what());
     }
     catch(...)
     {
@@ -128,8 +126,7 @@ GTEST_TEST(ActorTest, testConstruction)
     }
     catch (const std::invalid_argument &e)
     {
-      EXPECT_EQ(std::string("Missing 'x' property in Actor constructor."),
-                e.what());
+      EXPECT_EQ(std::string("Missing 'x' property."), e.what());
     }
     catch(...)
     {
@@ -150,8 +147,7 @@ GTEST_TEST(ActorTest, testConstruction)
     }
     catch (const std::invalid_argument &e)
     {
-      EXPECT_EQ(std::string("Missing 'y' property in Actor constructor."),
-                e.what());
+      EXPECT_EQ(std::string("Missing 'y' property."), e.what());
     }
     catch(...)
     {

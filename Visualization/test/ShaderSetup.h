@@ -9,19 +9,27 @@
  * @author Michael Albers
  */
 
+#include <string>
+
 class CLASS_NAME: public ::testing::Test
 {
   public:
 
   void SetUp()
   {
+    glfwSetErrorCallback(&errorCallback);
+
     QS::VisualizationInitialization::InitializeGLFW();
 
     glfwWindowHint(GLFW_VISIBLE, 0);
+
+    myLatestError = "";
     myWindow = glfwCreateWindow(1, 1, "DummyWindow", NULL, NULL);
     if (!myWindow)
     {
-      throw std::logic_error("Failed to create OpenGL context window.");
+      std::string error{"Failed to create OpenGL context window: "};
+      error += myLatestError;
+      throw std::logic_error(error);
     }
     glfwHideWindow(myWindow);
     glfwMakeContextCurrent(myWindow);
@@ -31,12 +39,23 @@ class CLASS_NAME: public ::testing::Test
 
   void TearDown()
   {
-    glfwDestroyWindow(myWindow);
+    if (nullptr == myWindow)
+    {
+      glfwDestroyWindow(myWindow);
+    }
+    QS::VisualizationInitialization::TerminateGLEW();
     QS::VisualizationInitialization::TerminateGLFW();
   }
 
   protected:
 
-  GLFWwindow *myWindow;
+  static void errorCallback(int error, const char* description)
+  {
+    myLatestError = std::string(description) + " (" +
+      std::to_string(error) + ")";
+  }
+
+  GLFWwindow *myWindow = nullptr;
+  static std::string myLatestError;
 };
 

@@ -19,6 +19,7 @@
 namespace QS
 {
   class Actors;
+  class Exits;
   class ShaderProgram;
   class World;
   class WorldBox;
@@ -247,6 +248,9 @@ namespace QS
 
     /** Position the camera is looking at. */
     glm::vec3 myCameraCenter;
+
+    /** Object for drawing actors. */
+    std::unique_ptr<Exits> myExits;
 
     /** Original Z position of camera. */
     float myOriginalZoomDistance;

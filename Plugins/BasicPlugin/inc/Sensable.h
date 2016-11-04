@@ -12,10 +12,10 @@
 namespace QS
 {
   class Actor;
+  class Exit;
   // TODO: undo this with further development
 #if 0
   class Target;
-  class Exit;
 #endif
 
   /**
@@ -37,20 +37,19 @@ namespace QS
      *
      * @param theActors
      *          sensable actors within the world
+     * @param theExits
+     *          sensable exits within the world
      * @param theIntervalInSeconds
      *          time since last update
      * @param theTargets
      *          sensable targets within the world
-     * @param theExits
-     *          sensable exits within the world
      */
-    Sensable(const std::vector<const Actor*> theActors,
+    Sensable(const std::vector<const Actor*> &theActors,
+             const std::vector<const Exit*> &theExits,
              float theIntervalInSeconds
              // TODO: undo this with further developement
 #if 0
-             ,
-             const std::vector<const Target*> theTargets,
-             const std::vector<const Exit*> theExits
+             const std::vector<const Target*> theTargets
 #endif
       ) noexcept;
 
@@ -74,7 +73,14 @@ namespace QS
      *
      * @return sensable actors.
      */
-    std::vector<const Actor*> getActors() const noexcept;
+    const std::vector<const Actor*>& getActors() const noexcept;
+
+    /**
+     * Returns the sensable exits. Not in any particular order.
+     *
+     * @return sensable exits.
+     */
+    const std::vector<const Exit*>& getExits() const noexcept;
 
     /**
      * Returns the interval, in seconds, since the last update.
@@ -92,32 +98,27 @@ namespace QS
      */
     std::vector<const Target*> getTargets() const noexcept;
 
-    /**
-     * Returns the sensable exits. Not in any particular order.
-     *
-     * @return sensable exits.
-     */
-    std::vector<const Exit*> getExits() const noexcept;
-
 #endif
 
     /**
      * Copy assignment operator
      */
-    Sensable& operator=(const Sensable &) = default;
+    Sensable& operator=(const Sensable &) = delete;
 
     /**
      * Move assignment operator
      */
-    Sensable& operator=(Sensable &&) = default;
-
+    Sensable& operator=(Sensable &&) = delete;
 
     protected:
 
     private:
 
     /** All actors in the world that can be sensed. */
-    std::vector<const Actor*> myActors;
+    const std::vector<const Actor*> &myActors;
+
+    /** All exits in the world which can be sensed. */
+    const std::vector<const Exit*> &myExits;
 
     /** Interval since last update. */
     float myIntervalInSeconds;
@@ -126,9 +127,6 @@ namespace QS
 #if 0
     /** All targets in the world which can be sensed. */
     std::vector<const Target*> myTargets;
-
-    /** All exits in the world which can be sensed. */
-    std::vector<const Exit*> myExits;
 #endif
   };
 }

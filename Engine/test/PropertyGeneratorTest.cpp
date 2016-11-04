@@ -63,6 +63,8 @@ GTEST_TEST(PropertyGeneratorTest, generation)
   {
     std::vector<std::tuple<std::string, std::string>> tests{
       std::make_tuple("4", "4.000000"),
+      std::make_tuple("44", "44.000000"),
+      std::make_tuple("45.012", "45.012001"), // Float slop
       std::make_tuple("4 + 4", "8.000000"),
       std::make_tuple("3 - 4", "-1.000000"),
       std::make_tuple("55 * 32", "1760.000000"),
@@ -97,11 +99,11 @@ GTEST_TEST(PropertyGeneratorTest, generation)
       }
       catch (const std::exception &e)
       {
-        FAIL() << "Input: " << input << ", exception: " << e.what();
+        ADD_FAILURE() << "Input: " << input << ", exception: " << e.what();
       }
       catch (...)
       {
-        FAIL() << "Input: " << input << ", unexpected exception.";
+        ADD_FAILURE() << "Input: " << input << ", unexpected exception.";
       }
     }
   }
@@ -163,13 +165,13 @@ GTEST_TEST(PropertyGeneratorTest, generation)
       }
       catch (const std::exception &e)
       {
-        FAIL() << "Exception type: " << typeid(e).name()
-               << ". " << e.what()
-               << std::endl;
+        ADD_FAILURE() << "Exception type: " << typeid(e).name()
+                      << ". " << e.what()
+                      << std::endl;
       }
       catch (...)
       {
-        FAIL() << "Unknown exception type";
+        ADD_FAILURE() << "Unknown exception type";
       }
 #endif
     }

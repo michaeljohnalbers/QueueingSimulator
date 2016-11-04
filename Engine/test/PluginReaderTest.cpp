@@ -37,8 +37,18 @@ GTEST_TEST(PluginReaderTest, testRead)
     writeConfig(pluginConfigNominal);
     QS::PluginReader reader(pluginDirectory, configFile, schemaDirectory);
     std::shared_ptr<QS::PluginDefinition> pluginDef;
-    EXPECT_NO_THROW(pluginDef = reader.read());
-    ASSERT_TRUE(pluginDef.get() != nullptr);
+    try
+    {
+      pluginDef = reader.read();
+    }
+    catch (const std::exception &e)
+    {
+      FAIL() << "Unexpectedly threw an exception during parsing: " << e.what();
+    }
+    catch (...)
+    {
+      FAIL() << "Unexpectedly threw an unknown exception during parsing.";
+    }
 
     // Spot check some things in the definition.
     EXPECT_EQ("test-lib.so", pluginDef->getLibrary());
@@ -65,6 +75,11 @@ GTEST_TEST(PluginReaderTest, testRead)
     EXPECT_EQ("sensorDestructor",
               pluginDef->getSensorCreatorDestructor().second);
     EXPECT_EQ(1u, pluginDef->getSensorDefinitions().size());
+
+    EXPECT_EQ("exitCreator", pluginDef->getExitCreatorDestructor().first);
+    EXPECT_EQ("exitDestructor",
+              pluginDef->getExitCreatorDestructor().second);
+    EXPECT_EQ(1u, pluginDef->getExitDefinitions().size());
   }
 
   // Test reading in a malformed file. Just testing that an exception of

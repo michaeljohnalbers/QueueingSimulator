@@ -12,6 +12,7 @@
 #include "xercesc/sax2/Attributes.hpp"
 #include "ActorDefinition.h"
 #include "BehaviorSetDefinition.h"
+#include "ExitDefinition.h"
 #include "Finally.h"
 #include "PluginDefinition.h"
 #include "PluginReader.h"
@@ -153,6 +154,11 @@ void QS::PluginReader::endElement(const XMLCh *const uri,
       // Sensor element in Behavior element.
     }
   }
+  else if ("Exit" == elementName)
+  {
+    myPluginDefinition->addExitDefinition(*myExitDefinition);
+    myExitDefinition.reset();
+  }
 }
 
 void QS::PluginReader::startDocument()
@@ -252,6 +258,18 @@ void QS::PluginReader::startElement(const XMLCh *const uri,
     {
       mySensorDefinition.reset(new SensorDefinition(sensorName));
     }
+  }
+  else if ("Exits" == elementName)
+  {
+    auto exitCreator = XMLUtilities::getAttribute(attrs, "creator");
+    auto exitDestructor = XMLUtilities::getAttribute(attrs, "destructor");
+    myPluginDefinition->setExitCreatorDestructor(
+      exitCreator, exitDestructor);
+  }
+  else if ("Exit" == elementName)
+  {
+    auto exitName = XMLUtilities::getAttribute(attrs, "name");
+    myExitDefinition.reset(new ExitDefinition(exitName));
   }
 }
 

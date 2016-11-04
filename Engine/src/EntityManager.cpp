@@ -44,6 +44,11 @@ QS::EntityManager::~EntityManager()
   {
     sensor.second->destroySensor(sensor.first);
   }
+
+  for (auto exit : myExits)
+  {
+    exit.second->destroyExit(exit.first);
+  }
 }
 
 QS::Actor* QS::EntityManager::createActor(
@@ -270,6 +275,20 @@ QS::BehaviorSet* QS::EntityManager::createBehaviorSet(
   behaviorSet->setDependencies(behaviorSetDependencies);
 
   return behaviorSet;
+}
+
+QS::Exit* QS::EntityManager::createExit(
+  const SimulationEntityConfiguration &theExitConfiguration)
+{
+  auto exitPlugin = myPlugins->getPlugin(theExitConfiguration.getSource());
+
+  Exit *exit = exitPlugin->createExit(theExitConfiguration.getType(),
+                                      theExitConfiguration.getProperties(),
+                                      theExitConfiguration.getTag());
+
+  myExits.push_back({exit, exitPlugin});
+
+  return exit;
 }
 
 QS::Sensor* QS::EntityManager::createSensor(
