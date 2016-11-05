@@ -5,6 +5,7 @@
  * @author Michael Albers
  */
 
+#include <sstream>
 #include <stdexcept>
 #include "xercesc/sax2/SAX2XMLReader.hpp"
 #include "xercesc/sax2/XMLReaderFactory.hpp"
@@ -76,17 +77,63 @@ void QS::SimulationReader::read()
   }
 }
 
+void QS::SimulationReader::processProperty(const std::string &theProperty,
+                                           const std::string &theValue)
+{
+  auto &entityConfig = myEntityConfigurations.top();
+  // TODO: consider moving some of this into PropertyGenerator
+  if (::strcasecmp(theProperty.c_str(), "randPosition") == 0)
+  {
+    if ("Actor" != myCurrentEntityElementName)
+    {
+      std::string error{"'randPosition' pseudo-property"};
+      error += "can only be used for Actors. Found use in " +
+        myCurrentEntityElementName + ".";
+      throw std::logic_error(error);
+    }
+
+    try
+    {
+      auto radiusString = entityConfig.getProperties().at("radius");
+      auto radius = std::stof(radiusString);
+      Eigen::Vector2f position = myWorld.getRandomActorPosition(radius, 10);
+      std::stringstream converter;
+      converter << std::fixed << position.x() << " "
+                << std::fixed << position.y();
+      std::string x, y;
+      converter >> x >> y;
+      entityConfig.addProperty("x", x);
+      entityConfig.addProperty("y", y);
+    }
+    catch (const std::logic_error &e)
+    {
+      std::string error{"Attempting to use 'randPosition' pseudo-property for "
+          "an Entity that does not have a radius defined, or has an invalid "
+          "radius."};
+      throw std::logic_error(error);
+    }
+  }
+  else
+  {
+    std::string newValue = myPropertyGenerator.generateProperty(
+      theValue, myEntityConfigurations.top());
+    entityConfig.addProperty(theProperty, newValue);
+  }
+}
+
 void QS::SimulationReader::endElement(const XMLCh *const uri,
                                       const XMLCh *const localname,
                                       const XMLCh *const qname)
 {
   std::string elementName{XMLUtilities::cStr(localname).get()};
+
   if ("Actor" == elementName)
   {
     auto actorConfiguration = myEntityConfigurations.top();
     auto newActor = myEntityManager->createActor(actorConfiguration);
     myWorld.addActor(newActor);
     myEntityConfigurations.pop();
+    myCurrentEntityElementName = "";
   }
   else if ("BehaviorSet" == elementName || "Behavior" == elementName ||
            "Sensor" == elementName)
@@ -95,6 +142,7 @@ void QS::SimulationReader::endElement(const XMLCh *const uri,
     myEntityConfigurations.pop();
     myEntityConfigurations.top().addDependencyConfiguration(
       entityDependencyConfiguration);
+    myCurrentEntityElementName = "";
   }
   else if ("Exit" == elementName)
   {
@@ -102,6 +150,7 @@ void QS::SimulationReader::endElement(const XMLCh *const uri,
     auto newExit = myEntityManager->createExit(exitConfiguration);
     myWorld.addExit(newExit);
     myEntityConfigurations.pop();
+    myCurrentEntityElementName = "";
   }
 }
 
@@ -127,6 +176,8 @@ void QS::SimulationReader::startElement(const XMLCh *const uri,
            "Behavior" == elementName || "Sensor" == elementName ||
            "Exit" == elementName)
   {
+    myCurrentEntityElementName = elementName;
+
     auto type = XMLUtilities::getAttribute(attrs, "type");
     auto source = XMLUtilities::getAttribute(attrs, "source");
     std::string tag;
@@ -139,13 +190,9 @@ void QS::SimulationReader::startElement(const XMLCh *const uri,
   }
   else if ("Property" == elementName)
   {
-    std::string property = XMLUtilities::getAttribute(attrs, "value");
-    property = myPropertyGenerator.generateProperty(
-      property, myEntityConfigurations.top());
-
-    myEntityConfigurations.top().addProperty(
-      XMLUtilities::getAttribute(attrs, "key"),
-      property);
+    std::string property = XMLUtilities::getAttribute(attrs, "key");
+    std::string value = XMLUtilities::getAttribute(attrs, "value");
+    processProperty(property, value);
   }
 }
 

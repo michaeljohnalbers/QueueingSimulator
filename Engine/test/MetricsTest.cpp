@@ -60,7 +60,7 @@ GTEST_TEST(MetricsTest, startTime)
               TIME_TOLERANCE);
 }
 
-GTEST_TEST(MetricsTest, elapsedTime)
+GTEST_TEST(MetricsTest, elapsedTimeAndUpdate)
 {
   QS::Metrics metrics;
   EXPECT_EQ(0.0, metrics.getElapsedTimeInSeconds());
@@ -68,6 +68,17 @@ GTEST_TEST(MetricsTest, elapsedTime)
   metrics.addToElapsedTime(timeToAdd);
   EXPECT_EQ(timeToAdd, metrics.getElapsedTimeInSeconds());
   EXPECT_THROW(metrics.addToElapsedTime(-1.0), std::invalid_argument);
+
+  // Test update metrics
+  metrics.addToElapsedTime(0.55);
+  metrics.addToElapsedTime(3.55);
+  metrics.addToElapsedTime(0.07);
+
+  metrics.finalizeSimulationMetrics();
+  auto updateMetrics = metrics.getUpdateMetrics();
+  EXPECT_FLOAT_EQ(3.567, updateMetrics.myMax);
+  EXPECT_FLOAT_EQ(0.07, updateMetrics.myMin);
+  EXPECT_FLOAT_EQ(1.93425, updateMetrics.myAvg);
 }
 
 GTEST_TEST(MetricsTest, stopTime)

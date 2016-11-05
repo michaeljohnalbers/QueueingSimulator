@@ -26,6 +26,7 @@ namespace QS
     enum class Type
     {
       RandSym,
+      RandColorSym,
       Id,
       IntLiteral,
       FloatLiteral,

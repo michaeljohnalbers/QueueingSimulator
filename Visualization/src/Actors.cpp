@@ -116,12 +116,14 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   glUniformMatrix4fv(projectionLocation, 1, GL_FALSE,
                      glm::value_ptr(theProjectionMatrix));
 
-  glm::vec3 *colorVectors = new glm::vec3[theActors.size()];
-  glm::mat4 *modelMatrices = new glm::mat4[theActors.size()];
+  std::unique_ptr<glm::vec3[]> colorVectors{new glm::vec3[theActors.size()]};
+  std::unique_ptr<glm::mat4[]> modelMatrices{new glm::mat4[theActors.size()]};
 
   constexpr glm::vec3 rotationAxis(0.0, 0.0, 1.0);
 
-  for (auto ii = 0u; ii < theActors.size(); ++ii)
+  auto numActors = theActors.size();
+#pragma omp parallel for shared(theActors, modelMatrices)
+  for (auto ii = 0u; ii < numActors; ++ii)
   {
     const Actor &actor = *theActors[ii];
 
@@ -200,6 +202,4 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
 
   glBindVertexArray(0);
   glUseProgram(0);
-  delete [] colorVectors;
-  delete [] modelMatrices;
 }

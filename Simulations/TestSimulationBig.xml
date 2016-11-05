@@ -1,0 +1,1159 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  Big simulation: large world, lots of Actors
+-->
+
+<Simulation>
+  <Seed value="1364" />
+  <World width="100" length="100">
+    <Actors>
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+      <Actor type="Actor" source="BasicPlugin">
+	<Property key="radius" value=":rand(0.5, 1.0)" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="mass" value="1.0" />
+	<Property key="color" value=":randColor()" />
+      </Actor>
+
+    </Actors>
+  </World>
+</Simulation>

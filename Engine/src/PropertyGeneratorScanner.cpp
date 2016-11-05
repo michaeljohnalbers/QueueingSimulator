@@ -18,6 +18,7 @@
 QS::PropertyGeneratorScanner::ReservedWordMap
 QS::PropertyGeneratorScanner::ourReservedWords{
   {"rand", PropertyGeneratorToken::Type::RandSym},
+  {"randcolor", PropertyGeneratorToken::Type::RandColorSym},
 };
 
 

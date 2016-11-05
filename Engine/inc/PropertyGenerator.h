@@ -71,10 +71,15 @@ namespace QS
      *     simulation entity being processed
      *   PI - PI
      *
-     * Lastly, random numbers can be generated. To do so, use a simulated
-     * function call: "rand(&lt;low&gt;, &lt;high&gt;). This returns a floating
-     * point number in the given range. This cannot be part of an expression:
-     * it must be used standalone. This may be improved in the future.
+     * Random numbers can be generated. To do so, use a simulated function
+     * call: "rand(&lt;low&gt;, &lt;high&gt;). This returns a floating point
+     * number in the given range. This cannot be part of an expression: it must
+     * be used standalone. This may be improved in the future.
+     *
+     * Random colors can be generated. To do so, use a simulated function call:
+     * "randColor(). This returns a three floating point values in a string
+     * suitable for an RGB color spec (0.0-0.1). This cannot be part of an
+     * expression: it must be used standalone.
      *
      * @param theValue
      *          initial property value
@@ -158,6 +163,7 @@ namespace QS
     void ident();
     void multOp(OperatorRecord &theOperator);
     void rand();
+    void randColor();
     void primary();
     void statement();
     void term();
@@ -189,11 +195,59 @@ namespace QS
      */
     void match(const PropertyGeneratorToken::Type &theToken);
 
+    class StackItem
+    {
+      public:
+      enum class Type
+      {
+        String,
+        Float
+      };
+
+      StackItem() = default;
+      StackItem(float theFloat) : myType(Type::Float), myFloat(theFloat) {};
+      StackItem(const std::string theString) : myType(Type::String),
+                                           myString(theString) {};
+      ~StackItem() = default;
+      StackItem(const StackItem&) = default;
+      StackItem(StackItem&&) = default;
+      StackItem& operator=(const StackItem&) = default;
+      StackItem& operator=(StackItem&&) = default;
+
+      operator float()
+      {
+        if (myType != Type::Float)
+        {
+          std::string error{"Internal property generation error, "};
+          error += "expecting float when stack object is a string (" +
+            myString + ").";
+          throw std::logic_error(error);
+        }
+        return myFloat;
+      };
+      operator std::string()
+      {
+        if (myType != Type::String)
+        {
+          std::string error{"Internal property generation error, "};
+          error += "expecting string when stack object is a float (" +
+            std::to_string(myFloat) + ").";
+          throw std::logic_error(error);
+        }
+
+        return myString;
+      };
+
+      Type myType = Type::Float;
+      float myFloat = 0.0;
+      std::string myString;
+    };
+
     /** Current entity from which to get attributes. */
     const SimulationEntityConfiguration *myEntity;
 
     /** Evaluation stack. */
-    std::stack<float> myEvaluationStack;
+    std::stack<StackItem> myEvaluationStack;
 
     /** Original property passed in for processing. */
     std::string myOriginalProperty;

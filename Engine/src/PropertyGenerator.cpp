@@ -104,12 +104,12 @@ void QS::PropertyGenerator::expressionTail()
 
     if (operatorRecord.getToken() == PropertyGeneratorToken::Type::PlusOp)
     {
-      auto result = left + right;
+      float result = left + right;
       myEvaluationStack.push(result);
     }
     else
     {
-      auto result = left - right;
+      float result = left - right;
       myEvaluationStack.push(result);
     }
 
@@ -243,7 +243,15 @@ std::string QS::PropertyGenerator::generateProperty(
     }
 
     parse();
-    newValue = std::to_string(myEvaluationStack.top());
+    auto result = myEvaluationStack.top();
+    if (StackItem::Type::Float == result.myType)
+    {
+      newValue = std::to_string(result.myFloat);
+    }
+    else
+    {
+      newValue = result.myString;
+    }
     myEvaluationStack.pop();
   }
 
@@ -370,20 +378,46 @@ void QS::PropertyGenerator::rand()
   myEvaluationStack.push(myWorld.getRandomNumber(distribution));
 }
 
+void QS::PropertyGenerator::randColor()
+{
+  checkInput({PropertyGeneratorToken::Type::RandColorSym});
+
+  match(PropertyGeneratorToken::Type::RandColorSym);
+  match(PropertyGeneratorToken::Type::LParen);
+  match(PropertyGeneratorToken::Type::RParen);
+
+  std::uniform_real_distribution<float> distribution(0.0, 1.0);
+
+  float r = myWorld.getRandomNumber(distribution);
+  float g = myWorld.getRandomNumber(distribution);
+  float b = myWorld.getRandomNumber(distribution);
+
+  std::string color = std::to_string(r) + " " + std::to_string(g) + " " +
+    std::to_string(b);
+
+  myEvaluationStack.push(color);
+}
+
 void QS::PropertyGenerator::statement()
 {
   checkInput({PropertyGeneratorToken::Type::RandSym,
+              PropertyGeneratorToken::Type::RandColorSym,
               PropertyGeneratorToken::Type::FloatLiteral,
               PropertyGeneratorToken::Type::Id,
               PropertyGeneratorToken::Type::IntLiteral,
               PropertyGeneratorToken::Type::LParen,
               });
 
+
   PropertyGeneratorToken peekToken(myScanner->peek());
   switch (peekToken.getToken())
   {
     case PropertyGeneratorToken::Type::RandSym:
       rand();
+      break;
+
+    case PropertyGeneratorToken::Type::RandColorSym:
+      randColor();
       break;
 
     case PropertyGeneratorToken::Type::FloatLiteral:
@@ -431,12 +465,12 @@ void QS::PropertyGenerator::termTail()
 
     if (operatorRecord.getToken() == PropertyGeneratorToken::Type::MultOp)
     {
-      auto result = left * right;
+      float result = left * right;
       myEvaluationStack.push(result);
     }
     else
     {
-      auto result = left / right;
+      float result = left / right;
       myEvaluationStack.push(result);
     }
 

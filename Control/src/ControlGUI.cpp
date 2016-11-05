@@ -740,7 +740,7 @@ void QS::ControlGUI::stopButtonHandler()
   myUpdateSimulationConnection.disconnect();
   myUpdateCameraConnection.disconnect();
 
-  mySimulation->getSimulation()->getWorld().finalizeActorMetrics();
+  mySimulation->getSimulation()->getWorld().finalizeMetrics();
   auto &metrics = mySimulation->getSimulation()->getMetrics();
   metrics.setStopTime();
 

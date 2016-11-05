@@ -86,6 +86,7 @@ GTEST_TEST(PropertyGeneratorTest, generation)
       std::make_tuple("world.lEngTh", std::to_string(length)),
       std::make_tuple("this.goodProp", std::to_string(goodPropertyValue)),
       std::make_tuple("rAnD(1.0, 2.0)", "1.417022"),
+      std::make_tuple("rAnDColoR()", "0.997185 0.720325 0.932557"),
       };
 
     for (auto test : tests)

@@ -23,6 +23,7 @@ void QS::Metrics::addToElapsedTime(float theNumberSeconds)
     throw std::invalid_argument("Cannot add negative seconds to elapsed time.");
   }
   myElapsedTime += theNumberSeconds;
+  myUpdateMetrics.update(theNumberSeconds);
 }
 
 std::string QS::Metrics::asISO8601(const TimePoint &theTime) noexcept
@@ -46,8 +47,13 @@ void QS::Metrics::finalizeActorMetrics(const std::vector<Actor*> theActors)
     myActorGrossStats.update(gross);
   }
 
-  myActorGrossStats.myAvg /= static_cast<float>(theActors.size());
-  myActorNetStats.myAvg /= static_cast<float>(theActors.size());
+  myActorGrossStats.myAvg /= myActorGrossStats.myCount;
+  myActorNetStats.myAvg /= myActorNetStats.myCount;
+}
+
+void QS::Metrics::finalizeSimulationMetrics() noexcept
+{
+  myUpdateMetrics.myAvg /= myUpdateMetrics.myCount;
 }
 
 const QS::ActorMetrics& QS::Metrics::getActorMetrics(
@@ -77,6 +83,11 @@ QS::Metrics::TimePoint QS::Metrics::getStopTime() const noexcept
   return myStopTime;
 }
 
+QS::Metrics::MinMaxAvg<float> QS::Metrics::getUpdateMetrics() const noexcept
+{
+  return myUpdateMetrics;
+}
+
 void QS::Metrics::initializeActorMetrics(
   const std::vector<QS::Actor*> theActors) noexcept
 {
@@ -89,13 +100,6 @@ void QS::Metrics::initializeActorMetrics(
 void QS::Metrics::setStopTime()
 {
   myStopTime = Clock::now();
-}
-
-void QS::Metrics::MinMaxAvg::update(float theValue)
-{
-  myMin = std::min(theValue, myMin);
-  myMax = std::max(theValue, myMax);
-  myAvg += theValue;
 }
 
 namespace QS
@@ -111,7 +115,15 @@ std::ostream& operator<<(std::ostream &os, const Metrics &theMetrics)
      << "   Stop time: " << Metrics::asISO8601(theMetrics.getStopTime())
      << std::endl
      << "Elapsed Time: " << std::fixed
-     << theMetrics.getElapsedTimeInSeconds() << " seconds" << std::endl;
+     << theMetrics.getElapsedTimeInSeconds() << " seconds" << std::endl
+     << std::endl
+     << "High Update Interval: " << std::fixed
+     << theMetrics.myUpdateMetrics.myMax << std::endl
+     << "Average Update Interval: " << std::fixed
+     << theMetrics.myUpdateMetrics.myAvg << std::endl
+     << "Low Update Interval: " << std::fixed
+     << theMetrics.myUpdateMetrics.myMin << std::endl
+     << std::endl;
 
   os << std::endl
      << "Actor Metrics" << std::endl
@@ -122,6 +134,7 @@ std::ostream& operator<<(std::ostream &os, const Metrics &theMetrics)
      << theMetrics.myActorGrossStats.myAvg << " meters" << std::endl
      << "Low Gross Distance: " << std::fixed
      << theMetrics.myActorGrossStats.myMin << " meters" << std::endl
+     << std::endl
      << "High Net Distance: " << std::fixed
      << theMetrics.myActorNetStats.myMax << " meters" << std::endl
      << "Average Net Distance: " << std::fixed

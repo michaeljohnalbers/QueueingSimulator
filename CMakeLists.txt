@@ -42,6 +42,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O")
 SET(CMAKE_EXE_LINKER_FLAGS "-pthread -rdynamic")
 
+find_package(OpenMP)
+if (OPENMP_FOUND)
+  set(  CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
 ###################################
 # Installation Settings
 ###################################
