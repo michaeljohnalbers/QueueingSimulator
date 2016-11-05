@@ -10,6 +10,7 @@
 #include <memory>
 #include "gtest/gtest.h"
 #include "Actor.h"
+#include "EigenHelper.h"
 #include "Metrics.h"
 #include "World.h"
 
@@ -75,7 +76,7 @@ GTEST_TEST(WorldTest, addActor)
   // Test adding duplicate actor
   EXPECT_THROW(world.addActor(actors.back().get()), std::logic_error);
 
-  // Test actor overlap
+  // Test actor overlap (implicitly tests World::checkOverlap)
   {
     std::shared_ptr<QS::Actor> actor1(new QS::Actor(properties, ""));
     actors.push_back(actor1);
@@ -152,4 +153,82 @@ GTEST_TEST(WorldTest, randomNumbers)
   // Not much to test since getRandomNumber is just a call to the RNG engine.
   // All the real work is done by the C++ library.
   EXPECT_FLOAT_EQ(4.4835172, rng);
+}
+
+GTEST_TEST(WorldTest, randomActorPosition)
+{
+  QS::PluginEntity::Properties properties{
+    {"radius", "0.1"},
+    {"mass", "0.2"},
+    {"x", "0.0"},
+    {"y", "0.0"}};
+
+  std::vector<Eigen::Vector2f> positions = {
+    {1.0, 1.0},
+    {2.0, 2.0},
+    {33.3, 33.3},
+    {4.0, 5.0},
+    {5.0, 4.0},
+    {48.4, 48.4},
+    {22.2, 33.3},
+    {11.1, 40.45},
+  };
+
+  std::vector<std::shared_ptr<QS::Actor>> actors;
+
+  QS::World world(glbMetrics);
+  world.setDimensions(50, 50);
+  world.setSeed(4545);
+
+  for (auto position : positions)
+  {
+    std::shared_ptr<QS::Actor> actor(new QS::Actor(properties, ""));
+    actors.push_back(actor);
+    actor->setPosition(position);
+    ASSERT_NO_THROW(world.addActor(actor.get()));
+  }
+
+  // First test invalid radius
+  EXPECT_THROW(world.getRandomActorPosition(50.1, 1), std::invalid_argument);
+
+  // Test valid generation
+  try
+  {
+    float radius = 2.0;
+    Eigen::Vector2f position = world.getRandomActorPosition(radius, 10);
+    for (auto actor : actors)
+    {
+      // checkOverlap is implicitly tested in addActor test.
+      EXPECT_FALSE(world.checkOverlap(position, radius,
+                                      actor->getPosition(), actor->getRadius()))
+        << "Position: " << position.format(QS::prettyPrint)
+        << ", radius: " << std::fixed << radius
+        << ", overlaped Actor: " << actor->getPosition().format(QS::prettyPrint)
+        << ", radius: " << actor->getRadius();
+    }
+  }
+  catch (const std::logic_error &e)
+  {
+    FAIL() << e.what();
+  }
+
+  // Test passing the maximum number of attempts.
+  try
+  {
+    world.getRandomActorPosition(49.0, 1000);
+    FAIL() << "Unexpectedly didn't throw.";
+  }
+  catch (const std::invalid_argument &e)
+  {
+    FAIL() << "Unexpectedly threw std::invalid_argument: " << e.what();
+  }
+  catch (const std::logic_error &e)
+  {
+    // Checking for all the other exceptions as getRandomActorPosition can throw
+    // std::invalid_argument which inherits from std::logic_error.
+  }
+  catch (...)
+  {
+    FAIL() << "Threw unexpected exception.";
+  }
 }

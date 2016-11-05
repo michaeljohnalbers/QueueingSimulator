@@ -9,6 +9,7 @@
 
 #include <chrono>
 #include <cfloat>
+#include <limits>
 #include <map>
 #include <memory>
 #include <vector>
@@ -27,6 +28,27 @@ namespace QS
     public:
 
     using Clock = std::chrono::system_clock;
+
+    /**
+     * Helper class for basic statistics.
+     */
+    template<class T >
+    class MinMaxAvg
+    {
+      public:
+      T myMin = std::numeric_limits<T>::max();
+      T myMax = std::numeric_limits<T>::min();
+      T myAvg = 0.0;
+      T myCount = 0.0;
+
+      void update(T theValue)
+      {
+        myMin = std::min(theValue, myMin);
+        myMax = std::max(theValue, myMax);
+        myAvg += theValue;
+        myCount += 1.0;
+      }
+    };
 
     /** Shortcut to reduce typing. */
     using TimePoint = std::chrono::time_point<Clock>;
@@ -88,6 +110,11 @@ namespace QS
     void finalizeActorMetrics(const std::vector<Actor*> theActors) noexcept;
 
     /**
+     * Finalizes all simulation metrics.
+     */
+    void finalizeSimulationMetrics() noexcept;
+
+    /**
      * Returns the metrics for the given Actor.
      *
      * @param theActor
@@ -127,6 +154,13 @@ namespace QS
     TimePoint getStopTime() const noexcept;
 
     /**
+     * Returns the metrics for update interval times.
+     *
+     * @return update interval metrics.
+     */
+    MinMaxAvg<float> getUpdateMetrics() const noexcept;
+
+    /**
      * Initializes all actor metrics from the given list of Actors
      *
      * @param theActors
@@ -152,24 +186,11 @@ namespace QS
 
     protected:
 
-    /**
-     * Helper class for basic statistics.
-     */
-    class MinMaxAvg
-    {
-      public:
-      float myMin = FLT_MAX;
-      float myMax = FLT_MIN;
-      float myAvg = 0.0;
-
-      void update(float theValue);
-    };
-
     /** Statistics for Actor gross distance*/
-    MinMaxAvg myActorGrossStats;
+    MinMaxAvg<float> myActorGrossStats;
 
     /** Statistics for Actor net distance */
-    MinMaxAvg myActorNetStats;
+    MinMaxAvg<float> myActorNetStats;
 
     /** Per-Actor metrics */
     std::map<const Actor*, std::shared_ptr<ActorMetrics>> myActorMetrics;
@@ -182,6 +203,9 @@ namespace QS
 
     /** Stop time of the simulation. */
     TimePoint myStopTime;
+
+    /** Metrics for update intervals. */
+    MinMaxAvg<float> myUpdateMetrics;
 
     private:
 

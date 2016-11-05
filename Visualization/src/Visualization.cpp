@@ -281,7 +281,8 @@ void QS::Visualization::visualize()
   myCameraCenter = glm::vec3(myXDimension_m/2, myYDimension_m/2, 0.0f);
 
   myThreadControl = true;
-  while (myThreadControl)
+  bool worldContinue = true;
+  while (myThreadControl && worldContinue)
   {
     glfwPollEvents();
 
@@ -294,7 +295,7 @@ void QS::Visualization::visualize()
 
     if (0.0 != updateInterval)
     {
-      myThreadControl = (! myWorld.update(static_cast<float>(updateInterval)));
+      worldContinue = (! myWorld.update(static_cast<float>(updateInterval)));
     }
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

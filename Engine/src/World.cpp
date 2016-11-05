@@ -25,6 +25,7 @@ QS::World::World(Metrics &theMetrics) :
 
 void QS::World::addActor(Actor *theActor)
 {
+  ++myNumberAttemptedActorAdds;
   checkInitialPlacement(theActor);
   myActors.push_back(theActor);
   myActorsInWorld.push_back(theActor);
@@ -42,7 +43,9 @@ void QS::World::addExit(Exit *theExit)
     throw std::logic_error(error.str());
   }
 
-  // TODO: parallelize
+  // Not parallelizing this loop as there are likely to be only a few exits in
+  // the world and adding parallelization would probably slow this down or at
+  // best have no effect.
   for (auto exit : myExits)
   {
     if (exit == theExit)
@@ -74,32 +77,74 @@ void QS::World::checkInitialPlacement(const Actor *theActor) const
     throw std::logic_error(error.str());
   }
 
-  // TODO: parallelize
-  for (auto currentActor : myActors)
+  int duplicateIndex = -1;
+  std::vector<std::decltype(myActors)::size_type> overlappedActorIndexes;
+  auto numActors = myActors.size();
+
+#pragma omp parallel for shared(duplicateIndex, overlappedActorIndexes)
+  for (auto actorIndex = 0u; actorIndex < numActors; ++actorIndex)
   {
+    Actor *currentActor = myActors[actorIndex];
+
     // Check if actor is already in the world
     if (theActor == currentActor)
     {
-      std::ostringstream error;
-      error << "Attempting to add the Actor at position "
-            << actorPosition.format(QS::prettyPrint)
-            << " to the world more than once.";
-      throw std::logic_error(error.str());
+      duplicateIndex = actorIndex;
     }
 
     // Check if actor overlaps another actor
-    Eigen::Vector2f currentActorPosition = currentActor->getPosition();
-    Eigen::Vector2f distanceVector = currentActorPosition - actorPosition;
-    float distance = std::abs(distanceVector.norm());
-    if (distance <= actorRadius + currentActor->getRadius())
+    bool overlap = checkOverlap(
+      currentActor->getPosition(), currentActor->getRadius(),
+      actorPosition, actorRadius);
+    if (overlap)
     {
-      std::ostringstream error;
-      error << "Actor at position " << actorPosition.format(QS::prettyPrint)
-            << " overlaps with existing Actor at position "
-            << currentActorPosition.format(QS::prettyPrint) << ".";
-      throw std::logic_error(error.str());
+#pragma omp critical
+      {
+        overlappedActorIndexes.push_back(actorIndex);
+      }
     }
   }
+
+  if (duplicateIndex >= 0)
+  {
+    std::ostringstream error;
+    error << "On attempted Actor add number " << myNumberAttemptedActorAdds
+          << ", the Actor being added (at position "
+          << actorPosition.format(QS::prettyPrint)
+          << ") has already been added.";
+    throw std::logic_error(error.str());
+  }
+
+  if (! overlappedActorIndexes.empty())
+  {
+    std::ostringstream error;
+    error << "On attempted Actor add number " << myNumberAttemptedActorAdds
+          << ", the Actor being added at position "
+          << actorPosition.format(QS::prettyPrint)
+          << " overlaps with " << overlappedActorIndexes.size()
+          << " other Actor(s) at the following position(s):";
+    for (auto index : overlappedActorIndexes)
+    {
+      error << " " << myActors[index]->getPosition().format(QS::prettyPrint);
+    }
+    error << ".";
+    throw std::logic_error(error.str());
+  }
+}
+
+bool QS::World::checkOverlap(Eigen::Vector2f thePosition1, float theRadius1,
+                             Eigen::Vector2f thePosition2, float theRadius2)
+  const noexcept
+{
+  bool overlap = false;
+
+  Eigen::Vector2f distanceVector = thePosition1 - thePosition2;
+  float distance = distanceVector.norm();
+  if (distance <= theRadius1 + theRadius2)
+  {
+    overlap = true;
+  }
+  return overlap;
 }
 
 Eigen::Vector2f QS::World::collisionDetection(
@@ -144,6 +189,8 @@ Eigen::Vector2f QS::World::collisionDetection(
       continue;
     }
 
+    // Not using checkOverlap since the radius sum will be used later on. No
+    // sense calculating it twice (or using the extra function overhead either.
     Eigen::Vector2f distanceVector =
       collidedActor->getPosition() - theNewPosition;
     float distance = distanceVector.norm();
@@ -306,9 +353,10 @@ Eigen::Vector2f QS::World::convertPointToWorld(const Actor *theActor,
   return worldPoint;
 }
 
-void QS::World::finalizeActorMetrics() const noexcept
+void QS::World::finalizeMetrics() const noexcept
 {
   myMetrics.finalizeActorMetrics(myActors);
+  myMetrics.finalizeSimulationMetrics();
 }
 
 const std::vector<QS::Actor*>& QS::World::getActors() const noexcept
@@ -330,6 +378,70 @@ std::tuple<float, float> QS::World::getDimensions() const noexcept
 const std::vector<QS::Exit*>& QS::World::getExits() const noexcept
 {
   return myExits;
+}
+
+Eigen::Vector2f QS::World::getRandomActorPosition(float theRadius,
+                                                  uint32_t theMaxAttempts)
+{
+  if (theRadius > myWidth_m || theRadius > myLength_m)
+  {
+    std::ostringstream error;
+    error << "Cannot generate random Actor position, the provided radius, "
+          << std::fixed << theRadius
+          << ", is larger than the world's width or length.";
+    throw std::invalid_argument(error.str());
+  }
+
+  std::uniform_real_distribution<float> xDistribution(theRadius,
+                                                      myWidth_m - theRadius);
+  std::uniform_real_distribution<float> yDistribution(theRadius,
+                                                      myLength_m - theRadius);
+
+  // Distributions are guaranteed to fit within the world boundaries, so we
+  // just need to check against the other actors.
+  bool foundPosition = false;
+  Eigen::Vector2f position;
+  auto numActors = myActors.size();
+  uint32_t attempt = 0;
+  while (! foundPosition && attempt < theMaxAttempts)
+  {
+    float x = getRandomNumber(xDistribution);
+    float y = getRandomNumber(yDistribution);
+    position << x, y;
+
+    bool foundOverlap = false;
+#pragma omp parallel for shared(foundOverlap)
+    for (auto index = 0u; index < numActors; ++index)
+    {
+      Actor *actor = myActors[index];
+      bool overlap = checkOverlap(position, theRadius,
+                                  actor->getPosition(), actor->getRadius());
+      if (overlap)
+      {
+        foundOverlap = true;
+      }
+    }
+
+    if (! foundOverlap)
+    {
+      foundPosition = true;
+    }
+    else
+    {
+      ++attempt;
+    }
+  }
+
+  if (attempt >= theMaxAttempts)
+  {
+    std::ostringstream error;
+    error << "Could not generate random Actor position with radius "
+          << std::fixed << theRadius << " in the maximum number of "
+          << theMaxAttempts << " attempt(s).";
+    throw std::logic_error(error.str());
+  }
+
+  return position;
 }
 
 float QS::World::getRandomNumber(

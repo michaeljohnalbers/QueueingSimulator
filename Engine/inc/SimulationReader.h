@@ -108,6 +108,20 @@ namespace QS
 
     private:
 
+    /**
+     * Processes a property and adds it to the SimulationEntityConfiguration
+     * on the top of myEntityConfigurations.
+     *
+     * @param theProperty
+     *          property name
+     * @param theValue
+     *          property value
+     * @param std::logic_error
+     *          on invalid property value
+     */
+    void processProperty(const std::string &theProperty,
+                         const std::string &theValue);
+
     /** Name of the plugin where the Actor can be found. */
     std::string myActorSource;
 
@@ -125,6 +139,9 @@ namespace QS
 
     /** Creator of plugin entities. */
     std::shared_ptr<EntityManager> myEntityManager;
+
+    /** Name of Entity element in XML */
+    std::string myCurrentEntityElementName;
 
     /**
      * Generates properties based on small language which can be embedded in

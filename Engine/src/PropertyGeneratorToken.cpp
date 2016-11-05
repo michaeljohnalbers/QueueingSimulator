@@ -11,6 +11,7 @@
 QS::PropertyGeneratorToken::TokenMap
 QS::PropertyGeneratorToken::ourTokenDescriptions{
   {Type::RandSym, "Rand"},
+  {Type::RandColorSym, "RandColor"},
   {Type::Id, "Id"},
   {Type::IntLiteral, "IntLiteral"},
   {Type::FloatLiteral, "IntLiteral"},

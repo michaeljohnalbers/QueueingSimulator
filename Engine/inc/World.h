@@ -8,6 +8,7 @@
  */
 
 #include <chrono>
+#include <cstdint>
 #include <random>
 #include <tuple>
 #include <vector>
@@ -78,7 +79,25 @@ namespace QS
      */
     void addExit(Exit *theExit);
 
-    /**
+     /**
+     * Checks if the circle defined by the given position/radius pairs overlap
+     * with each other.
+     *
+     * @param thePosition1
+     *          first circle center point
+     * @param theRadius1
+     *          first cirlce radius
+     * @param thePositionw
+     *          secondcircle center point
+     * @param theRadius1
+     *          second cirlce radius
+     * @return true if the circles overlap
+     */
+    bool checkOverlap(Eigen::Vector2f thePosition1, float theRadius1,
+                      Eigen::Vector2f thePosition2, float theRadius2)
+      const noexcept;
+
+   /**
      * Converts the given point in Actor local space to world space coordinates.
      *
      * @param theActor
@@ -91,9 +110,9 @@ namespace QS
       noexcept;
 
     /**
-     * Finalizes metrics for all Actors.
+     * Finalizes all metrics.
      */
-    void finalizeActorMetrics() const noexcept;
+    void finalizeMetrics() const noexcept;
 
     /**
      * Returns all the Actors in the simulation.
@@ -124,6 +143,26 @@ namespace QS
      * @return all the Exits in the world.
      */
     const std::vector<Exit*>& getExits() const noexcept;
+
+    /**
+     * Returns a random, valid position for an Actor with the given radius. The
+     * algorithm used by this function could run infinitely if an unlucky set of
+     * random numbers are generated, or if the given radius will always overlap
+     * an existing Actor. To that end, the caller can bound the number of
+     * attempts.
+     *
+     * @param theRadius
+     *          actor radius
+     * @param theMaxAttempts
+     *          maximum number of tries to find a valid position
+     * @return position
+     * @throws std::invalid_argument
+     *           if theRadius is larger than the world's width or length
+     * @throws std::logic_error
+     *           if the number of attempts would exceed the maximum
+     */
+    Eigen::Vector2f getRandomActorPosition(float theRadius,
+                                           uint32_t theMaxAttempts);
 
     /**
      * Returns a random number using the given distribution. Be sure to have
@@ -246,6 +285,9 @@ namespace QS
 
     /** World width (x dimension), in meters.*/
     float myWidth_m = 0.0;
+
+    /** Number Actors attempted to be added. */
+    uint32_t myNumberAttemptedActorAdds = 0;
 
     /** Generator of pseudo-random numbers. */
     std::mt19937 myRNGEngine;

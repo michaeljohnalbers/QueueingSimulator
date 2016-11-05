@@ -114,11 +114,13 @@ void QS::Exits::draw(glm::mat4 &theViewMatrix,
   glUniformMatrix4fv(projectionLocation, 1, GL_FALSE,
                      glm::value_ptr(theProjectionMatrix));
 
-  glm::vec3 *colorVectors = new glm::vec3[theExits.size()];
-  glm::mat4 *modelMatrices = new glm::mat4[theExits.size()];
+  std::unique_ptr<glm::vec3[]> colorVectors{new glm::vec3[theExits.size()]};
+  std::unique_ptr<glm::mat4[]> modelMatrices{new glm::mat4[theExits.size()]};
 
   constexpr glm::vec3 rotationAxis(0.0, 0.0, 1.0);
 
+  // Not parallelizing this as there will likely be very few exits. It's most
+  // likely faster without the parallelization.
   for (auto ii = 0u; ii < theExits.size(); ++ii)
   {
     Exit &exit = *theExits[ii];
@@ -201,6 +203,4 @@ void QS::Exits::draw(glm::mat4 &theViewMatrix,
 
   glBindVertexArray(0);
   glUseProgram(0);
-  delete [] colorVectors;
-  delete [] modelMatrices;
 }
