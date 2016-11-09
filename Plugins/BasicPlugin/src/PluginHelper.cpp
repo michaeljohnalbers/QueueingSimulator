@@ -12,3 +12,9 @@ const std::function<float(const std::string&)> QS::PluginHelper::toFloat =
 {
   return std::stof(value);
 };
+
+const std::function<uint64_t(const std::string&)> QS::PluginHelper::toUint =
+  [](const std::string &value)
+{
+  return std::stoull(value);
+};

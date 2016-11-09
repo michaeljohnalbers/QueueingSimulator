@@ -10,6 +10,8 @@
 #include "Actor.h"
 #include "Behavior.h"
 #include "BehaviorSet.h"
+#include "Exit.h"
+#include "Sensor.h"
 #include "gtest/gtest.h"
 
 // No header for the creator/destructors since they aren't used directly in the
@@ -39,11 +41,17 @@ extern "C"
     const QS::PluginEntity::Properties&,
     const std::string &theTag);
   void sensorDestructor(QS::Sensor*);
+
+  QS::Exit* exitCreator(
+    const std::string&,
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
+  void exitDestructor(QS::Exit*);
 }
 
 GTEST_TEST(CreatorDestructor, testActor)
 {
-  std::map<std::string, std::string> properties;
+  QS::PluginEntity::Properties properties;
   properties.insert({"mass", "0.1"});
   properties.insert({"radius", "0.1"});
   properties.insert({"x", "0.11"});
@@ -82,4 +90,16 @@ GTEST_TEST(CreatorDestructor, testSensor)
   EXPECT_NE(nullptr, sensor);
 
   EXPECT_NO_THROW(sensorDestructor(sensor));
+}
+
+GTEST_TEST(CreatorDestructor, testExit)
+{
+  QS::PluginEntity::Properties properties;
+  properties.insert({"radius", "0.1"});
+  properties.insert({"x", "0.11"});
+  properties.insert({"y", "0.11"});
+  QS::Exit *exit = exitCreator("", properties, "");
+  EXPECT_NE(nullptr, exit);
+
+  EXPECT_NO_THROW(exitDestructor(exit));
 }

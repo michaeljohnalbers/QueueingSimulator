@@ -1,6 +1,6 @@
 /**
  * @file Exit.cpp
- * @brief Unit tests for Targ class
+ * @brief Unit tests for Exit class
  *
  * @author Michael Albers
  */

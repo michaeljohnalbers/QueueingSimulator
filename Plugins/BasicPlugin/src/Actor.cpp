@@ -22,12 +22,6 @@ QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
   myPosition(0.0, 0.0),
   myVelocity_ms(0.0, 0.0)
 {
-  std::function<float(const std::string&)> toFloat =
-    [](const std::string &value)
-    {
-      return std::stof(value);
-    };
-
   myMass_grams = PluginHelper::getProperty(
     theProperties, "mass", true, PluginHelper::toFloat);
   if (myMass_grams <= 0.0)
