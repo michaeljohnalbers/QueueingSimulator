@@ -2,7 +2,7 @@
 
 /**
  * @file Exit.h
- * @brief Specialized Exit that adds the semantics of removing an actor from
+ * @brief Specialized Target that adds the semantics of removing an actor from
  *        the simulation.
  *
  * @author Michael Albers

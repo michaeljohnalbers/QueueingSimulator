@@ -3,9 +3,9 @@
 
 # TODO: have user set target name & config name, then this will call add_library, include_directory, and install stuff below.
 
-macro(QS_PLUGIN_INSTALL lib config)
+macro(QS_PLUGIN_INSTALL lib config dir)
   install(TARGETS ${lib}
-    LIBRARY DESTINATION ${QS_INSTALL_PLUGIN_BASE_DIR}/BasicPlugin)
+    LIBRARY DESTINATION ${QS_INSTALL_PLUGIN_BASE_DIR}/${dir})
   install(FILES ../${config}
-    DESTINATION ${QS_INSTALL_PLUGIN_BASE_DIR}/BasicPlugin)
+    DESTINATION ${QS_INSTALL_PLUGIN_BASE_DIR}/${dir})
 endmacro()

@@ -7,6 +7,7 @@
  * @author Michael Albers
  */
 
+#include <cstdint>
 #include <functional>
 #include <stdexcept>
 #include <string>
@@ -73,6 +74,15 @@ namespace QS
      *           if value cannot be converted to a float
      */
     static const std::function<float(const std::string&)> toFloat;
+
+    /**
+     * Converter function for use in getProperty. Converts the given value
+     * to an unsigned int.
+     *
+     * @throws std::invalid_argument
+     *           if value cannot be converted to an unsigned int
+     */
+    static const std::function<uint64_t(const std::string&)> toUint;
 
     protected:
 

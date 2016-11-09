@@ -189,6 +189,9 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
   list(APPEND testDirs Plugins/BasicPlugin/test Engine/test Visualization/test)
   list(APPEND tests    BasicPluginTest          EngineTest  VisualizationTest)
 
+  list(APPEND testDirs Plugins/QueueingPlugin/test)
+  list(APPEND tests    QueueingPluginTest)
+
   foreach(testDir IN LISTS testDirs)
     add_subdirectory(${testDir})
   endforeach()
