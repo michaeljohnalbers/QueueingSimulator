@@ -186,6 +186,8 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
 
   enable_testing()
 
+  add_subdirectory(Test/src)
+
   list(APPEND testDirs Plugins/BasicPlugin/test Engine/test Visualization/test)
   list(APPEND tests    BasicPluginTest          EngineTest  VisualizationTest)
 
@@ -198,4 +200,5 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
   foreach(test IN LISTS tests)
     add_test(NAME ${test} COMMAND ${test})
   endforeach()
+
 endif()

@@ -498,7 +498,7 @@ bool QS::World::update(float theIntervalInSeconds)
 
     Eigen::Vector2f currentPosition = actor->getPosition();
 
-    Eigen::Vector2f motionVector = actor->calculateMotionVector(sensable);
+    Eigen::Vector2f motionVector = actor->evaluate(sensable);
 
     Eigen::Vector2f adjustedMotionVector = actor->adjustVectorToMaximums(
       motionVector, theIntervalInSeconds);

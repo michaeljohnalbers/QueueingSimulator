@@ -12,6 +12,7 @@
 #include "Actor.h"
 #include "EigenHelper.h"
 #include "Metrics.h"
+#include "TestUtils.h"
 #include "World.h"
 
 static QS::Metrics glbMetrics;
@@ -24,10 +25,8 @@ GTEST_TEST(WorldTest, construction)
 GTEST_TEST(WorldTest, addActor)
 {
   QS::PluginEntity::Properties properties{
-    {"radius", "0.1"},
-    {"mass", "0.2"},
-    {"x", "0.0"},
-    {"y", "0.0"}};
+    QS::TestUtils::getMinimalActorProperties()};
+  properties["radius"] = "0.1";
 
   QS::World world(glbMetrics);
   world.setDimensions(10, 10);
@@ -121,10 +120,9 @@ GTEST_TEST(WorldTest, addActor)
 GTEST_TEST(WorldTest, convertPointToWorld)
 {
   QS::PluginEntity::Properties properties{
-    {"radius", "0.1"},
-    {"mass", "0.2"},
-    {"x", "0.0"},
-    {"y", "0.0"}};
+    QS::TestUtils::getMinimalActorProperties()};
+  properties["x"] = "0.0";
+  properties["y"] = "0.0";
 
   QS::Actor actor{properties, ""};
 
@@ -158,10 +156,8 @@ GTEST_TEST(WorldTest, randomNumbers)
 GTEST_TEST(WorldTest, randomActorPosition)
 {
   QS::PluginEntity::Properties properties{
-    {"radius", "0.1"},
-    {"mass", "0.2"},
-    {"x", "0.0"},
-    {"y", "0.0"}};
+    QS::TestUtils::getMinimalActorProperties()};
+  properties["radius"] = "0.1";
 
   std::vector<Eigen::Vector2f> positions = {
     {1.0, 1.0},

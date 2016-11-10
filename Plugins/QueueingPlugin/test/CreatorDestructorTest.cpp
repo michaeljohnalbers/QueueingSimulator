@@ -6,11 +6,12 @@
  */
 
 #include <string>
+#include "gtest/gtest.h"
 #include "OrderedActor.h"
 // #include "Behavior.h"
 // #include "BehaviorSet.h"
 #include "OrderedExit.h"
-#include "gtest/gtest.h"
+#include "TestUtils.h"
 
 // No header for the creator/destructors since they aren't used directly in the
 // code
@@ -50,11 +51,8 @@ extern "C"
 GTEST_TEST(CreatorDestructor, testActor)
 {
   QS::PluginEntity::Properties properties{
-    {"radius", "0.1"},
-    {"mass", "0.2"},
-    {"x", "5.0"},
-    {"y", "5.0"},
-    {"rank", "1"}};
+    QS::TestUtils::getMinimalActorProperties()};
+  properties["rank"] = "1";
 
   QS::Actor *actor = nullptr;
   ASSERT_NO_THROW(actor = actorCreator("OrderedActor", properties, ""));
@@ -99,11 +97,8 @@ GTEST_TEST(CreatorDestructor, testActor)
 
 GTEST_TEST(CreatorDestructor, testExit)
 {
-  QS::PluginEntity::Properties properties{
-    {"radius", "0.1"},
-    {"x", "0.11"},
-    {"y", "0.11"}};
-  QS::Exit *exit = exitCreator("", properties, "");
+  QS::Exit *exit = exitCreator(
+    "", QS::TestUtils::getMinimalExitProperties(), "");
   ASSERT_NE(nullptr, exit);
   EXPECT_EQ(typeid(*exit), typeid(QS::OrderedExit));
 

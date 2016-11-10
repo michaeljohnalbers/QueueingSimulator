@@ -7,12 +7,13 @@
 
 #include <map>
 #include <string>
+#include "gtest/gtest.h"
 #include "Actor.h"
 #include "Behavior.h"
 #include "BehaviorSet.h"
 #include "Exit.h"
 #include "Sensor.h"
-#include "gtest/gtest.h"
+#include "TestUtils.h"
 
 // No header for the creator/destructors since they aren't used directly in the
 // code
@@ -51,12 +52,8 @@ extern "C"
 
 GTEST_TEST(CreatorDestructor, testActor)
 {
-  QS::PluginEntity::Properties properties;
-  properties.insert({"mass", "0.1"});
-  properties.insert({"radius", "0.1"});
-  properties.insert({"x", "0.11"});
-  properties.insert({"y", "0.11"});
-  QS::Actor *actor = actorCreator("", properties, "");
+  QS::Actor *actor = actorCreator(
+    "", QS::TestUtils::getMinimalActorProperties(), "");
   EXPECT_NE(nullptr, actor);
 
   EXPECT_NO_THROW(actorDestructor(actor));
@@ -94,11 +91,8 @@ GTEST_TEST(CreatorDestructor, testSensor)
 
 GTEST_TEST(CreatorDestructor, testExit)
 {
-  QS::PluginEntity::Properties properties;
-  properties.insert({"radius", "0.1"});
-  properties.insert({"x", "0.11"});
-  properties.insert({"y", "0.11"});
-  QS::Exit *exit = exitCreator("", properties, "");
+  QS::Exit *exit = exitCreator(
+    "", QS::TestUtils::getMinimalExitProperties(), "");
   EXPECT_NE(nullptr, exit);
 
   EXPECT_NO_THROW(exitDestructor(exit));

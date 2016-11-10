@@ -9,27 +9,32 @@
 #include "gtest/gtest.h"
 #include "Actor.h"
 #include "Exit.h"
+#include "TestUtils.h"
 
 GTEST_TEST(ExitTest, class)
 {
   // Assumes tests in TargetTest have been run since Exit inherits from Target.
 
   // Test invalid radius (== 0)
-  EXPECT_THROW(QS::Exit({{"x", "0.5"}, {"y", "1.0"}, {"radius","0.0"}}, ""),
-               std::invalid_argument);
+  {
+    auto properties = QS::TestUtils::getMinimalExitProperties();
+    properties["radius"] = "0.0";
+    EXPECT_THROW(QS::Exit(properties, ""), std::invalid_argument);
+  }
 
   QS::PluginEntity::Properties exitProperties{
-    {"x", "3.5"},
-    {"y", "4.2"},
-    {"radius", "1.0"}
-  };
+    QS::TestUtils::getMinimalExitProperties()};
+  exitProperties["x"] = "3.5";
+  exitProperties["y"] = "4.2";
+  exitProperties["radius"] = "1.0";
   QS::Exit exit(exitProperties, "");
 
   QS::PluginEntity::Properties actorProperties{
-    {"radius", "0.1"},
-    {"mass", "0.2"},
-    {"x", "1.0"},
-    {"y", "1.0"}};
+    QS::TestUtils::getMinimalActorProperties()};
+  actorProperties["radius"] = "0.1";
+  actorProperties["mass"] = "0.2";
+  actorProperties["x"] = "1.0";
+  actorProperties["y"] = "1.0";
 
   QS::Actor actor(actorProperties, "");
 

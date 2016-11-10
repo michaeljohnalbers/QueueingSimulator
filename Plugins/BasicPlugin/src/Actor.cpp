@@ -42,6 +42,8 @@ QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
 
   myOrientation_radians = PluginHelper::getProperty(
     theProperties, "orientation", false, PluginHelper::toFloat);
+  myMaximumForce = PluginHelper::getProperty(
+    theProperties, "max force", false, PluginHelper::toFloat, -1.0f);
   myMaximumRotationSpeed_rs = PluginHelper::getProperty(
     theProperties, "max rotation", false, PluginHelper::toFloat, -1.0f);
   myMaximumSpeed_ms = PluginHelper::getProperty(
@@ -122,13 +124,6 @@ Eigen::Vector2f QS::Actor::adjustVectorToMaximums(
   return adjustedVector;
 }
 
-Eigen::Vector2f QS::Actor::calculateMotionVector(
-  const Sensable &theSensable)
-{
-  BehaviorSet *behaviorSet = selectBehaviorSet(theSensable);
-  return behaviorSet->evaluate(this, theSensable);
-}
-
 Eigen::Vector2f QS::Actor::convertPointToLocal(const Eigen::Vector2f &thePoint)
   const noexcept
 {
@@ -145,6 +140,12 @@ Eigen::Vector2f QS::Actor::convertPointToLocal(const Eigen::Vector2f &thePoint)
   return localPoint;
 }
 
+Eigen::Vector2f QS::Actor::evaluate(const Sensable &theSensable)
+{
+  BehaviorSet *behaviorSet = selectBehaviorSet(theSensable);
+  return behaviorSet->evaluate(this, theSensable);
+}
+
 Eigen::Vector3f QS::Actor::getColor() const noexcept
 {
   return myColor;
@@ -153,6 +154,11 @@ Eigen::Vector3f QS::Actor::getColor() const noexcept
 float QS::Actor::getMass() const noexcept
 {
   return myMass_grams;
+}
+
+float QS::Actor::getMaximumForce() const noexcept
+{
+  return myMaximumForce;
 }
 
 float QS::Actor::getMaximumRotationSpeed() const noexcept

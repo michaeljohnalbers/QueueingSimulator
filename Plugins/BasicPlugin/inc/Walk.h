@@ -35,8 +35,7 @@ namespace QS
      * @throw std::invalid_argument
      *          if "speed" property cannot be converted to a float
      */
-    Walk(const Properties &theProperties,
-              const std::string &theTag);
+    Walk(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Copy constructor.
@@ -54,13 +53,13 @@ namespace QS
     virtual ~Walk() = default;
 
     /**
-     * Directs Actor to move in a straight line.
+     * Directs Actor to move in a straight line at a fixed speed.
      *
      * @param theActor
      *          Actor this Behavior is working on
      * @param theIntervalInSeconds
      *          amount of time elapsed since last simulation update
-     * @return vector used to influence the motion of the Actor
+     * @return steering force to direct the walking
      */
     virtual Eigen::Vector2f evaluate(
       const Actor *theActor,
