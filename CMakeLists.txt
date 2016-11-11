@@ -164,6 +164,7 @@ install(DIRECTORY ${XERCESC_LIBRARY_DIR}/ DESTINATION ${QS_INSTALL_LIB_DIR}
 # Sub-directories for building
 ###################################
 
+add_subdirectory(Common/src)
 add_subdirectory(Control/src)
 add_subdirectory(Engine/src)
 add_subdirectory(Visualization/src)
@@ -186,6 +187,11 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
 
   enable_testing()
 
+  add_subdirectory(Test/src)
+
+  list(APPEND testDirs Common/test)
+  list(APPEND tests    CommonTest)
+
   list(APPEND testDirs Plugins/BasicPlugin/test Engine/test Visualization/test)
   list(APPEND tests    BasicPluginTest          EngineTest  VisualizationTest)
 
@@ -198,4 +204,5 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
   foreach(test IN LISTS tests)
     add_test(NAME ${test} COMMAND ${test})
   endforeach()
+
 endif()

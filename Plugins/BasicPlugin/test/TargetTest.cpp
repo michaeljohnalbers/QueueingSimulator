@@ -8,18 +8,15 @@
 #include <stdexcept>
 #include "gtest/gtest.h"
 #include "Target.h"
+#include "TestUtils.h"
 
 GTEST_TEST(TargetTest, class)
 {
-  QS::PluginEntity::Properties goodProperties{
-    {"x", "3.5"},
-    {"y", "4.2"},
-    {"radius", "56.77"}};
   try
   {
-    QS::Target target(goodProperties, "");
-    EXPECT_EQ(56.77f, target.getRadius());
-    Eigen::Vector2f expectedPosition(3.5, 4.2);
+    QS::Target target(QS::TestUtils::getTargetProperties(), "");
+    EXPECT_EQ(1.0f, target.getRadius());
+    Eigen::Vector2f expectedPosition(2.0, 3.0);
     EXPECT_EQ(expectedPosition, target.getPosition());
   }
   catch (...)

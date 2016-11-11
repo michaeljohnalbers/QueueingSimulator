@@ -9,6 +9,7 @@
 #include "gtest/gtest.h"
 #include "Actor.h"
 #include "Metrics.h"
+#include "TestUtils.h"
 
 // Using 3000 as I believe that the duration is in microseconds or
 // nanoseconds. But it's something very small. Tried using 1 in an EXPECT_NEAR
@@ -19,10 +20,7 @@ static constexpr QS::Metrics::Clock::rep TIME_TOLERANCE = 3000;
 GTEST_TEST(MetricsTest, actorMetrics)
 {
   QS::PluginEntity::Properties properties{
-    {"radius", "0.1"},
-    {"mass", "0.2"},
-    {"x", "0.0"},
-    {"y", "0.0"}};
+    QS::TestUtils::getMinimalActorProperties()};
 
   std::vector<QS::Actor*> actors;
 

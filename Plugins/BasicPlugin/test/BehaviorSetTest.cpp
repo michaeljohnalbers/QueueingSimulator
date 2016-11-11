@@ -26,8 +26,7 @@ namespace BehaviorSetTest
 
     virtual ~TestBehavior() = default;
 
-    virtual Eigen::Vector2f evaluate(const QS::Actor *theActor,
-                                     float theIntervalInSeconds) override
+    virtual Eigen::Vector2f evaluate(const QS::Actor *theActor) override
     {
       return myMotionVector;
     }
@@ -77,6 +76,6 @@ GTEST_TEST(BehaviorSetTest, testEvalutate)
   QS::Sensable sensable({}, {}, 1.0);
   auto actualMotionVector = behaviorSet.evaluate(nullptr, sensable);
   EXPECT_EQ(expectedMotionVector, actualMotionVector)
-    << "Expected: " << expectedMotionVector.format(QS::prettyPrint)
-    << ", Actual: " << actualMotionVector.format(QS::prettyPrint);
+    << "Expected: " << expectedMotionVector.format(QS::EigenHelper::prettyPrint)
+    << ", Actual: " << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 }

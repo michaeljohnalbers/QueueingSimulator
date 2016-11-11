@@ -54,4 +54,7 @@ void QS::Simulation::readSimulation()
   simulationReader->read();
 
   myWorld.initializeActorMetrics();
+  auto dimensions = myWorld.getDimensions();
+  myMetrics.setWorldDimensions(std::get<0>(dimensions),
+                               std::get<1>(dimensions));
 }

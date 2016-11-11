@@ -9,6 +9,7 @@
 #include "gtest/gtest.h"
 #include "Actor.h"
 #include "ActorMetrics.h"
+#include "TestUtils.h"
 
 class ActorMetricsTestFixture : public ::testing::Test
 {
@@ -17,10 +18,9 @@ class ActorMetricsTestFixture : public ::testing::Test
   void SetUp() override
   {
     QS::PluginEntity::Properties properties{
-      {"radius", "0.1"},
-      {"mass", "0.2"},
-      {"x", "0.0"},
-      {"y", "0.0"}};
+      QS::TestUtils::getMinimalActorProperties()};
+    properties["x"] = "0.0";
+    properties["y"] = "0.0";
 
     myActor = new QS::Actor(properties, "");
   }

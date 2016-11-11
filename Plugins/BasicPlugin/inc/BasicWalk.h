@@ -26,8 +26,7 @@ namespace QS
      *
      * @see BehaviorSet.h for parameter detail
      */
-    BasicWalk(const Properties &theProperties,
-              const std::string &theTag);
+    BasicWalk(const Properties &theProperties, const std::string &theTag);
 
     /**
      * Copy constructor.
@@ -45,13 +44,13 @@ namespace QS
     virtual ~BasicWalk() = default;
 
     /**
-     * Evaluates a straight line walk.
+     * Returns the 'Walk' Behavior steering force unaltered
      *
      * @param theActor
      *          Actor this Behavior is working on
      * @param theSensable
      *          sensable data from the environment
-     * @return motion vector
+     * @return steering force
      */
     virtual Eigen::Vector2f evaluate(const Actor *theActor,
                                      const Sensable &theSensable) override;

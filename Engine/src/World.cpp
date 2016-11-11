@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include "Eigen/Core"
+#include "Eigen/Geometry"
 #include "Actor.h"
 #include "ActorMetrics.h"
 #include "EigenHelper.h"
@@ -37,7 +38,7 @@ void QS::World::addExit(Exit *theExit)
   {
     std::ostringstream error;
     error << "Exit at position "
-          << theExit->getPosition().format(QS::prettyPrint)
+          << theExit->getPosition().format(EigenHelper::prettyPrint)
           << " is not fully within the world bounds given its radius of "
           << std::setprecision(5) << theExit->getRadius() << ".";
     throw std::logic_error(error.str());
@@ -52,7 +53,7 @@ void QS::World::addExit(Exit *theExit)
     {
       std::ostringstream error;
       error << "Attempting to add the Exit at position "
-            << theExit->getPosition().format(QS::prettyPrint)
+            << theExit->getPosition().format(EigenHelper::prettyPrint)
             << " to the world more than once.";
       throw std::logic_error(error.str());
     }
@@ -71,7 +72,8 @@ void QS::World::checkInitialPlacement(const Actor *theActor) const
   if (! isInWorld(*theActor))
   {
     std::ostringstream error;
-    error << "Actor at position " << actorPosition.format(QS::prettyPrint)
+    error << "Actor at position "
+          << actorPosition.format(EigenHelper::prettyPrint)
           << " is not fully within the world bounds given its radius of "
           << std::setprecision(5) << actorRadius << ".";
     throw std::logic_error(error.str());
@@ -110,7 +112,7 @@ void QS::World::checkInitialPlacement(const Actor *theActor) const
     std::ostringstream error;
     error << "On attempted Actor add number " << myNumberAttemptedActorAdds
           << ", the Actor being added (at position "
-          << actorPosition.format(QS::prettyPrint)
+          << actorPosition.format(EigenHelper::prettyPrint)
           << ") has already been added.";
     throw std::logic_error(error.str());
   }
@@ -120,12 +122,13 @@ void QS::World::checkInitialPlacement(const Actor *theActor) const
     std::ostringstream error;
     error << "On attempted Actor add number " << myNumberAttemptedActorAdds
           << ", the Actor being added at position "
-          << actorPosition.format(QS::prettyPrint)
+          << actorPosition.format(EigenHelper::prettyPrint)
           << " overlaps with " << overlappedActorIndexes.size()
           << " other Actor(s) at the following position(s):";
     for (auto index : overlappedActorIndexes)
     {
-      error << " " << myActors[index]->getPosition().format(QS::prettyPrint);
+      error << " " << myActors[index]->getPosition().format(
+        EigenHelper::prettyPrint);
     }
     error << ".";
     throw std::logic_error(error.str());
@@ -149,11 +152,8 @@ bool QS::World::checkOverlap(Eigen::Vector2f thePosition1, float theRadius1,
 
 Eigen::Vector2f QS::World::collisionDetection(
   Actor *theActor,
-  Eigen::Vector2f theNewPosition,
-  bool &theCollisionDetected) const
+  Eigen::Vector2f theNewPosition) const
 {
-  theCollisionDetected = false;
-
   float actorRadius = theActor->getRadius();
 
   // Yes, adding 0.0 + actorRadius is meaningless. However, as I write this it
@@ -162,23 +162,19 @@ Eigen::Vector2f QS::World::collisionDetection(
   if (theNewPosition.x() + actorRadius > myWidth_m)
   {
     theNewPosition.x() = myWidth_m - actorRadius;
-    theCollisionDetected = true;
   }
   else if (theNewPosition.x() - actorRadius < 0.0)
   {
     theNewPosition.x() = 0.0 + actorRadius;
-    theCollisionDetected = true;
   }
 
   if (theNewPosition.y() + actorRadius > myLength_m)
   {
     theNewPosition.y() = myLength_m - actorRadius;
-    theCollisionDetected = true;
   }
   else if(theNewPosition.y() - actorRadius < 0.0)
   {
     theNewPosition.y() = 0.0 + actorRadius;
-    theCollisionDetected = true;
   }
 
   for (const Actor *collidedActor : myActorsInWorld)
@@ -223,7 +219,6 @@ Eigen::Vector2f QS::World::collisionDetection(
         continue;
       }
 #endif
-      theCollisionDetected = true;
 
       // The current Actor (A1) has collided with some other Actor (A2).
       //
@@ -256,7 +251,7 @@ Eigen::Vector2f QS::World::collisionDetection(
       // top). No further need to check for collisions. When there is no change
       // in position, the line/circle intersection code breaks down.
       float movement = (theActor->getPosition() - theNewPosition).norm();
-      if (movement < FLOAT_TOLERANCE)
+      if (movement < EigenHelper::FLOAT_TOLERANCE)
       {
         break;
       }
@@ -280,10 +275,13 @@ Eigen::Vector2f QS::World::collisionDetection(
         std::ostringstream error;
         error << "Unexpected value in collision resolution. " << std::endl
               << "  discriminant == " << std::fixed << discriminant << std::endl
-              << "  Line start: " << lineStart.format(prettyPrint) << std::endl
-              << "  Line end: " << lineEnd.format(prettyPrint) << std::endl
+              << "  Line start: " << lineStart.format(EigenHelper::prettyPrint)
+              << std::endl
+              << "  Line end: " << lineEnd.format(EigenHelper::prettyPrint)
+              << std::endl
               << "  Original circle center: "
-              << collidedActor->getPosition().format(prettyPrint) << std::endl
+              << collidedActor->getPosition().format(EigenHelper::prettyPrint)
+              << std::endl
               << "  Radius: " << std::fixed << r;
         // Not all of this information may be displayed in an error dialog so
         // dump it to stderr.
@@ -496,45 +494,44 @@ bool QS::World::update(float theIntervalInSeconds)
     // users of the Sensable don't mess with the Actor).
     Actor *actor = const_cast<Actor*>(*actorIter);
 
+    Eigen::Vector2f steeringForce = actor->evaluate(sensable);
+
+    float maxForce = actor->getMaximumForce();
+    steeringForce = EigenHelper::truncate(steeringForce, maxForce);
+
+    float mass = actor->getMass();
+    // Pretend the steering force is in (g*m)/(s*s) (almost newtons, just
+    // not kilograms). Dividing force by mass gives acceleration in m/(s*s).
+    Eigen::Vector2f acceleration = steeringForce / mass;
+
+    Eigen::Vector2f currentVelocity = actor->getVelocity();
+    float maxSpeed = actor->getMaximumSpeed();
+    // Multiplying acceleration by give gives m/s.
+    Eigen::Vector2f newVelocity = currentVelocity +
+      (acceleration * theIntervalInSeconds);
+    newVelocity = EigenHelper::truncate(newVelocity, maxSpeed);
+
+    float currentOrientation = actor->getOrientation();
+    float newOrientation = currentOrientation +
+      std::atan(newVelocity.y() / newVelocity.x());
+
+    Eigen::Rotation2Df rotation(currentOrientation);
+    // Velocity in world coordinates.
+    Eigen::Vector2f worldVelocity = rotation * newVelocity;
+
     Eigen::Vector2f currentPosition = actor->getPosition();
+    // Finally, multiplying velocity by time gives meters.
+    Eigen::Vector2f newPosition = currentPosition +
+      (worldVelocity * theIntervalInSeconds);
 
-    Eigen::Vector2f motionVector = actor->calculateMotionVector(sensable);
-
-    Eigen::Vector2f adjustedMotionVector = actor->adjustVectorToMaximums(
-      motionVector, theIntervalInSeconds);
-
-    Eigen::Vector2f newPosition = convertPointToWorld(
-      actor, adjustedMotionVector);
-
-    bool collision = false;
-    newPosition = collisionDetection(actor, newPosition, collision);
+    newPosition = collisionDetection(actor, newPosition);
 
     float grossDistance = (currentPosition - newPosition).norm();
+    myMetrics.getActorMetrics(actor).addGrossDistance(grossDistance);
 
-    // Check if actor actually moved.
-    if (grossDistance > FLOAT_TOLERANCE)
-    {
-      myMetrics.getActorMetrics(actor).addGrossDistance(grossDistance);
-
-      // This is a bit of a hack. When a collision happens the new position of
-      // the actor will be moved, that change can create an artificial rotation
-      // and screw up the setting of the orientation. So this fixes the
-      // orientation in case of a collision. This may cause problems if an
-      // Actor is in the process of curving when a collision happens. I'll
-      // cross that bridge when I get there.
-      if (! collision)
-      {
-        auto localPoint = actor->convertPointToLocal(newPosition);
-        float theta = std::atan(localPoint.y() / localPoint.x());
-
-        actor->setOrientation(actor->getOrientation() + theta);
-      }
-
-      actor->setPosition(newPosition);
-
-      // Have to convert point again since that uses orientation.
-      actor->setVelocity(actor->convertPointToLocal(newPosition));
-    }
+    actor->setVelocity(newVelocity);
+    actor->setPosition(newPosition);
+    actor->setOrientation(newOrientation);
 
     // Check if the Actor has exited.
     bool actorExited = false;

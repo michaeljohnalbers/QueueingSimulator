@@ -11,6 +11,7 @@
 #include "Actor.h"
 #include "Exit.h"
 #include "Sensable.h"
+#include "TestUtils.h"
 
 static float interval{.055};
 
@@ -22,22 +23,11 @@ GTEST_TEST(SensableTest, testConstruction)
 GTEST_TEST(SensableTest, testCopyMove)
 {
   std::shared_ptr<QS::Actor> actor{
-    new QS::Actor(
-      {{"mass", "1.0"},
-        {"radius", "1.0"},
-        {"x", "5.0"},
-        {"y", "5.0"}},
-      "")
-      };
+    new QS::Actor(QS::TestUtils::getMinimalActorProperties(), "")};
   std::vector<const QS::Actor*> actors{actor.get()};
 
   std::shared_ptr<QS::Exit> exit{
-    new QS::Exit(
-      {{"radius", "1.0"},
-        {"x", "5.0"},
-        {"y", "5.0"}},
-      "")
-      };
+    new QS::Exit(QS::TestUtils::getMinimalExitProperties(), "")};
   std::vector<const QS::Exit*> exits{exit.get()};
 
   QS::Sensable sensable(actors, exits, interval);
@@ -60,13 +50,7 @@ GTEST_TEST(SensableTest, testCopyMove)
 GTEST_TEST(SensableTest, testActors)
 {
   std::shared_ptr<QS::Actor> actor{
-    new QS::Actor(
-      {{"mass", "1.0"},
-        {"radius", "1.0"},
-        {"x", "5.0"},
-        {"y", "5.0"}},
-      "")
-      };
+    new QS::Actor(QS::TestUtils::getMinimalActorProperties(), "")};
   std::vector<const QS::Actor*> actors{actor.get()};
   QS::Sensable sensable(actors, {}, interval);
   EXPECT_EQ(actors, sensable.getActors());
@@ -75,12 +59,7 @@ GTEST_TEST(SensableTest, testActors)
 GTEST_TEST(SensableTest, testExits)
 {
   std::shared_ptr<QS::Exit> exit{
-    new QS::Exit(
-      {{"radius", "1.0"},
-        {"x", "5.0"},
-        {"y", "5.0"}},
-      "")
-      };
+    new QS::Exit(QS::TestUtils::getMinimalExitProperties(), "")};
   std::vector<const QS::Exit*> exits{exit.get()};
   QS::Sensable sensable({}, exits, interval);
   EXPECT_EQ(exits, sensable.getExits());

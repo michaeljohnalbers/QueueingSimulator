@@ -8,23 +8,19 @@
 #include <stdexcept>
 #include "gtest/gtest.h"
 #include "OrderedActor.h"
-
-static QS::PluginEntity::Properties baseActorProperties{
-  {"radius", "0.1"},
-  {"mass", "0.2"},
-  {"x", "0.5"},
-  {"y", "0.6"}};
+#include "TestUtils.h"
 
 GTEST_TEST(OrderedActorTest, construction)
 {
-  QS::PluginEntity::Properties orderedActorProperties{baseActorProperties};
+  auto baseProperties{QS::TestUtils::getMinimalActorProperties()};
+
+  QS::PluginEntity::Properties orderedActorProperties{baseProperties};
   orderedActorProperties["rank"] = "4";
 
   // Test no properties
   EXPECT_THROW(QS::OrderedActor({}, ""), std::invalid_argument);
   // Test only base properties (missing required OrderedActor properties)
-  EXPECT_THROW(QS::OrderedActor(baseActorProperties, ""),
-               std::invalid_argument);
+  EXPECT_THROW(QS::OrderedActor(baseProperties, ""), std::invalid_argument);
 
   EXPECT_NO_THROW(QS::OrderedActor(orderedActorProperties, ""));
 
@@ -39,7 +35,8 @@ GTEST_TEST(OrderedActorTest, construction)
 
 GTEST_TEST(OrderedActorTest, rank)
 {
-  QS::PluginEntity::Properties orderedActorProperties{baseActorProperties};
+  QS::PluginEntity::Properties orderedActorProperties{
+    QS::TestUtils::getMinimalActorProperties()};
   orderedActorProperties["rank"] = "4";
 
   QS::OrderedActor actor(orderedActorProperties, "");

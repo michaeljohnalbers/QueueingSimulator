@@ -20,23 +20,19 @@ namespace QS
   class Sensor;
 
   /**
-   * A behavior is a class which takes sensory input from the simulation world
-   * and calculates a motion vector for a single Actor. The behavior calculates
-   * this motion vector as though it were the only behavior acting upon the
-   * Actor. In other words, the motion vector should be the ideal vector that
+   * A Behavior is a class which takes sensory input from the simulation world
+   * and calculates a steering force for a single Actor. The Behavior calculates
+   * this steering force as though it were the only Behavior acting upon the
+   * Actor. In other words, the steering force should be the ideal vector that
    * the behavior can create. Likely this vector is going to be mixed in with
-   * other vectors from other behaviors to create a final vector that is
-   * applied to the Actor.
+   * other vectors from other Behaviors to create a final vector that is
+   * applied to the Actor. Refer to the 'evaluate' function for details about
+   * what a steering force is.
    *
    * Sensory input comes from a set of Sensor objects. Each behavior defines
-   * the sensors that it needs to calculate the motion vector. The Queueing
+   * the sensors that it needs to calculate the steering force. The Queueing
    * Simulator engine will provide these sensors. The provided sensors will have
    * already "sensed" the environment.
-   *
-   * The motion vector is calculated in the 'evaluate' function. This function
-   * will be called many, many times. The faster this function does its job, the
-   * faster the simulation will run. However, there should be no parallelism
-   * used in this function. The Queueing Simulator handles all parallelism.
    */
   class Behavior : public PluginEntity, public DependencyManager<Sensor>
   {
@@ -78,23 +74,38 @@ namespace QS
      * DependencyManager parent class. These sensors need to be already
      * populated (i.e., have "sensed" what they need).
      *
-     * The magnitude of the vector can be as large or as small as needed. This
-     * function isn't responsible for making sure it doesn't exceed any
-     * maximums.
+     * The returned vector is the steering "force" to be applied to the Actor's
+     * currently velocity (after possibly being modified or mixed with other
+     * steering forces in a BehaviorSet). The steering force vector should be
+     * calculated without regard for any time interval. It should have the size
+     * and direction to move the Actor to the desired location instantaneously.
+     * The engine will truncate the force vector based on any time interval.
      *
-     * The vector returned should be an Actor local coordinates.
+     * The term "force" is not necessarily SI force (newton), though it will
+     * more-or-less be treated like an actual force. Refer to the "Steering
+     * Behaviors for Autonomous Characters" paper [Reynolds 99] for a deeper
+     * discussion of this "force", how it is used and an example (namely the
+     * "Seek" behavior) of when the "force" isn't really a force at all.
+     *
+     * The magnitude of this vector can essentially be as large (or small) as
+     * the Behavior wants it to be. The engine will clip this so as to not
+     * exceed the maximums defined by the Actor. Put differently, the Behavior
+     * does not need to worry about making the steering force magnitude comply
+     * with the Actor's defined maximums; unless the Behavior wants/needs to as
+     * part of its algorithm.
+     *
+     * The vector returned must be an Actor local coordinates.
+     *
+     * This function will be called many, many times during the simulation. The
+     * faster this function does its job, the faster the simulation will
+     * run. However, there should be no parallelism used in this function. The
+     * Queueing Simulator handles all parallelism.
      *
      * @param theActor
      *          Actor this Behavior is working on
-     * @param theIntervalInSeconds
-     *          amount of time elapsed since last simulation update
-     * @return Vector to where the this Behavior "wants" the Actor to be
-     *         located, relative to the Actor's center point, after the update
-     *         interval. So the units of the vector are meters/second.
+     * @return Steering force to apply to the Actor.
      */
-    virtual Eigen::Vector2f evaluate(
-      const Actor *theActor,
-      float theIntervalInSeconds) = 0;
+    virtual Eigen::Vector2f evaluate(const Actor *theActor) = 0;
 
     /**
      * Copy assignment operator.

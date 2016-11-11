@@ -9,26 +9,22 @@
 #include "gtest/gtest.h"
 #include "OrderedActor.h"
 #include "OrderedExit.h"
-
-static QS::PluginEntity::Properties glbExitProperties{
-  {"x", "5.0"},
-  {"y", "5.0"},
-  {"radius", "1.0"},
-};
+#include "TestUtils.h"
 
 GTEST_TEST(OrderedExitTest, construction)
 {
   EXPECT_THROW(QS::OrderedExit({}, ""), std::invalid_argument);
-  EXPECT_NO_THROW(QS::OrderedExit(glbExitProperties, ""));
+  EXPECT_NO_THROW(QS::OrderedExit(QS::TestUtils::getMinimalExitProperties(),
+                                  ""));
 }
 
 GTEST_TEST(OrderedExitTest, canExit)
 {
   QS::PluginEntity::Properties baseActorProperties{
-    {"radius", "0.1"},
-    {"mass", "0.2"},
-    {"x", "5.0"},
-    {"y", "5.0"}};
+    QS::TestUtils::getMinimalActorProperties()};
+  baseActorProperties["x"] = "5.0";
+  baseActorProperties["y"] = "5.0";
+  baseActorProperties["radius"] = "0.1";
 
   QS::PluginEntity::Properties orderedActorProperties{baseActorProperties};
   orderedActorProperties["rank"] = "4";
@@ -39,8 +35,16 @@ GTEST_TEST(OrderedExitTest, canExit)
   orderedActorProperties["rank"] = "1";
   QS::OrderedActor orderedActor2(orderedActorProperties, "");
 
+  auto exitProperties{QS::TestUtils::getMinimalExitProperties()};
+  exitProperties["x"] = "5.0";
+  exitProperties["y"] = "5.0";
+  exitProperties["radius"] = "1.0";
+
+  // All the Actors overlap with the exit, so these tests ensure that 'rank'
+  // is respected.
+
   {
-    QS::OrderedExit exit(glbExitProperties, "");
+    QS::OrderedExit exit(exitProperties, "");
 
     EXPECT_TRUE(exit.canActorExit(&baseActor));
     EXPECT_TRUE(exit.canActorExit(&orderedActor1));
@@ -48,7 +52,7 @@ GTEST_TEST(OrderedExitTest, canExit)
   }
 
   {
-    QS::OrderedExit exit(glbExitProperties, "");
+    QS::OrderedExit exit(exitProperties, "");
 
     EXPECT_TRUE(exit.canActorExit(&orderedActor1));
     EXPECT_TRUE(exit.canActorExit(&baseActor));
@@ -56,7 +60,7 @@ GTEST_TEST(OrderedExitTest, canExit)
   }
 
   {
-    QS::OrderedExit exit(glbExitProperties, "");
+    QS::OrderedExit exit(exitProperties, "");
 
     EXPECT_TRUE(exit.canActorExit(&orderedActor1));
     EXPECT_TRUE(exit.canActorExit(&orderedActor2));
@@ -64,7 +68,7 @@ GTEST_TEST(OrderedExitTest, canExit)
   }
 
   {
-    QS::OrderedExit exit(glbExitProperties, "");
+    QS::OrderedExit exit(exitProperties, "");
 
     EXPECT_TRUE(exit.canActorExit(&baseActor));
     EXPECT_FALSE(exit.canActorExit(&orderedActor2));
@@ -73,7 +77,7 @@ GTEST_TEST(OrderedExitTest, canExit)
   }
 
   {
-    QS::OrderedExit exit(glbExitProperties, "");
+    QS::OrderedExit exit(exitProperties, "");
 
     EXPECT_FALSE(exit.canActorExit(&orderedActor2));
     EXPECT_TRUE(exit.canActorExit(&baseActor));
@@ -83,7 +87,7 @@ GTEST_TEST(OrderedExitTest, canExit)
 
   // Not overlapping
   {
-    QS::OrderedExit exit(glbExitProperties, "");
+    QS::OrderedExit exit(exitProperties, "");
 
     baseActor.setPosition({0.0, 0.0});
     orderedActor1.setPosition({0.0, 0.0});

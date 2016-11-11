@@ -28,8 +28,7 @@ Eigen::Vector2f QS::BehaviorSet::evaluate(const Actor *theActor,
   float count = 0;
   for (auto dependency : dependencies)
   {
-    auto motionVector = dependency.myEntity->evaluate(
-      theActor, theSensable.getIntervalInSeconds());
+    auto motionVector = dependency.myEntity->evaluate(theActor);
     average += motionVector;
     count++;
   }

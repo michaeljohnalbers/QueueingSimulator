@@ -6,9 +6,11 @@
  */
 
 #include "gtest/gtest.h"
+#include "Actor.h"
 #include "BasicWalk.h"
 #include "EigenHelper.h"
 #include "Sensable.h"
+#include "TestUtils.h"
 #include "Walk.h"
 
 GTEST_TEST(BasicWalkTest, testBasicWalk)
@@ -22,38 +24,14 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
   QS::EntityDependency<QS::Behavior> basicWalkDependencies{"Walk", &walk, ""};
   basicWalk.setDependencies({basicWalkDependencies});
 
-  {
-    float oneSecond = 1.0;
-    QS::Sensable sensable({}, {}, oneSecond);
-    Eigen::Vector2f expectedMotionVector(1.0, 0);
-    auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
-    EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
-      << "Actual X: " << actualMotionVector.x() << std::endl;
-    EXPECT_FLOAT_EQ(expectedMotionVector.y(), actualMotionVector.y())
-      << "Actual Y: " << actualMotionVector.y() << std::endl;
-  }
+  QS::Actor actor(QS::TestUtils::getMinimalActorProperties(), "");
+  actor.setVelocity({0.0, 0.0});
 
-  {
-    float oneMillisecond = 0.001;
-    QS::Sensable sensable({}, {}, oneMillisecond);
-    Eigen::Vector2f expectedMotionVector(0.001, 0);
-    auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
-    EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
-      << "Actual X: " << actualMotionVector.x() << std::endl;
-    EXPECT_FLOAT_EQ(expectedMotionVector.y(), actualMotionVector.y())
-      << "Actual Y: " << actualMotionVector.y() << std::endl;
-  }
-
-  {
-    // Test at a movie-type frame rate (think batch mode).
-    float twentyFourFramesPerSecond = 1.0/24.0;
-    QS::Sensable sensable({}, {}, twentyFourFramesPerSecond);
-    Eigen::Vector2f expectedMotionVector(0.041666, 0);
-    auto actualMotionVector = basicWalk.evaluate(nullptr, sensable);
-    EXPECT_NEAR(expectedMotionVector.x(), actualMotionVector.x(),
-                QS::FLOAT_TOLERANCE)
-      << "Actual X: " << actualMotionVector.x() << std::endl;
-    EXPECT_FLOAT_EQ(expectedMotionVector.y(), actualMotionVector.y())
-      << "Actual Y: " << actualMotionVector.y() << std::endl;
-  }
+  QS::Sensable sensable({}, {}, 1.0);
+  // Using 2.0 due to mass correction in Walk.
+  Eigen::Vector2f expectedMotionVector(2.0, 0);
+  auto actualMotionVector = basicWalk.evaluate(&actor, sensable);
+  EXPECT_EQ(expectedMotionVector, actualMotionVector)
+    << ", Actual: "
+    << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 }
