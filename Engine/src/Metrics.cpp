@@ -102,6 +102,12 @@ void QS::Metrics::setStopTime()
   myStopTime = Clock::now();
 }
 
+void QS::Metrics::setWorldDimensions(float theWidth_m, float theLength_m)
+{
+  myWidth_m = theWidth_m;
+  myLength_m = theLength_m;
+}
+
 namespace QS
 {
 std::ostream& operator<<(std::ostream &os, const Metrics &theMetrics)
@@ -110,9 +116,13 @@ std::ostream& operator<<(std::ostream &os, const Metrics &theMetrics)
      << "=======" << std::endl << std::endl
      << "Simulation Metrics" << std::endl
      << "------------------" << std::endl
-     << "  Start time: " << Metrics::asISO8601(theMetrics.getStartTime())
+     << "World Size: " << theMetrics.myWidth_m
+     << " x " << theMetrics.myLength_m << " (width x length, meters)"
      << std::endl
-     << "   Stop time: " << Metrics::asISO8601(theMetrics.getStopTime())
+     << "Number of Actors: " << theMetrics.myActorMetrics.size() << std::endl
+     << "Start time: " << Metrics::asISO8601(theMetrics.getStartTime())
+     << std::endl
+     << "Stop time: " << Metrics::asISO8601(theMetrics.getStopTime())
      << std::endl
      << "Elapsed Time: " << std::fixed
      << theMetrics.getElapsedTimeInSeconds() << " seconds" << std::endl

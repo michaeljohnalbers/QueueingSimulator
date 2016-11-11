@@ -73,7 +73,6 @@ GTEST_TEST(ActorTest, testConstruction)
     EXPECT_EQ(color, actor.getColor());
     EXPECT_FLOAT_EQ(0, actor.getOrientation());
     EXPECT_FLOAT_EQ(-1.0f, actor.getMaximumForce());
-    EXPECT_FLOAT_EQ(-1.0f, actor.getMaximumRotationSpeed());
     EXPECT_FLOAT_EQ(-1.0f, actor.getMaximumSpeed());
   }
   catch (...)
@@ -142,149 +141,6 @@ GTEST_TEST(ActorTest, testConstruction)
   }
 }
 
-TEST_F(ActorTestFixture, adjustVectorToMaximums)
-{
-  QS::PluginEntity::Properties properties{
-    QS::TestUtils::getFullActorProperties()};
-  properties["max speed"] = "2.0";
-  // 1/4 rotation
-  properties["max rotation"] = std::to_string(M_PI / 2.0);
-
-  QS::Actor actor(properties, "");
-
-  // Null case. Vector that doesn't move shouldn't be modified.
-  {
-    Eigen::Vector2f inputVector(0, 0);
-    float interval = 0.005;
-    auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_EQ(inputVector, adjustedVector);
-  }
-
-  // Test case with no maximums defined.
-  {
-    QS::PluginEntity::Properties propertiesNoMax{
-      QS::TestUtils::getMinimalActorProperties()};
-    QS::Actor actorNoMax(propertiesNoMax, "");
-    float interval = 0.001;
-    // Actor's default orientation is (1,0).
-    Eigen::Vector2f inputVector(-50000000.0, 0);
-    auto adjustedVector = actorNoMax.adjustVectorToMaximums(
-      inputVector, interval);
-    EXPECT_EQ(inputVector, adjustedVector);
-  }
-
-  // Basic capping of maximum speed.
-  {
-    float interval = 1.0;
-    Eigen::Vector2f inputVector(2.1,0);
-    Eigen::Vector2f expectedVector(2.0, 0);
-    auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_EQ(expectedVector, adjustedVector)
-      << "Expected: " << expectedVector.format(QS::prettyPrint)
-      << ", Actual:" << adjustedVector.format(QS::prettyPrint);
-  }
-
-  // Test valid counter-clockwise rotation
-  {
-    float interval = 1.0;
-    Eigen::Vector2f inputVector(0, 1.0);
-    auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_EQ(inputVector, adjustedVector);
-  }
-
-  // Test too-far counter-clockwise rotation is adjusted
-  {
-    float interval = 1.0;
-    // 92 degrees
-    Eigen::Vector2f inputVector(-0.0349, 0.9994);
-    Eigen::Vector2f expectedVector(0.0, 1.0);
-    auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_TRUE(expectedVector.isApprox(adjustedVector, QS::FLOAT_TOLERANCE))
-      << "Expected: " << expectedVector.format(QS::prettyPrint)
-      << ", Actual:" << adjustedVector.format(QS::prettyPrint);
-  }
-
-  // Test valid clockwise rotation
-  {
-    float interval = 1000.0;
-    Eigen::Vector2f inputVector(0, -1.0);
-    auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_EQ(inputVector, adjustedVector);
-  }
-
-  // Test too-far clockwise rotation is adjusted
-  {
-    float interval = 1.0;
-    // 245 degrees
-    Eigen::Vector2f inputVector(-0.4226, -0.9063);
-    Eigen::Vector2f expectedVector(0.0, -1.0);
-    auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_TRUE(expectedVector.isApprox(adjustedVector, QS::FLOAT_TOLERANCE))
-      << "Expected: " << expectedVector.format(QS::prettyPrint)
-      << ", Actual:" << adjustedVector.format(QS::prettyPrint);
-  }
-
-  // Capping of maximum speed & rotation of vector with non-zero X and Y.
-  {
-    float interval = 1.0;
-    Eigen::Vector2f inputVector(-2.1, 3.3);
-    Eigen::Vector2f expectedVector(0, 2.0);
-    auto adjustedVector = actor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_TRUE(expectedVector.isApprox(adjustedVector, QS::FLOAT_TOLERANCE))
-      << "Expected: " << expectedVector.format(QS::prettyPrint)
-      << ", Actual:" << adjustedVector.format(QS::prettyPrint);
-  }
-
-  // Tests using 0.0 maximum speed (makes rotation irrelevant)
-  {
-    QS::PluginEntity::Properties zeroMaxSpeedProperties{
-      QS::TestUtils::getMinimalActorProperties()};
-    zeroMaxSpeedProperties.insert({"max speed", "0.0"});
-    zeroMaxSpeedProperties.insert({"max rotation", std::to_string(M_PI / 2.0)});
-
-    QS::Actor fastActor(zeroMaxSpeedProperties, "");
-
-    float interval = 1.0;
-    Eigen::Vector2f inputVector(-2.0, 1.0);
-    Eigen::Vector2f expectedVector(0, 0);
-    auto adjustedVector = fastActor.adjustVectorToMaximums(inputVector,
-                                                           interval);
-    EXPECT_EQ(expectedVector, adjustedVector)
-      << "Expected: " << expectedVector.format(QS::prettyPrint)
-      << ", Actual:" << adjustedVector.format(QS::prettyPrint);
-  }
-
-  // Tests using 0.0 maximum rotation
-  {
-    QS::PluginEntity::Properties zeroMaxRotationProperties{
-      QS::TestUtils::getMinimalActorProperties()};
-    zeroMaxRotationProperties.insert({"max speed", "2.0"});
-    zeroMaxRotationProperties.insert({"max rotation", "0.0"});
-
-    QS::Actor fastActor(zeroMaxRotationProperties, "");
-
-    float interval = 1.0;
-
-    // No rotation, but does allow speed adjustment
-    Eigen::Vector2f inputVector(3.0, 0.0);
-    Eigen::Vector2f expectedVector(2.0, 0.0);
-    auto adjustedVector = fastActor.adjustVectorToMaximums(inputVector,
-                                                           interval);
-    EXPECT_TRUE(expectedVector.isApprox(adjustedVector, QS::FLOAT_TOLERANCE))
-      << "Expected: " << expectedVector.format(QS::prettyPrint)
-      << ", Actual:" << adjustedVector.format(QS::prettyPrint);
-
-    // Attempted rotation is squashed and movement is directly ahead.
-    inputVector << 0.0, 2.0;
-    expectedVector << 2.0, 0.0;
-    adjustedVector = fastActor.adjustVectorToMaximums(inputVector, interval);
-    EXPECT_TRUE(expectedVector.isApprox(adjustedVector, QS::FLOAT_TOLERANCE))
-      << "Expected: " << expectedVector.format(QS::prettyPrint)
-      << ", Actual:" << adjustedVector.format(QS::prettyPrint);
-  }
-}
-
-
 TEST_F(ActorTestFixture, testEvaluate)
 {
   DummyBehaviorSet behaviorSet;
@@ -316,16 +172,6 @@ TEST_F(ActorTestFixture, getGetMaximumForce)
     QS::Actor actor(properties, "");
     EXPECT_FLOAT_EQ(-101.01, actor.getMaximumForce());
   }
-}
-
-TEST_F(ActorTestFixture, getGetMaximumRotationSpeed)
-{
-  QS::PluginEntity::Properties properties{
-    QS::TestUtils::getMinimalActorProperties()};
-  properties.insert({"max rotation", "3.5"});
-
-  QS::Actor actor(properties, "");
-  EXPECT_FLOAT_EQ(3.5, actor.getMaximumRotationSpeed());
 }
 
 TEST_F(ActorTestFixture, getGetMaximumSpeed)
@@ -388,13 +234,14 @@ TEST_F(ActorTestFixture, testConvertPointToLocal)
     // Using FLOAT_EQ as Eigen's built in == does exact comparison. There
     // are better ways to do this than duplicating the output code, but I'm
     // being lazy here.
-    EXPECT_TRUE(theExpectedPoint.isApprox(convertedPoint, QS::FLOAT_TOLERANCE))
-    << "   World Point: (" << theWorldPoint.format(QS::prettyPrint) << ")"
-    << std::endl
-    << " Expected Point: (" << theExpectedPoint.format(QS::prettyPrint) << ")"
-    << std::endl
-    << "Converted Point: (" << convertedPoint.format(QS::prettyPrint) << ")"
-    << std::endl;
+    EXPECT_TRUE(theExpectedPoint.isApprox(convertedPoint,
+                                          QS::EigenHelper::FLOAT_TOLERANCE))
+    << "   World Point: ("
+    << theWorldPoint.format(QS::EigenHelper::prettyPrint) << ")" << std::endl
+    << " Expected Point: ("
+    << theExpectedPoint.format(QS::EigenHelper::prettyPrint) << ")" << std::endl
+    << "Converted Point: ("
+    << convertedPoint.format(QS::EigenHelper::prettyPrint) << ")" << std::endl;
   };
 
   runTest({1,0}, {1,0});

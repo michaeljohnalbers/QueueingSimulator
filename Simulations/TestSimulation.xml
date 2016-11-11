@@ -13,7 +13,7 @@
 
       <!-- Lower left (near origin), red-->
       <Actor type="Actor" source="BasicPlugin">
-	<Property key="mass" value="1.0" />
+	<Property key="mass" value="10.0" />
 	<Property key="radius" value="20.0" />
 	<Property key="x" value="20.01" />
 	<Property key="y" value="20.01" />
@@ -22,31 +22,31 @@
 
       <!-- Lower right, green-->
       <Actor type="Actor" source="BasicPlugin">
-      	<Property key="mass" value="1.0" />
+      	<Property key="mass" value="50.0" />
       	<Property key="radius" value="50.0" />
       	<Property key="x" value="749.99" />
       	<Property key="y" value="50.01" />
       	<Property key="color" value="0.0 1.0 0.0" />
-      	<Property key="orientation" value="1.570795" />
+      	<Property key="orientation" value=":PI/2" />
       </Actor>
 
       <!-- Upper right, blue-->
       <Actor type="Actor" source="BasicPlugin">
-      	<Property key="mass" value="1.0" />
+      	<Property key="mass" value="100.0" />
       	<Property key="radius" value="100.0" />
       	<Property key="x" value="699.99" />
       	<Property key="y" value="499.99" />
       	<Property key="color" value="0.0 0.0 1.0" />
-      	<Property key="orientation" value="3.14159" />
+      	<Property key="orientation" value=":PI" />
       </Actor>
 
       <!-- Upper left, white-->
       <Actor type="Actor" source="BasicPlugin">
-      	<Property key="mass" value="1.0" />
+      	<Property key="mass" value="200.0" />
       	<Property key="radius" value="200.0" />
       	<Property key="x" value="200.01" />
       	<Property key="y" value="399.99" />
-      	<Property key="orientation" value="4.712385" />
+      	<Property key="orientation" value=":3 * PI / 2" />
       </Actor>
     </Actors>
   </World>

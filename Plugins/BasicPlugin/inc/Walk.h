@@ -61,9 +61,7 @@ namespace QS
      *          amount of time elapsed since last simulation update
      * @return steering force to direct the walking
      */
-    virtual Eigen::Vector2f evaluate(
-      const Actor *theActor,
-      float theIntervalInSeconds) override;
+    virtual Eigen::Vector2f evaluate(const Actor *theActor) override;
 
     /**
      * Copy assignment operator.

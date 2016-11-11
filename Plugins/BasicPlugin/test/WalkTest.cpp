@@ -6,7 +6,9 @@
  */
 
 #include "gtest/gtest.h"
+#include "Actor.h"
 #include "EigenHelper.h"
+#include "TestUtils.h"
 #include "Walk.h"
 
 GTEST_TEST(WalkTest, testWalk)
@@ -14,38 +16,43 @@ GTEST_TEST(WalkTest, testWalk)
   QS::PluginEntity::Properties properties;
   ASSERT_NO_THROW(QS::Walk temp(properties, ""));
 
+  QS::Actor actor(QS::TestUtils::getMinimalActorProperties(), "");
+  actor.setVelocity({0.0, 0.0});
+
   QS::Walk walkBehavior(properties, "");
-  float oneSecond = 1.0;
-  Eigen::Vector2f expectedMotionVector(1.0, 0);
-  auto actualMotionVector = walkBehavior.evaluate(nullptr, oneSecond);
-  EXPECT_EQ(expectedMotionVector, actualMotionVector);
+  // Using 2.0 due to mass correction in Walk.
+  Eigen::Vector2f expectedMotionVector(2.0, 0);
+  auto actualMotionVector = walkBehavior.evaluate(&actor);
+  EXPECT_EQ(expectedMotionVector, actualMotionVector)
+    << ", Actual: "
+    << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 
-  float oneMillisecond = 0.001;
-  expectedMotionVector << 0.001, 0;
-  actualMotionVector = walkBehavior.evaluate(nullptr, oneMillisecond);
-  EXPECT_FLOAT_EQ(expectedMotionVector.x(), actualMotionVector.x())
-    << "Actual X: " << actualMotionVector.x() << std::endl;
-  EXPECT_FLOAT_EQ(expectedMotionVector.y(), actualMotionVector.y())
-    << "Actual Y: " << actualMotionVector.y() << std::endl;
+  // Actor is already moving at desired speed.
+  actor.setVelocity({1.0, 0});
+  expectedMotionVector << 0.0, 0.0;
+  actualMotionVector = walkBehavior.evaluate(&actor);
+  EXPECT_EQ(expectedMotionVector, actualMotionVector)
+    << ", Actual: "
+    << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 
-  // Test at a movie-type frame rate (think batch mode).
-  float twentyFourFramesPerSecond = 1.0/24.0;
-  expectedMotionVector << 0.0416666, 0;
-  actualMotionVector = walkBehavior.evaluate(nullptr,
-                                             twentyFourFramesPerSecond);
-  EXPECT_NEAR(expectedMotionVector.x(), actualMotionVector.x(),
-              QS::FLOAT_TOLERANCE)
-    << "Actual X: " << actualMotionVector.x() << std::endl;
-  EXPECT_FLOAT_EQ(expectedMotionVector.y(), actualMotionVector.y())
-    << "Actual Y: " << actualMotionVector.y() << std::endl;
-
+  // Actor is already moving at greater than desired speed.
+  actor.setVelocity({4.25, 0});
+  expectedMotionVector << 0.0, 0.0;
+  actualMotionVector = walkBehavior.evaluate(&actor);
+  EXPECT_EQ(expectedMotionVector, actualMotionVector)
+    << ", Actual: "
+    << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 
   // Test using the speed property.
+  actor.setVelocity({0.0, 0.0});
   properties["speed"] = "2.5";
   QS::Walk walkBehavior2(properties, "");
-  expectedMotionVector << 2.5, 0;
-  actualMotionVector = walkBehavior2.evaluate(nullptr, oneSecond);
-  EXPECT_EQ(expectedMotionVector, actualMotionVector);
+  // Actor has a mass of 2.0
+  expectedMotionVector << 5.0, 0;
+  actualMotionVector = walkBehavior2.evaluate(&actor);
+  EXPECT_EQ(expectedMotionVector, actualMotionVector)
+    << ", Actual: "
+    << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 
   // Test using invalid speed property.
   properties["speed"] = "r1.2";

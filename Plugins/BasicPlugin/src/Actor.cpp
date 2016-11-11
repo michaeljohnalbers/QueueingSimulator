@@ -44,84 +44,11 @@ QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
     theProperties, "orientation", false, PluginHelper::toFloat);
   myMaximumForce = PluginHelper::getProperty(
     theProperties, "max force", false, PluginHelper::toFloat, -1.0f);
-  myMaximumRotationSpeed_rs = PluginHelper::getProperty(
-    theProperties, "max rotation", false, PluginHelper::toFloat, -1.0f);
   myMaximumSpeed_ms = PluginHelper::getProperty(
     theProperties, "max speed", false, PluginHelper::toFloat, -1.0f);
 
   setPositionFromProperty();
   setColorFromProperty();
-}
-
-Eigen::Vector2f QS::Actor::adjustVectorToMaximums(
-  const Eigen::Vector2f &theVector,
-  float theIntervalInSeconds) const noexcept
-{
-  Eigen::Vector2f adjustedVector = theVector;
-
-  // Don't use member in case derived class overrides getMaximumSpeed.
-  float maximumSpeed = getMaximumSpeed();
-
-  // Shotcut for fixed Actor. And ensures no floating point precision issues
-  // where the Actor moves ever-so-slightly due to near-zero values after the
-  // math below.
-  if (0.0 == maximumSpeed || (theVector.x() == 0.0 && theVector.y() == 0.0))
-  {
-    return Eigen::Vector2f(0, 0);
-  }
-
-  maximumSpeed *= theIntervalInSeconds;
-
-  if (maximumSpeed > 0.0)
-  {
-    float vectorMetersPerSecond = theVector.norm();
-
-    if (vectorMetersPerSecond > maximumSpeed)
-    {
-      float speedDifference = vectorMetersPerSecond - maximumSpeed;
-      float speedAdjust = (1.0 - speedDifference/theVector.norm());
-      adjustedVector *= speedAdjust;
-    }
-  }
-
-  // Don't use member in case derived class overrides getMaximumRotationSpeed
-  float maximumRotation = getMaximumRotationSpeed() * theIntervalInSeconds;
-
-  // Not using FLOAT_TOLERANCE here in cause user wants a very, very small
-  // rotation. Also, making sure the adjusted vector isn't 0,0 as rotation isn't
-  // defined for (0,0).
-  if (maximumRotation >= 0.0 &&
-      (adjustedVector.x() != 0.0 || adjustedVector.y() != 0.0))
-  {
-    Eigen::Vector2f normalizedInput = adjustedVector.normalized();
-
-    float vectorRadiansPerSecond =
-      std::acos(DEFAULT_ORIENTATION.dot(normalizedInput));
-    float angleDiff = vectorRadiansPerSecond - maximumRotation;
-
-    if (angleDiff > FLOAT_TOLERANCE)
-    {
-      // Too much rotation, need to bring it back.
-      float radianCorrection = vectorRadiansPerSecond - maximumRotation;
-
-      // From:
-      // http://gamedev.stackexchange.com/questions/45412/understanding-math-used-to-determine-if-vector-is-clockwise-counterclockwise-f
-      if (DEFAULT_ORIENTATION.y() * adjustedVector.x() >
-          DEFAULT_ORIENTATION.x() * adjustedVector.y())
-      {
-        // Clockwise, will use radianCorrection as is.
-      }
-      else
-      {
-        // Counter-clockwise
-        radianCorrection *= -1.0;
-      }
-
-      Eigen::Rotation2Df rotation(radianCorrection);
-      adjustedVector = rotation * adjustedVector;
-    }
-  }
-  return adjustedVector;
 }
 
 Eigen::Vector2f QS::Actor::convertPointToLocal(const Eigen::Vector2f &thePoint)
@@ -159,11 +86,6 @@ float QS::Actor::getMass() const noexcept
 float QS::Actor::getMaximumForce() const noexcept
 {
   return myMaximumForce;
-}
-
-float QS::Actor::getMaximumRotationSpeed() const noexcept
-{
-  return myMaximumRotationSpeed_rs;
 }
 
 float QS::Actor::getMaximumSpeed() const noexcept

@@ -184,6 +184,16 @@ namespace QS
      */
     void setStopTime();
 
+    /**
+     * Sets the dimensions of the world, in meters.
+     *
+     * @param theWidth_m
+     *          width of the world, in meters
+     * @param theLength_m
+     *          length of the world, in meters
+     */
+    void setWorldDimensions(float theWidth_m, float theLength_m);
+
     protected:
 
     /** Statistics for Actor gross distance*/
@@ -198,6 +208,9 @@ namespace QS
     /** Amount of time the simulation has run. */
     float myElapsedTime = 0.0;
 
+    /** World length (y dimension), in meters.*/
+    float myLength_m = 0.0;
+
     /** Start time of the simulation. */
     TimePoint myStartTime;
 
@@ -206,6 +219,9 @@ namespace QS
 
     /** Metrics for update intervals. */
     MinMaxAvg<float> myUpdateMetrics;
+
+    /** World width (x dimension), in meters.*/
+    float myWidth_m = 0.0;
 
     private:
 

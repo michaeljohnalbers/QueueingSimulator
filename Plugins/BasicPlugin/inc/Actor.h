@@ -75,12 +75,6 @@ namespace QS
      *               not given, defaults to -1. Negative values indicate no
      *               maximum. A zero value will force the Actor to be
      *               stationary.
-     *            "max rotation", maximum angular speed of the Actor, in
-     *               radians/second. If not given, defaults to -1. Negative
-     *               values indicate no maximum. A zero value will prevent the
-     *               Actor from moving. This maximum is direction neutral,
-     *               meaning it is a maximum in both clockwise and
-     *               counter-clockwise rotations.
      * @param theTag
      *          optional user-defined tag for differentiating Actors of the
      *          same type
@@ -94,25 +88,6 @@ namespace QS
      * Destructor.
      */
     virtual ~Actor() = default;
-
-    /**
-     * Takes the given vector, assumed to be in local coordinates, and returns
-     * a new vectors which conforms to the Actor's maximum speed and rotational
-     * speed.
-     *
-     * @param theVector
-     *          vector in local coordinates (likely the return from
-     *          calculateMotionVector)
-     * @param theIntervalInSeconds
-     *          duration in which the vector was generated. That is, the vector
-     *          gives the meters or radians, the interval is the seconds in
-     *          meters/second or radians/second.
-     * @return new vector that fits within the Actor's defined maximum speed
-     *         and rotational speed
-     */
-    virtual Eigen::Vector2f adjustVectorToMaximums(
-      const Eigen::Vector2f &theVector,
-      float theIntervalInSeconds) const noexcept;
 
     /**
      * Converts the given point (which is assumed to be in world space
@@ -172,14 +147,6 @@ namespace QS
      * @return maximum force
      */
     float getMaximumForce() const noexcept;
-
-    /**
-     * Returns the Actor's maximum rotational speed, in radians/second. If the
-     * value is negative this indicates no maximum for the Actor.
-     *
-     * @return maximum rotational speed
-     */
-    float getMaximumRotationSpeed() const noexcept;
 
     /**
      * Returns the Actor's maximum speed, in meters/second. If the value is
@@ -282,12 +249,6 @@ namespace QS
 
     /** Maximum force. No units. See the constructor for more details. */
     float myMaximumForce;
-
-    /**
-     * Maximum rotational speed of the Actor, in radians/second. Negative
-     * values indicate no maximum.
-     */
-    float myMaximumRotationSpeed_rs;
 
     /** Maximum speed of the Actor. Negative value indicates no maximum. */
     float myMaximumSpeed_ms;

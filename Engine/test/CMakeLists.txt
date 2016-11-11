@@ -9,4 +9,4 @@ target_include_directories(EngineTest PUBLIC )
 target_include_directories(EngineTest PUBLIC ../inc ${GTEST_INCLUDE_DIR}
   ../../Plugins/BasicPlugin/inc ../../Test/inc)
 target_link_libraries(EngineTest ${GTEST_LIBRARY} qs-engine qs-basic-plugin
-  qs-test-utils ${XERCESC_LIBRARY} dl)
+  qs-common qs-test-utils ${XERCESC_LIBRARY} dl)

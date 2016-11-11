@@ -186,9 +186,9 @@ namespace QS
      * Sets the dimensions of the world.
      *
      * @param theWidth_m
-     *          width of the world, in meters
+     *          width of the world (x dimension), in meters
      * @param theLength_m
-     *          length of the world, in meters
+     *          length of the world (y dimension), in meters
      */
     void setDimensions(float theWidth_m, float theLength_m);
 
@@ -245,13 +245,10 @@ namespace QS
      *          Actor to check for collisions
      * @param theNewPosition
      *          new position of the Actor in the world
-     * @param theCollisionDetected
-     *          OUT parameter, true if a collision was detected, false otherwise
      * @return possibly modified position vector based on any collisions
      */
     Eigen::Vector2f collisionDetection(Actor *theActor,
-                                       Eigen::Vector2f theNewPosition,
-                                       bool &theCollisionDetected)
+                                       Eigen::Vector2f theNewPosition)
       const;
 
     /**

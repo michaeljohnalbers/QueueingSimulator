@@ -21,8 +21,7 @@ namespace BehaviorTest
     }
 
     virtual Eigen::Vector2f evaluate(
-      const QS::Actor *theActor,
-      float theIntervalInSeconds) override
+      const QS::Actor *theActor) override
     {
       return {0.0, 0.0};
     }

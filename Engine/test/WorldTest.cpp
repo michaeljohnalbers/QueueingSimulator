@@ -197,9 +197,10 @@ GTEST_TEST(WorldTest, randomActorPosition)
       // checkOverlap is implicitly tested in addActor test.
       EXPECT_FALSE(world.checkOverlap(position, radius,
                                       actor->getPosition(), actor->getRadius()))
-        << "Position: " << position.format(QS::prettyPrint)
+        << "Position: " << position.format(QS::EigenHelper::prettyPrint)
         << ", radius: " << std::fixed << radius
-        << ", overlaped Actor: " << actor->getPosition().format(QS::prettyPrint)
+        << ", overlaped Actor: "
+        << actor->getPosition().format(QS::EigenHelper::prettyPrint)
         << ", radius: " << actor->getRadius();
     }
   }

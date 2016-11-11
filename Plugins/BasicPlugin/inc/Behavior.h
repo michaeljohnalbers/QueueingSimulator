@@ -103,13 +103,9 @@ namespace QS
      *
      * @param theActor
      *          Actor this Behavior is working on
-     * @param theIntervalInSeconds
-     *          amount of time elapsed since last simulation update
      * @return Steering force to apply to the Actor.
      */
-    virtual Eigen::Vector2f evaluate(
-      const Actor *theActor,
-      float theIntervalInSeconds) = 0;
+    virtual Eigen::Vector2f evaluate(const Actor *theActor) = 0;
 
     /**
      * Copy assignment operator.

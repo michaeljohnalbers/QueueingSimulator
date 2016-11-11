@@ -8,4 +8,4 @@ target_include_directories(QueueingPluginTest PUBLIC
   ../inc ../../BasicPlugin/inc ${GTEST_INCLUDE_DIR} ../../../Engine/inc
   ../../../Test/inc)
 target_link_libraries(QueueingPluginTest ${GTEST_LIBRARY} qs-queueing-plugin
-  qs-basic-plugin qs-test-utils)
+  qs-basic-plugin qs-common qs-test-utils)

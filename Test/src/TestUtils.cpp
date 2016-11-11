@@ -15,7 +15,6 @@ QS::PluginEntity::Properties QS::TestUtils::getFullActorProperties() noexcept
   properties["orientation"] = "0.8";
   properties["max force"] = "0.85";
   properties["max speed"] = "9.0";
-  properties["max rotation"] = "10.0";
 
   return properties;
 }
