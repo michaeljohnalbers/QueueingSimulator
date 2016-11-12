@@ -24,7 +24,7 @@ GTEST_TEST(WalkTest, testWalk)
   Eigen::Vector2f expectedMotionVector(2.0, 0);
   auto actualMotionVector = walkBehavior.evaluate(&actor);
   EXPECT_EQ(expectedMotionVector, actualMotionVector)
-    << ", Actual: "
+    << "Actual: "
     << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 
   // Actor is already moving at desired speed.
@@ -32,7 +32,7 @@ GTEST_TEST(WalkTest, testWalk)
   expectedMotionVector << 0.0, 0.0;
   actualMotionVector = walkBehavior.evaluate(&actor);
   EXPECT_EQ(expectedMotionVector, actualMotionVector)
-    << ", Actual: "
+    << "Actual: "
     << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 
   // Actor is already moving at greater than desired speed.
@@ -40,7 +40,7 @@ GTEST_TEST(WalkTest, testWalk)
   expectedMotionVector << 0.0, 0.0;
   actualMotionVector = walkBehavior.evaluate(&actor);
   EXPECT_EQ(expectedMotionVector, actualMotionVector)
-    << ", Actual: "
+    << "Actual: "
     << actualMotionVector.format(QS::EigenHelper::prettyPrint);
 
   // Test using the speed property.
@@ -51,8 +51,22 @@ GTEST_TEST(WalkTest, testWalk)
   expectedMotionVector << 5.0, 0;
   actualMotionVector = walkBehavior2.evaluate(&actor);
   EXPECT_EQ(expectedMotionVector, actualMotionVector)
-    << ", Actual: "
+    << "Actual: "
     << actualMotionVector.format(QS::EigenHelper::prettyPrint);
+
+  // Test that the steering vector is rotated.
+  actor.setVelocity({0.0, 0.0});
+  actor.setOrientation(M_PI);
+  // Actor has a mass of 2.0
+  expectedMotionVector << -2.0, 0.0;
+  actualMotionVector = walkBehavior.evaluate(&actor);
+  EXPECT_EQ(expectedMotionVector.x(), actualMotionVector.x())
+    << "Actual: " << actualMotionVector.x();
+  // The rotation in Walk calculates an ever so slight non-zero value for y,
+  // hence the splitting of this test into x and y comparisons
+  EXPECT_NEAR(expectedMotionVector.y(), actualMotionVector.y(),
+              QS::EigenHelper::FLOAT_TOLERANCE)
+    << "Actual: " << actualMotionVector.y();
 
   // Test using invalid speed property.
   properties["speed"] = "r1.2";

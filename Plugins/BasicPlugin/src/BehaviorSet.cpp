@@ -10,10 +10,6 @@
 #include "BehaviorSet.h"
 #include "Sensable.h"
 
-#include <iostream>
-#include <iomanip>
-#include "EigenHelper.h"
-
 QS::BehaviorSet::BehaviorSet(const Properties &theProperties,
                              const std::string &theTag) :
   PluginEntity(theProperties, theTag)
@@ -23,13 +19,13 @@ QS::BehaviorSet::BehaviorSet(const Properties &theProperties,
 Eigen::Vector2f QS::BehaviorSet::evaluate(const Actor *theActor,
                                           const Sensable &theSensable)
 {
-  Eigen::Vector2f average;
+  Eigen::Vector2f average(0.0, 0.0);
   auto dependencies = getDependencies();
   float count = 0;
   for (auto dependency : dependencies)
   {
-    auto motionVector = dependency.myEntity->evaluate(theActor);
-    average += motionVector;
+    auto steeringForce = dependency.myEntity->evaluate(theActor);
+    average += steeringForce;
     count++;
   }
 

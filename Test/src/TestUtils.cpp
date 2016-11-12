@@ -13,8 +13,6 @@ QS::PluginEntity::Properties QS::TestUtils::getFullActorProperties() noexcept
   // Using unique numbers to aid in test robust-ness.
   properties["color"] = "0.5 0.6 0.7";
   properties["orientation"] = "0.8";
-  properties["max force"] = "0.85";
-  properties["max speed"] = "9.0";
 
   return properties;
 }
@@ -26,7 +24,9 @@ QS::PluginEntity::Properties QS::TestUtils::getMinimalActorProperties() noexcept
     {"radius", "1.0"},
     {"mass", "2.0"},
     {"x", "3.0"},
-    {"y", "4.0"}};
+    {"y", "4.0"},
+    {"max force","8.5"},
+    {"max speed", "9.0"}};
 
   return properties;
 }

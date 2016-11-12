@@ -17,6 +17,8 @@
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="3" />
 	<Property key="y" value="17" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
         <Property key="orientation" value="2.35619" />
 	<Property key="color" value="0.0 0.0 1.0" />
 	<Property key="rank" value="0" />
@@ -27,6 +29,8 @@
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="5" />
 	<Property key="y" value="15" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
         <Property key="orientation" value="2.35619" />
 	<Property key="color" value="0.0 0.0 0.8" />
 	<Property key="rank" value="1" />
@@ -37,6 +41,8 @@
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="7" />
 	<Property key="y" value="13" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
         <Property key="orientation" value="2.35619" />
 	<Property key="color" value="0.0 0.0 0.6" />
 	<Property key="rank" value="2" />
@@ -48,6 +54,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="17" />
       	<Property key="y" value="3" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="0.0 1.0 0.0" />
       	<Property key="orientation" value="5.49779" />
       </Actor>
@@ -57,6 +65,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="15" />
       	<Property key="y" value="5" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="0.0 0.8 0.0" />
       	<Property key="orientation" value="5.49779" />
       </Actor>
@@ -66,6 +76,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="13" />
       	<Property key="y" value="7" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="0.0 0.6 0.0" />
       	<Property key="orientation" value="5.49779" />
       </Actor>

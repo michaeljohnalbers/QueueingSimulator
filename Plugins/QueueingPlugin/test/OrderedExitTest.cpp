@@ -1,5 +1,5 @@
 /**
- * @file OrderedExit.cpp
+ * @file OrderedExitTest.cpp
  * @brief Unit tests for OrderedExit class
  *
  * @author Michael Albers
@@ -11,11 +11,18 @@
 #include "OrderedExit.h"
 #include "TestUtils.h"
 
-GTEST_TEST(OrderedExitTest, construction)
+GTEST_TEST(OrderedExitTest, class)
 {
   EXPECT_THROW(QS::OrderedExit({}, ""), std::invalid_argument);
-  EXPECT_NO_THROW(QS::OrderedExit(QS::TestUtils::getMinimalExitProperties(),
-                                  ""));
+  try
+  {
+    QS::OrderedExit exit(QS::TestUtils::getMinimalExitProperties(), "");
+    EXPECT_EQ(0u, exit.getRank());
+  }
+  catch (...)
+  {
+    FAIL() << "Unexpectedly threw exception.";
+  }
 }
 
 GTEST_TEST(OrderedExitTest, canExit)

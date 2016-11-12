@@ -42,3 +42,8 @@ bool QS::OrderedExit::canActorExit(const Actor *theActor) noexcept
 
   return canExit;
 }
+
+uint32_t QS::OrderedExit::getRank() const noexcept
+{
+  return myRank;
+}

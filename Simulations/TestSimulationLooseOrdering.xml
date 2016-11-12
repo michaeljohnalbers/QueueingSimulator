@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  Tests the use of QueueingPlugin.
+-->
+
+<Simulation>
+  <Seed value="3044983" />
+  <World width="50" length="50">
+    <Actors>
+
+      <!-- Heading towards upper left (QueueingPlugin) Exit -->
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="0" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="1" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="2" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="3" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="4" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="5" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="6" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="7" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="8" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="9" />
+      </Actor>
+
+      <Actor type="OrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="10" />
+      </Actor>
+
+    </Actors>
+
+    <Exits>
+      <Exit type="OrderedExit" source="QueueingPlugin">
+      	<Property key="radius" value="0.5" />
+      	<Property key="x" value="25" />
+      	<Property key="y" value="48" />
+      	<Property key="color" value=":randColor()" />
+      </Exit>
+    </Exits>
+  </World>
+</Simulation>

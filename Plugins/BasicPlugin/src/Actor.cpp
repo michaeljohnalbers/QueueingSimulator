@@ -40,12 +40,26 @@ QS::Actor::Actor(const Properties &theProperties, const std::string &theTag) :
       ", must be > 0 in Actor constructor.");
   }
 
+  myMaximumForce = PluginHelper::getProperty(
+    theProperties, "max force", true, PluginHelper::toFloat, 1.0f);
+  if (myMaximumForce < 0.0)
+  {
+    throw std::invalid_argument(
+      "Invalid maximum force " + std::to_string(myMaximumForce) +
+      ", must be >= 0 in Actor constructor.");
+  }
+
+  myMaximumSpeed_ms = PluginHelper::getProperty(
+    theProperties, "max speed", true, PluginHelper::toFloat, 1.0f);
+  if (myMaximumSpeed_ms < 0.0)
+  {
+    throw std::invalid_argument(
+      "Invalid maximum speed " + std::to_string(myMaximumSpeed_ms) +
+      ", must be >= 0 in Actor constructor.");
+  }
+
   myOrientation_radians = PluginHelper::getProperty(
     theProperties, "orientation", false, PluginHelper::toFloat);
-  myMaximumForce = PluginHelper::getProperty(
-    theProperties, "max force", false, PluginHelper::toFloat, -1.0f);
-  myMaximumSpeed_ms = PluginHelper::getProperty(
-    theProperties, "max speed", false, PluginHelper::toFloat, -1.0f);
 
   setPositionFromProperty();
   setColorFromProperty();

@@ -72,8 +72,8 @@ GTEST_TEST(ActorTest, testConstruction)
     Eigen::Vector3f color(1,1,1);
     EXPECT_EQ(color, actor.getColor());
     EXPECT_FLOAT_EQ(0, actor.getOrientation());
-    EXPECT_FLOAT_EQ(-1.0f, actor.getMaximumForce());
-    EXPECT_FLOAT_EQ(-1.0f, actor.getMaximumSpeed());
+    EXPECT_FLOAT_EQ(8.5f, actor.getMaximumForce());
+    EXPECT_FLOAT_EQ(9.0f, actor.getMaximumSpeed());
   }
   catch (...)
   {
@@ -81,7 +81,8 @@ GTEST_TEST(ActorTest, testConstruction)
   }
 
   // Test construction missing each of the required properties.
-  std::vector<std::string> propertyNames{"mass", "radius", "x", "y"};
+  std::vector<std::string> propertyNames{"mass", "radius", "x", "y",
+      "max speed", "max force"};
   for (auto propertyName : propertyNames)
   {
     try
@@ -114,7 +115,11 @@ GTEST_TEST(ActorTest, testConstruction)
       std::make_tuple("radius", "0.0", "Invalid radius 0.000000, "
                       "must be > 0 in Actor constructor."),
       std::make_tuple("radius", "-1.0", "Invalid radius -1.000000, "
-                      "must be > 0 in Actor constructor.")
+                      "must be > 0 in Actor constructor."),
+      std::make_tuple("max speed", "-1.0", "Invalid maximum speed -1.000000, "
+                      "must be >= 0 in Actor constructor."),
+      std::make_tuple("max force", "-1.0", "Invalid maximum force -1.000000, "
+                      "must be >= 0 in Actor constructor.")
     };
 
     for(auto invalidTuple: badValues)
@@ -146,7 +151,7 @@ TEST_F(ActorTestFixture, testEvaluate)
   DummyBehaviorSet behaviorSet;
   QS::EntityDependency<QS::BehaviorSet> dependency{"", &behaviorSet, ""};
   myActor->setDependencies({dependency});
-  QS::Sensable sensable({}, {}, 0.0);
+  QS::Sensable sensable(myActor, {}, {}, 0.0);
   EXPECT_EQ(Eigen::Vector2f(14.0, 54.0), myActor->evaluate(sensable));
 }
 
@@ -166,11 +171,11 @@ TEST_F(ActorTestFixture, getGetMaximumForce)
     EXPECT_FLOAT_EQ(93.5544, actor.getMaximumForce());
   }
 
-  // Test negative value
+  // Test 0.0
   {
-    properties["max force"] = "-101.01";
+    properties["max force"] = "0.0";
     QS::Actor actor(properties, "");
-    EXPECT_FLOAT_EQ(-101.01, actor.getMaximumForce());
+    EXPECT_FLOAT_EQ(0.0, actor.getMaximumForce());
   }
 }
 
@@ -178,10 +183,19 @@ TEST_F(ActorTestFixture, getGetMaximumSpeed)
 {
   QS::PluginEntity::Properties properties{
     QS::TestUtils::getMinimalActorProperties()};
-  properties.insert({"max speed", "1.0"});
 
-  QS::Actor actor(properties, "");
-  EXPECT_FLOAT_EQ(1.0, actor.getMaximumSpeed());
+  {
+    properties["max speed"] = "55.9344";
+    QS::Actor actor(properties, "");
+    EXPECT_FLOAT_EQ(55.9344, actor.getMaximumSpeed());
+  }
+
+  // Test 0.0
+  {
+    properties["max speed"] = "0.0";
+    QS::Actor actor(properties, "");
+    EXPECT_FLOAT_EQ(0.0, actor.getMaximumSpeed());
+  }
 }
 
 TEST_F(ActorTestFixture, testGetSetOrientation)

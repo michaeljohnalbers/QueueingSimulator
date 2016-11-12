@@ -27,7 +27,7 @@ GTEST_TEST(BasicWalkTest, testBasicWalk)
   QS::Actor actor(QS::TestUtils::getMinimalActorProperties(), "");
   actor.setVelocity({0.0, 0.0});
 
-  QS::Sensable sensable({}, {}, 1.0);
+  QS::Sensable sensable(nullptr, {}, {}, 1.0);
   // Using 2.0 due to mass correction in Walk.
   Eigen::Vector2f expectedMotionVector(2.0, 0);
   auto actualMotionVector = basicWalk.evaluate(&actor, sensable);
