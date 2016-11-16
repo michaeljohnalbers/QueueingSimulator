@@ -69,6 +69,8 @@ GTEST_TEST(NearestNTest, sense)
   {
     actorPtrs.push_back(std::addressof(actor));
   }
+  // In real situation, current Actor is also in the list.
+  actorPtrs.push_back(&currentActor);
 
   QS::Sensable sensable(&currentActor, actorPtrs, {}, 0.0);
 
@@ -117,7 +119,8 @@ GTEST_TEST(NearestNTest, sense)
 
     nearestN.sense(sensable);
     auto actors = nearestN.getActors();
-    checkActors(actors, actorPtrs.size(), "Line: " + std::to_string(__LINE__));
+    checkActors(actors, actorPtrs.size()-1,
+                "Line: " + std::to_string(__LINE__));
   }
 
   // Test with N < # actors, all within radius

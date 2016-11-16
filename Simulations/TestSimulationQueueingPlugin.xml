@@ -22,6 +22,20 @@
         <Property key="orientation" value="2.35619" />
 	<Property key="color" value="0.0 0.0 1.0" />
 	<Property key="rank" value="0" />
+	<BehaviorSet type="LooseOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="OrderedLeaderFollow" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="5" />
+	      <Property key="radius" value="15.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
       </Actor>
 
       <Actor type="OrderedActor" source="QueueingPlugin">
@@ -34,6 +48,20 @@
         <Property key="orientation" value="2.35619" />
 	<Property key="color" value="0.0 0.0 0.8" />
 	<Property key="rank" value="1" />
+	<BehaviorSet type="LooseOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="OrderedLeaderFollow" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="5" />
+	      <Property key="radius" value="15.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
       </Actor>
 
       <Actor type="OrderedActor" source="QueueingPlugin">
@@ -46,40 +74,20 @@
         <Property key="orientation" value="2.35619" />
 	<Property key="color" value="0.0 0.0 0.6" />
 	<Property key="rank" value="2" />
-      </Actor>
-
-      <!-- Heading towards lower right (BasicPlugin) Exit-->
-      <Actor type="Actor" source="BasicPlugin">
-      	<Property key="mass" value="1.0" />
-      	<Property key="radius" value="1.0" />
-      	<Property key="x" value="17" />
-      	<Property key="y" value="3" />
-	<Property key="max speed" value="1.0" />
-	<Property key="max force" value="1.0" />
-      	<Property key="color" value="0.0 1.0 0.0" />
-      	<Property key="orientation" value="5.49779" />
-      </Actor>
-
-      <Actor type="Actor" source="BasicPlugin">
-      	<Property key="mass" value="1.0" />
-      	<Property key="radius" value="1.0" />
-      	<Property key="x" value="15" />
-      	<Property key="y" value="5" />
-	<Property key="max speed" value="1.0" />
-	<Property key="max force" value="1.0" />
-      	<Property key="color" value="0.0 0.8 0.0" />
-      	<Property key="orientation" value="5.49779" />
-      </Actor>
-
-      <Actor type="Actor" source="BasicPlugin">
-      	<Property key="mass" value="1.0" />
-      	<Property key="radius" value="1.0" />
-      	<Property key="x" value="13" />
-      	<Property key="y" value="7" />
-	<Property key="max speed" value="1.0" />
-	<Property key="max force" value="1.0" />
-      	<Property key="color" value="0.0 0.6 0.0" />
-      	<Property key="orientation" value="5.49779" />
+	<BehaviorSet type="LooseOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="OrderedLeaderFollow" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="5" />
+	      <Property key="radius" value="15.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
       </Actor>
     </Actors>
 
@@ -88,12 +96,6 @@
       	<Property key="radius" value="0.5" />
       	<Property key="x" value="1" />
       	<Property key="y" value="19" />
-      	<Property key="color" value=":randColor()" />
-      </Exit>
-      <Exit type="Exit" source="BasicPlugin">
-      	<Property key="radius" value="1.0" />
-      	<Property key="x" value="19" />
-      	<Property key="y" value="1" />
       	<Property key="color" value=":randColor()" />
       </Exit>
     </Exits>

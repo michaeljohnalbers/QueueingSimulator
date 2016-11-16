@@ -16,13 +16,21 @@
 
   <BehaviorSets creator="behaviorSetCreator" destructor="behaviorSetDestructor">
     <BehaviorSet name="LooseOrdering">
+      <Behavior name="CollisionAvoidance" />
       <Behavior name="ExitSeek" />
+      <Behavior name="OrderedLeaderFollow" />
     </BehaviorSet>
   </BehaviorSets>
 
   <Behaviors creator="behaviorCreator" destructor="behaviorDestructor">
+    <Behavior name="CollisionAvoidance">
+      <Sensor name="NearestN" />
+    </Behavior>
     <Behavior name="ExitSeek">
       <Sensor name="FindExitSensor" />
+    </Behavior>
+    <Behavior name="OrderedLeaderFollow">
+      <Sensor name="NearestN" />
     </Behavior>
   </Behaviors>
 

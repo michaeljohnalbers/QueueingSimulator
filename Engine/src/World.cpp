@@ -511,10 +511,16 @@ bool QS::World::update(float theIntervalInSeconds)
       (acceleration * theIntervalInSeconds);
     newVelocity = EigenHelper::truncate(newVelocity, maxSpeed);
 
-    Eigen::Vector2f base{1.0, 0.0};
-    Eigen::Vector2f normalizedVelocity = newVelocity;
-    normalizedVelocity.normalize();
-    float newOrientation = std::acos(normalizedVelocity.dot(base));
+    float newOrientation = actor->getOrientation();
+    // If the Actor is staying stationary, the orientation goes to -nan, and
+    // this causes the Actor to not be drawn.
+    if (newVelocity.norm() != 0.0)
+    {
+      Eigen::Vector2f base{1.0, 0.0};
+      Eigen::Vector2f normalizedVelocity = newVelocity;
+      normalizedVelocity.normalize();
+      newOrientation = std::acos(normalizedVelocity.dot(base));
+    }
 
     // acos(Dot product) gives a value between 0 & PI. So if the Actor is
     // oriented at, say, 270 degrees (3 * PI / 2 radians) the value is PI/2.

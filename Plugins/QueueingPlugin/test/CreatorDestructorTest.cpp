@@ -8,12 +8,14 @@
 #include <string>
 #include <typeinfo>
 #include "gtest/gtest.h"
+#include "CollisionAvoidance.h"
 #include "ExitSeek.h"
 #include "FindExitSensor.h"
 #include "LooseOrdering.h"
 #include "NearestN.h"
 #include "OrderedActor.h"
 #include "OrderedExit.h"
+#include "OrderedLeaderFollow.h"
 #include "TestUtils.h"
 
 // No header for the creator/destructors since they aren't used directly in the
@@ -91,9 +93,21 @@ GTEST_TEST(CreatorDestructor, testBehavior)
   QS::PluginEntity::Properties properties{{"Behavior", "Property"}};
   QS::Behavior *behavior;
 
+  ASSERT_NO_THROW(behavior = behaviorCreator(
+                    "CollisionAvoidance", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::CollisionAvoidance));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
   ASSERT_NO_THROW(behavior = behaviorCreator("ExitSeek", properties, ""));
   EXPECT_NE(nullptr, behavior);
   EXPECT_EQ(typeid(*behavior), typeid(QS::ExitSeek));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator(
+                    "OrderedLeaderFollow", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::OrderedLeaderFollow));
   EXPECT_NO_THROW(behaviorDestructor(behavior));
 
   // Test invalid name

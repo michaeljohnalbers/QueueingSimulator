@@ -48,8 +48,25 @@ float QS::NearestN::getRadius() const noexcept
 void QS::NearestN::sense(const Sensable &theSensable)
 {
   myActors = theSensable.getActors();
-  const Eigen::Vector2f currentActorPosition =
-    theSensable.getCurrentActor()->getPosition();
+
+  const Actor *currentActor = theSensable.getCurrentActor();
+
+  // Not the most efficient, but the first thing to do is remove the current
+  // Actor.
+  auto actorIter = myActors.begin();
+  while (actorIter != myActors.end())
+  {
+    if (currentActor == *actorIter)
+    {
+      actorIter = myActors.erase(actorIter);
+    }
+    else
+    {
+      ++actorIter;
+    }
+  }
+
+  const Eigen::Vector2f currentActorPosition = currentActor->getPosition();
   auto sort = [&](const Actor *a, const Actor *b) ->bool
   {
     float distanceA = (a->getPosition() - currentActorPosition).norm();
@@ -63,7 +80,7 @@ void QS::NearestN::sense(const Sensable &theSensable)
     myActors.resize(myN);
   }
 
-  auto actorIter = myActors.begin();
+  actorIter = myActors.begin();
   while (actorIter != myActors.end())
   {
     float distance =

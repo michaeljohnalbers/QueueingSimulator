@@ -9,6 +9,7 @@
 #include "Behavior.h"
 #include "BehaviorSet.h"
 #include "Sensable.h"
+#include "Sensor.h"
 
 QS::BehaviorSet::BehaviorSet(const Properties &theProperties,
                              const std::string &theTag) :
@@ -31,4 +32,19 @@ Eigen::Vector2f QS::BehaviorSet::evaluate(const Actor *theActor,
 
   average /= count;
   return average;
+}
+
+void QS::BehaviorSet::populateSensors(const Sensable &theSensable) noexcept
+{
+  std::vector<EntityDependency<Behavior>> behaviors = getDependencies();
+  for (EntityDependency<Behavior> behavior : behaviors)
+  {
+    std::vector<EntityDependency<Sensor>> sensorDependencies =
+      behavior.myEntity->getDependencies();
+    for (EntityDependency<Sensor> sensorDependency : sensorDependencies)
+    {
+      Sensor *sensor = sensorDependency.myEntity;
+      sensor->sense(theSensable);
+    }
+  }
 }

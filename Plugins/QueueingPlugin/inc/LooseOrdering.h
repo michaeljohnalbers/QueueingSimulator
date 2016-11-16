@@ -12,6 +12,10 @@
 
 namespace QS
 {
+  class CollisionAvoidance;
+  class ExitSeek;
+  class OrderedLeaderFollow;
+
   /**
    */
   class LooseOrdering : public BehaviorSet
@@ -72,5 +76,15 @@ namespace QS
     protected:
 
     private:
+
+    /** Collision avoidance behavior */
+    CollisionAvoidance *myCollisionAvoidance = nullptr;
+
+    /** Exit seeking behavior */
+    ExitSeek *myExitSeek = nullptr;
+
+    /** Follows the leader with nearest rank */
+    OrderedLeaderFollow *myLeaderFollow = nullptr;
+
   };
 }

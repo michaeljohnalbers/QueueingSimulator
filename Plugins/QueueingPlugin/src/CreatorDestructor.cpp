@@ -6,12 +6,14 @@
  */
 
 #include <string>
+#include "CollisionAvoidance.h"
 #include "ExitSeek.h"
 #include "FindExitSensor.h"
 #include "NearestN.h"
 #include "LooseOrdering.h"
 #include "OrderedActor.h"
 #include "OrderedExit.h"
+#include "OrderedLeaderFollow.h"
 
 extern "C"
 {
@@ -67,14 +69,23 @@ extern "C"
     const QS::PluginEntity::Properties &theProperties,
     const std::string &theTag)
   {
-    if ("ExitSeek" == theBehaviorName)
+    if ("CollisionAvoidance" == theBehaviorName)
+    {
+      return new QS::CollisionAvoidance(theProperties, "");
+    }
+    else if ("ExitSeek" == theBehaviorName)
     {
       return new QS::ExitSeek(theProperties, "");
+    }
+    else if ("OrderedLeaderFollow" == theBehaviorName)
+    {
+      return new QS::OrderedLeaderFollow(theProperties, "");
     }
 
     std::string error{"Invalid behavior name given to QueueingPlugin "};
     error += "Behavior creator, \"" + theBehaviorName +
-      "\". Valid types are \"ExitSeek\".";
+      "\". Valid types are \"ExitSeek\", \"CollisionAvoidance\" and ." +
+      "\"OrderedLeaderFollow\".";
     throw std::invalid_argument(error);
   }
 
