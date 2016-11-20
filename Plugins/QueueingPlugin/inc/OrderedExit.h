@@ -61,6 +61,13 @@ namespace QS
     virtual bool canActorExit(const Actor *theActor) noexcept override;
 
     /**
+     * Returns the rank of the next Actor that can exit.
+     *
+     * @return rank
+     */
+    uint32_t getRank() const noexcept;
+
+    /**
      * Copy assignment operator.
      */
     OrderedExit& operator=(const OrderedExit&) = default;

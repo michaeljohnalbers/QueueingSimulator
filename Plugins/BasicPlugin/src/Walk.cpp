@@ -5,6 +5,7 @@
  * @author Michael Albers
  */
 
+#include "Eigen/Geometry"
 #include "Actor.h"
 #include "Walk.h"
 
@@ -22,7 +23,7 @@ QS::Walk::Walk(const Properties &theProperties,
 
 Eigen::Vector2f QS::Walk::evaluate(const Actor *theActor)
 {
-  Eigen::Vector2f desiredVelocity(mySpeed_ms, 0);
+  Eigen::Vector2f desiredVelocity(mySpeed_ms, 0.0);
   Eigen::Vector2f velocity = theActor->getVelocity();
   if (velocity.norm() >= mySpeed_ms)
   {
@@ -30,5 +31,8 @@ Eigen::Vector2f QS::Walk::evaluate(const Actor *theActor)
   }
   Eigen::Vector2f steeringForce = desiredVelocity *
     theActor->getMass();
+
+  Eigen::Rotation2Df rotation(theActor->getOrientation());
+  steeringForce = rotation * steeringForce;
   return steeringForce;
 }

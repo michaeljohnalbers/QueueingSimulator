@@ -17,6 +17,8 @@
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="7" />
 	<Property key="y" value="7" />
+	<Property key="max speed" value="3.0" />
+	<Property key="max force" value="3.0" />
         <Property key="orientation" value="0.786598" />
 	<Property key="color" value="1.0 0.0 0.0" />
 	<BehaviorSet type="BasicWalk" source="BasicPlugin">
@@ -31,6 +33,8 @@
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="5" />
 	<Property key="y" value="5" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
         <Property key="orientation" value="3.92699" />
 	<Property key="color" value="0.5 0.0 0.0" />
       </Actor>
@@ -41,6 +45,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="13" />
       	<Property key="y" value="7" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="0.0 1.0 0.0" />
       	<Property key="orientation" value="2.35619" />
       </Actor>
@@ -51,6 +57,8 @@
       	<Property key="x" value="15" />
       	<Property key="y" value="5" />
       	<Property key="color" value="0.0 0.5 0.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="orientation" value="5.49779" />
 	<BehaviorSet type="BasicWalk" source="BasicPlugin">
 	  <Behavior type="Walk" source="BasicPlugin">
@@ -65,6 +73,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="13" />
       	<Property key="y" value="13" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="0.0 0.0 1.0" />
       	<Property key="orientation" value="3.92699" />
       </Actor>
@@ -74,6 +84,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="15" />
       	<Property key="y" value="15" />
+	<Property key="max speed" value="12.0" />
+	<Property key="max force" value="12.0" />
       	<Property key="color" value="0.0 0.0 0.5" />
       	<Property key="orientation" value="0.786598" />
 	<!-- Test that max speed overrides behaviors -->
@@ -91,6 +103,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="5" />
       	<Property key="y" value="15" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="1.0 1.0 1.0" />
       	<Property key="orientation" value="2.35619" />
       </Actor>
@@ -101,6 +115,8 @@
       	<Property key="x" value="7" />
       	<Property key="y" value="13" />
       	<Property key="color" value="0.5 0.5 0.5" />
+	<Property key="max speed" value="12.0" />
+	<Property key="max force" value="12.0" />
       	<Property key="orientation" value="5.49779" />
 	<BehaviorSet type="BasicWalk" source="BasicPlugin">
 	  <Behavior type="Walk" source="BasicPlugin">

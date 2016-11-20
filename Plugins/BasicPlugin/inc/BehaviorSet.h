@@ -83,7 +83,7 @@ namespace QS
      * @param theActor
      *          Actor this Behavior is working on
      * @param theSensable
-     *          sensable data from the environment
+     *          sensable data from the World
      * @return combined steering force vector
      */
     virtual Eigen::Vector2f evaluate(const Actor *theActor,
@@ -98,6 +98,14 @@ namespace QS
      * Move assignment operator.
      */
     BehaviorSet& operator=(BehaviorSet&&) = default;
+
+    /**
+     * Populate all Sensors for all Behaviors.
+     *
+     * @param theSensable
+     *          sensable data from the World
+     */
+    void populateSensors(const Sensable &theSensable) noexcept;
 
     protected:
 

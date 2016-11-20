@@ -1,0 +1,553 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+  @author: Michael Albers
+
+  Tests the use of QueueingPlugin.
+-->
+
+<Simulation>
+  <Seed value="8675309" />
+  <World width="50" length="50">
+    <Actors>
+
+     <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 1.0" />
+	<Property key="rank" value="0" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.9" />
+	<Property key="rank" value="1" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.8" />
+	<Property key="rank" value="2" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.7" />
+	<Property key="rank" value="3" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.6" />
+	<Property key="rank" value="4" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="5" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="6" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="7" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="8" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="9" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="10" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="11" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="12" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="13" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="14" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+      <Actor type="GreedyOrderedActor" source="QueueingPlugin">
+	<Property key="mass" value="1.0" />
+	<Property key="radius" value="1.0" />
+	<Property key="randPosition" value="ignored" />
+	<Property key="max speed" value=":rand(1.0, 5.0)" />
+	<Property key="max force" value="10000.0" />
+	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
+	<Property key="color" value="0.0 0.0 0.5" />
+	<Property key="rank" value="15" />
+	<BehaviorSet type="GreedyOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="1000" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+	<BehaviorSet type="SemiRationalOrdering" source="QueueingPlugin">
+	  <Behavior type="CollisionAvoidance" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="3" />
+	      <Property key="radius" value="5.0" />
+	    </Sensor>
+	  </Behavior>
+	  <Behavior type="Separation" source="QueueingPlugin">
+	    <Sensor type="NearestN" source="QueueingPlugin">
+	      <Property key="N" value="10" />
+	      <Property key="radius" value="3.0" />
+	    </Sensor>
+	  </Behavior>
+	</BehaviorSet>
+      </Actor>
+
+    </Actors>
+
+    <Exits>
+      <Exit type="OrderedExit" source="QueueingPlugin">
+      	<Property key="radius" value="1.0" />
+      	<Property key="x" value="25" />
+      	<Property key="y" value="45" />
+      	<Property key="color" value=":randColor()" />
+      </Exit>
+    </Exits>
+  </World>
+</Simulation>

@@ -17,8 +17,9 @@
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="1.01" />
 	<Property key="y" value="1.01" />
-	<Property key="color" value="1.0 0.0 0.0" />
 	<Property key="max speed" value="0.5"/>
+	<Property key="max force" value="1.0" />
+	<Property key="color" value="1.0 0.0 0.0" />
       </Actor>
 
       <!-- Lower right, green-->
@@ -27,6 +28,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="3.99" />
       	<Property key="y" value="1.01" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="0.0 1.0 0.0" />
       	<Property key="orientation" value="1.570795" />
       </Actor>
@@ -37,6 +40,8 @@
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="3.99" />
       	<Property key="y" value="3.99" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="color" value="0.0 0.0 1.0" />
       	<Property key="orientation" value="3.14159" />
       </Actor>
@@ -46,6 +51,8 @@
       	<Property key="mass" value="1.0" />
       	<Property key="radius" value="1.0" />
       	<Property key="x" value="1.01" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
       	<Property key="y" value="3.99" />
       	<Property key="orientation" value="4.712385" />
       </Actor>

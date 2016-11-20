@@ -16,6 +16,8 @@
 	<Property key="y" value="1.01" />
 	<Property key="mass" value="1.0" />
 	<Property key="radius" value="1.0" />
+	<Property key="max speed" value="50.0" />
+	<Property key="max force" value="500.0" />
 	<Property key="color" value="0.0 1.0 0.0" />
       </Actor>
     </Actors>

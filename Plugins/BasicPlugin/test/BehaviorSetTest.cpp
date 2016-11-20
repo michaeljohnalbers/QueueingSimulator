@@ -73,7 +73,7 @@ GTEST_TEST(BehaviorSetTest, testEvalutate)
     (motionVector1.x() + motionVector2.x() + motionVector3.x()) / 3,
     (motionVector1.y() + motionVector2.y() + motionVector3.y()) / 3);
 
-  QS::Sensable sensable({}, {}, 1.0);
+  QS::Sensable sensable(nullptr, {}, {}, 1.0);
   auto actualMotionVector = behaviorSet.evaluate(nullptr, sensable);
   EXPECT_EQ(expectedMotionVector, actualMotionVector)
     << "Expected: " << expectedMotionVector.format(QS::EigenHelper::prettyPrint)

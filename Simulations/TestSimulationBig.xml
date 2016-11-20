@@ -15,6 +15,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -23,6 +25,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -31,6 +35,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -39,6 +45,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -47,6 +55,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -55,6 +65,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -63,6 +75,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -71,6 +85,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -79,6 +95,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -87,6 +105,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -95,6 +115,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -103,6 +125,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -111,6 +135,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -119,6 +145,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -127,6 +155,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -135,6 +165,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -143,6 +175,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -151,6 +185,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -159,6 +195,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -167,6 +205,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -175,6 +215,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -183,6 +225,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -191,6 +235,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -199,6 +245,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -207,6 +255,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -215,6 +265,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -223,6 +275,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -231,6 +285,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -239,6 +295,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -247,6 +305,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -255,6 +315,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -263,6 +325,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -271,6 +335,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -279,6 +345,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -287,6 +355,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -295,6 +365,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -303,6 +375,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -311,6 +385,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -319,6 +395,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -327,6 +405,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -335,6 +415,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -343,6 +425,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -351,6 +435,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -359,6 +445,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -367,6 +455,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -375,6 +465,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -383,6 +475,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -391,6 +485,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -399,6 +495,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -407,6 +505,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -415,6 +515,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -423,6 +525,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -431,6 +535,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -439,6 +545,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -447,6 +555,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -455,6 +565,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -463,6 +575,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -471,6 +585,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -479,6 +595,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -487,6 +605,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -495,6 +615,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -503,6 +625,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -511,6 +635,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -519,6 +645,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -527,6 +655,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -535,6 +665,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -543,6 +675,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -551,6 +685,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -559,6 +695,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -567,6 +705,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -575,6 +715,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -583,6 +725,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -591,6 +735,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -599,6 +745,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -607,6 +755,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -615,6 +765,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -623,6 +775,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -631,6 +785,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -639,6 +795,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -647,6 +805,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -655,6 +815,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -663,6 +825,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -671,6 +835,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -679,6 +845,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -687,6 +855,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -695,6 +865,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -703,6 +875,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -711,6 +885,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -719,6 +895,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -727,6 +905,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -735,6 +915,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -743,6 +925,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -751,6 +935,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -759,6 +945,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -767,6 +955,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -775,6 +965,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -783,6 +975,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -791,6 +985,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -799,6 +995,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -807,6 +1005,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -815,6 +1015,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -823,6 +1025,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -831,6 +1035,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -839,6 +1045,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -847,6 +1055,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -855,6 +1065,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -863,6 +1075,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -871,6 +1085,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -879,6 +1095,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -887,6 +1105,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -895,6 +1115,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -903,6 +1125,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -911,6 +1135,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -919,6 +1145,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -927,6 +1155,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -935,6 +1165,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -943,6 +1175,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -951,6 +1185,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -959,6 +1195,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -967,6 +1205,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -975,6 +1215,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -983,6 +1225,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -991,6 +1235,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -999,6 +1245,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1007,6 +1255,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1015,6 +1265,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1023,6 +1275,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1031,6 +1285,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1039,6 +1295,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1047,6 +1305,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1055,6 +1315,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1063,6 +1325,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1071,6 +1335,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1079,6 +1345,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1087,6 +1355,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1095,6 +1365,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1103,6 +1375,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1111,6 +1385,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1119,6 +1395,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1127,6 +1405,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1135,6 +1415,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1143,6 +1425,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 
@@ -1151,6 +1435,8 @@
 	<Property key="randPosition" value="ignored" />
 	<Property key="orientation" value=":rand(0.0, 2 * PI)" />
 	<Property key="mass" value="1.0" />
+	<Property key="max speed" value="1.0" />
+	<Property key="max force" value="1.0" />
 	<Property key="color" value=":randColor()" />
       </Actor>
 

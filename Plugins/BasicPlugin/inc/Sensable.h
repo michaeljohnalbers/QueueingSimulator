@@ -13,10 +13,6 @@ namespace QS
 {
   class Actor;
   class Exit;
-  // TODO: undo this with further development
-#if 0
-  class Target;
-#endif
 
   /**
    * This class encapsulates all things that can be sensed within within the
@@ -35,23 +31,19 @@ namespace QS
     /**
      * Constructor.
      *
+     * @param theCurrentActor
+     *          current actor "sensing" the world
      * @param theActors
      *          sensable actors within the world
      * @param theExits
      *          sensable exits within the world
      * @param theIntervalInSeconds
      *          time since last update
-     * @param theTargets
-     *          sensable targets within the world
      */
-    Sensable(const std::vector<const Actor*> &theActors,
+    Sensable(const Actor *theCurrentActor,
+             const std::vector<const Actor*> &theActors,
              const std::vector<const Exit*> &theExits,
-             float theIntervalInSeconds
-             // TODO: undo this with further developement
-#if 0
-             const std::vector<const Target*> theTargets
-#endif
-      ) noexcept;
+             float theIntervalInSeconds) noexcept;
 
     /**
      * Copy constructor
@@ -76,6 +68,13 @@ namespace QS
     const std::vector<const Actor*>& getActors() const noexcept;
 
     /**
+     * Returns the Actor "sensing" the world.
+     *
+     * @return actor
+     */
+    const Actor* getCurrentActor() const noexcept;
+
+    /**
      * Returns the sensable exits. Not in any particular order.
      *
      * @return sensable exits.
@@ -88,17 +87,6 @@ namespace QS
      * @return the interval, in seconds, since the last update.
      */
     float getIntervalInSeconds() const noexcept;
-
-    // TODO: undo this with further development
-#if 0
-    /**
-     * Returns the sensable targets. Not in any particular order.
-     *
-     * @return sensable targets
-     */
-    std::vector<const Target*> getTargets() const noexcept;
-
-#endif
 
     /**
      * Copy assignment operator
@@ -117,16 +105,13 @@ namespace QS
     /** All actors in the world that can be sensed. */
     const std::vector<const Actor*> &myActors;
 
+    /** Current Actor "sensing" the world. */
+    const Actor *myCurrentActor;
+
     /** All exits in the world which can be sensed. */
     const std::vector<const Exit*> &myExits;
 
     /** Interval since last update. */
     float myIntervalInSeconds;
-
-    // TODO: undo this with further development
-#if 0
-    /** All targets in the world which can be sensed. */
-    std::vector<const Target*> myTargets;
-#endif
   };
 }

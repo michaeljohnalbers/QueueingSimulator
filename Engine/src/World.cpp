@@ -10,7 +10,6 @@
 #include <iostream>
 #include <sstream>
 #include "Eigen/Core"
-#include "Eigen/Geometry"
 #include "Actor.h"
 #include "ActorMetrics.h"
 #include "EigenHelper.h"
@@ -264,8 +263,8 @@ Eigen::Vector2f QS::World::collisionDetection(
       float dx = lineEnd.x() - lineStart.x();
       float dy = lineEnd.y() - lineStart.y();
       float dr = std::sqrt((dx * dx) + (dy * dy));
-      float D = (lineStart.x() * lineEnd.y()) - (lineEnd.x() * lineStart.y());
       float drSquared = dr * dr;
+      float D = (lineStart.x() * lineEnd.y()) - (lineEnd.x() * lineStart.y());
       float discriminant = ((r * r) * (drSquared)) - (D * D);
 
       // This should never happen, but if it does, need to make sure there is
@@ -274,15 +273,19 @@ Eigen::Vector2f QS::World::collisionDetection(
       {
         std::ostringstream error;
         error << "Unexpected value in collision resolution. " << std::endl
-              << "  discriminant == " << std::fixed << discriminant << std::endl
+              << std::fixed << std::setprecision(10)
+              << "  discriminant == " << discriminant << std::endl
               << "  Line start: " << lineStart.format(EigenHelper::prettyPrint)
               << std::endl
               << "  Line end: " << lineEnd.format(EigenHelper::prettyPrint)
               << std::endl
               << "  Original circle center: "
               << collidedActor->getPosition().format(EigenHelper::prettyPrint)
-              << std::endl
-              << "  Radius: " << std::fixed << r;
+              << std::endl << std::fixed << std::setprecision(10)
+              << "  Radius: " << r << std::endl
+              << "  dx: " << dx << ", dy: " << dy << std::endl
+              << "  dr: " << dr << ", drSquared: " << drSquared << std::endl
+              << "  D: " << D << std::endl;
         // Not all of this information may be displayed in an error dialog so
         // dump it to stderr.
         // TODO: if/when messages are implemented, log this
@@ -483,12 +486,13 @@ void QS::World::setSeed(uint64_t theSeed)
 
 bool QS::World::update(float theIntervalInSeconds)
 {
-  Sensable sensable(myActorsInWorld, myExitsForSensable, theIntervalInSeconds);
-
   auto actorIter = myActorsInWorld.begin();
 
   while (actorIter != myActorsInWorld.end())
   {
+    Sensable sensable(*actorIter, myActorsInWorld, myExitsForSensable,
+                      theIntervalInSeconds);
+
     // I don't really like the const cast, but I like the "const Actor*"
     // template type of myActorsInWorld better (to make sure the Sensable and
     // users of the Sensable don't mess with the Actor).
@@ -506,23 +510,37 @@ bool QS::World::update(float theIntervalInSeconds)
 
     Eigen::Vector2f currentVelocity = actor->getVelocity();
     float maxSpeed = actor->getMaximumSpeed();
-    // Multiplying acceleration by give gives m/s.
+    // Multiplying acceleration by time gives m/s.
     Eigen::Vector2f newVelocity = currentVelocity +
       (acceleration * theIntervalInSeconds);
     newVelocity = EigenHelper::truncate(newVelocity, maxSpeed);
 
-    float currentOrientation = actor->getOrientation();
-    float newOrientation = currentOrientation +
-      std::atan(newVelocity.y() / newVelocity.x());
+    float newOrientation = actor->getOrientation();
+    // If the Actor is staying stationary, the orientation goes to -nan, and
+    // this causes the Actor to not be drawn.
+    if (newVelocity.norm() != 0.0)
+    {
+      Eigen::Vector2f base{1.0, 0.0};
+      Eigen::Vector2f normalizedVelocity = newVelocity;
+      normalizedVelocity.normalize();
+      newOrientation = std::acos(normalizedVelocity.dot(base));
+    }
 
-    Eigen::Rotation2Df rotation(currentOrientation);
-    // Velocity in world coordinates.
-    Eigen::Vector2f worldVelocity = rotation * newVelocity;
+    // acos(Dot product) gives a value between 0 & PI. So if the Actor is
+    // oriented at, say, 270 degrees (3 * PI / 2 radians) the value is PI/2.
+    // This corrects for "downward" pointing Actors. It is a simplification of
+    // the code in the question at:
+    // http://gamedev.stackexchange.com/questions/45412/understanding-math-used-to-determine-if-vector-is-clockwise-counterclockwise-f
+    // The extra math can be removed since the 'base' value above is {1,0}.
+    if (newVelocity.y() < 0)
+    {
+      newOrientation = 2 * M_PI - newOrientation;
+    }
 
     Eigen::Vector2f currentPosition = actor->getPosition();
     // Finally, multiplying velocity by time gives meters.
     Eigen::Vector2f newPosition = currentPosition +
-      (worldVelocity * theIntervalInSeconds);
+      (newVelocity * theIntervalInSeconds);
 
     newPosition = collisionDetection(actor, newPosition);
 

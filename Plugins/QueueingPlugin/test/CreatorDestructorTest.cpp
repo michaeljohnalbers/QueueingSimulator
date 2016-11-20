@@ -6,11 +6,23 @@
  */
 
 #include <string>
+#include <typeinfo>
 #include "gtest/gtest.h"
+#include "CollisionAvoidance.h"
+#include "ExitFlee.h"
+#include "ExitSeek.h"
+#include "FindExitSensor.h"
+#include "GreedyOrderedActor.h"
+#include "GreedyOrdering.h"
+#include "LooseOrderedActor.h"
+#include "LooseOrdering.h"
+#include "NearestN.h"
+#include "NearExitArrival.h"
 #include "OrderedActor.h"
-// #include "Behavior.h"
-// #include "BehaviorSet.h"
 #include "OrderedExit.h"
+#include "OrderedLeaderFollow.h"
+#include "SemiRationalOrdering.h"
+#include "Separation.h"
 #include "TestUtils.h"
 
 // No header for the creator/destructors since they aren't used directly in the
@@ -23,23 +35,23 @@ extern "C"
     const std::string &theTag);
   void actorDestructor(QS::Actor*);
 
-  // QS::BehaviorSet* behaviorSetCreator(
-  //   const std::string&,
-  //   const QS::PluginEntity::Properties&,
-  //   const std::string &theTag);
-  // void behaviorSetDestructor(QS::BehaviorSet*);
+  QS::BehaviorSet* behaviorSetCreator(
+    const std::string&,
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
+  void behaviorSetDestructor(QS::BehaviorSet*);
 
-  // QS::Behavior* behaviorCreator(
-  //   const std::string&,
-  //   const QS::PluginEntity::Properties&,
-  //   const std::string &theTag);
-  // void behaviorDestructor(QS::Behavior*);
+  QS::Behavior* behaviorCreator(
+    const std::string&,
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
+  void behaviorDestructor(QS::Behavior*);
 
-  // QS::Sensor* sensorCreator(
-  //   const std::string&,
-  //   const QS::PluginEntity::Properties&,
-  //   const std::string &theTag);
-  // void sensorDestructor(QS::Sensor*);
+  QS::Sensor* sensorCreator(
+    const std::string&,
+    const QS::PluginEntity::Properties&,
+    const std::string &theTag);
+  void sensorDestructor(QS::Sensor*);
 
   QS::Exit* exitCreator(
     const std::string&,
@@ -58,7 +70,16 @@ GTEST_TEST(CreatorDestructor, testActor)
   ASSERT_NO_THROW(actor = actorCreator("OrderedActor", properties, ""));
   ASSERT_NE(nullptr, actor);
   EXPECT_EQ(typeid(*actor), typeid(QS::OrderedActor));
+  EXPECT_NO_THROW(actorDestructor(actor));
 
+  ASSERT_NO_THROW(actor = actorCreator("LooseOrderedActor", properties, ""));
+  ASSERT_NE(nullptr, actor);
+  EXPECT_EQ(typeid(*actor), typeid(QS::LooseOrderedActor));
+  EXPECT_NO_THROW(actorDestructor(actor));
+
+  ASSERT_NO_THROW(actor = actorCreator("GreedyOrderedActor", properties, ""));
+  ASSERT_NE(nullptr, actor);
+  EXPECT_EQ(typeid(*actor), typeid(QS::GreedyOrderedActor));
   EXPECT_NO_THROW(actorDestructor(actor));
 
   // Test catching an exception on Actor construction
@@ -68,32 +89,74 @@ GTEST_TEST(CreatorDestructor, testActor)
   EXPECT_THROW(actorCreator("Actor", properties, ""), std::invalid_argument);
 }
 
-// GTEST_TEST(CreatorDestructor, testBehaviorSet)
-// {
-//   QS::PluginEntity::Properties properties{{"BehaviorSet", "Property"}};
-//   QS::BehaviorSet* behaviorSet = behaviorSetCreator("", properties, "");
-//   EXPECT_NE(nullptr, behaviorSet);
+GTEST_TEST(CreatorDestructor, testBehaviorSet)
+{
+  QS::PluginEntity::Properties properties{{"BehaviorSet", "Property"}};
+  QS::BehaviorSet *behaviorSet;
 
-//   EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
-// }
+  ASSERT_NO_THROW(behaviorSet = behaviorSetCreator(
+                    "GreedyOrdering", properties, ""));
+  EXPECT_NE(nullptr, behaviorSet);
+  EXPECT_EQ(typeid(*behaviorSet), typeid(QS::GreedyOrdering));
+  EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
 
-// GTEST_TEST(CreatorDestructor, testBehavior)
-// {
-//   QS::PluginEntity::Properties properties{{"Behavior", "Property"}};
-//   QS::Behavior *behavior = behaviorCreator("", properties, "");
-//   EXPECT_NE(nullptr, behavior);
+  ASSERT_NO_THROW(behaviorSet = behaviorSetCreator(
+                    "LooseOrdering", properties, ""));
+  EXPECT_NE(nullptr, behaviorSet);
+  EXPECT_EQ(typeid(*behaviorSet), typeid(QS::LooseOrdering));
+  EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
 
-//   EXPECT_NO_THROW(behaviorDestructor(behavior));
-// }
+  ASSERT_NO_THROW(behaviorSet = behaviorSetCreator(
+                    "SemiRationalOrdering", properties, ""));
+  EXPECT_NE(nullptr, behaviorSet);
+  EXPECT_EQ(typeid(*behaviorSet), typeid(QS::SemiRationalOrdering));
+  EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
 
-// GTEST_TEST(CreatorDestructor, testSensor)
-// {
-//   QS::PluginEntity::Properties properties{{"Sensor", "Property"}};
-//   QS::Sensor *sensor = sensorCreator("", properties, "");
-//   EXPECT_NE(nullptr, sensor);
+  // Test invalid name
+  EXPECT_THROW(behaviorSetCreator("", {}, ""), std::invalid_argument);
+}
 
-//   EXPECT_NO_THROW(sensorDestructor(sensor));
-// }
+GTEST_TEST(CreatorDestructor, testBehavior)
+{
+  QS::PluginEntity::Properties properties{{"Behavior", "Property"}};
+  QS::Behavior *behavior;
+
+  ASSERT_NO_THROW(behavior = behaviorCreator(
+                    "CollisionAvoidance", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::CollisionAvoidance));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator("ExitFlee", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::ExitFlee));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator("ExitSeek", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::ExitSeek));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator(
+                    "NearExitArrival", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::NearExitArrival));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator(
+                    "OrderedLeaderFollow", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::OrderedLeaderFollow));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator("Separation", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::Separation));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  // Test invalid name
+  EXPECT_THROW(behaviorCreator("", {}, ""), std::invalid_argument);
+}
 
 GTEST_TEST(CreatorDestructor, testExit)
 {
@@ -106,4 +169,28 @@ GTEST_TEST(CreatorDestructor, testExit)
 
   // Test catching an exception on Exit construction
   EXPECT_THROW(exitCreator("", {}, ""), std::invalid_argument);
+}
+
+GTEST_TEST(CreatorDestructor, testSensor)
+{
+  QS::PluginEntity::Properties properties{{"Sensor", "Property"}};
+  QS::Sensor *sensor;
+
+  ASSERT_NO_THROW(sensor = sensorCreator("FindExitSensor", properties, ""));
+  EXPECT_NE(nullptr, sensor);
+  EXPECT_EQ(typeid(*sensor), typeid(QS::FindExitSensor));
+  EXPECT_NO_THROW(sensorDestructor(sensor));
+
+  QS::PluginEntity::Properties nearestNProperties{
+    {"N", "1"},
+    {"radius", "1.0"}
+  };
+  ASSERT_NO_THROW(sensor = sensorCreator("NearestN", nearestNProperties, ""));
+  EXPECT_NE(nullptr, sensor);
+  EXPECT_EQ(typeid(*sensor), typeid(QS::NearestN));
+  EXPECT_NO_THROW(sensorDestructor(sensor));
+
+  // Test invalid name
+  EXPECT_THROW(sensor = sensorCreator("", properties, ""),
+               std::invalid_argument);
 }
