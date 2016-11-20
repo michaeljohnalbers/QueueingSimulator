@@ -63,7 +63,9 @@ Eigen::Vector2f QS::LooseOrdering::evaluate(const Actor *theActor,
       if (zeroVector == steeringForce)
       {
         // No leader, stop.
-        // TODO: move slowly to exit.
+        // TODO: future work could add some more "intelligence" and direct the
+        // Actor to move slowly toward the exit. This is quite difficult to
+        // implement correctly.
         steeringForce = -theActor->getVelocity();
         steeringForce *= theActor->getMass();
       }

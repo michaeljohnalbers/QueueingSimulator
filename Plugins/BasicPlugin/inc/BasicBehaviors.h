@@ -56,10 +56,13 @@ namespace QS
      *          Actor being moved
      * @param thePosition
      *          targeted position
+     * @param theDesiredSpeed
+     *          speed at which to move away from object
      * @return force to move the Actor awary fom the position
      */
     static Eigen::Vector2f flee(const Actor *theActor,
-                                const Eigen::Vector2f &thePosition) noexcept;
+                                const Eigen::Vector2f &thePosition,
+                                float theDesiredSpeed) noexcept;
 
     /**
      * Generates a force to move the Actor toward another Actor.
@@ -80,10 +83,13 @@ namespace QS
      *          Actor being moved
      * @param thePosition
      *          targeted position
+     * @param theDesiredSpeed
+     *          speed at which to move away from object
      * @return force to move the Actor to the position
      */
     static Eigen::Vector2f seek(const Actor *theActor,
-                                const Eigen::Vector2f &thePosition) noexcept;
+                                const Eigen::Vector2f &thePosition,
+                                float theDesiredSpeed) noexcept;
 
     /**
      * Generates a steering force to separate the given Actor from the other
@@ -129,11 +135,14 @@ namespace QS
      * @param theActor
      *          Actor being moved
      * @param theDesiredVelocity
-     *          desired velocity
+     *          direction to move
+     * @param theDesiredSpeed
+     *          speed at which to move to/away from the object
      * @return force to move the Actor towards the desired velocity
      */
     static Eigen::Vector2f seekFleeHelper(const Actor *theActor,
-                                          Eigen::Vector2f theDesiredVelocity)
+                                          Eigen::Vector2f theDesiredVelocity,
+                                          float theDesiredSpeed)
       noexcept;
   };
 }

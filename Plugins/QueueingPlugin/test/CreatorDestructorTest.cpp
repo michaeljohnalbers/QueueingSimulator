@@ -9,13 +9,20 @@
 #include <typeinfo>
 #include "gtest/gtest.h"
 #include "CollisionAvoidance.h"
+#include "ExitFlee.h"
 #include "ExitSeek.h"
 #include "FindExitSensor.h"
+#include "GreedyOrderedActor.h"
+#include "GreedyOrdering.h"
+#include "LooseOrderedActor.h"
 #include "LooseOrdering.h"
 #include "NearestN.h"
+#include "NearExitArrival.h"
 #include "OrderedActor.h"
 #include "OrderedExit.h"
 #include "OrderedLeaderFollow.h"
+#include "SemiRationalOrdering.h"
+#include "Separation.h"
 #include "TestUtils.h"
 
 // No header for the creator/destructors since they aren't used directly in the
@@ -63,7 +70,16 @@ GTEST_TEST(CreatorDestructor, testActor)
   ASSERT_NO_THROW(actor = actorCreator("OrderedActor", properties, ""));
   ASSERT_NE(nullptr, actor);
   EXPECT_EQ(typeid(*actor), typeid(QS::OrderedActor));
+  EXPECT_NO_THROW(actorDestructor(actor));
 
+  ASSERT_NO_THROW(actor = actorCreator("LooseOrderedActor", properties, ""));
+  ASSERT_NE(nullptr, actor);
+  EXPECT_EQ(typeid(*actor), typeid(QS::LooseOrderedActor));
+  EXPECT_NO_THROW(actorDestructor(actor));
+
+  ASSERT_NO_THROW(actor = actorCreator("GreedyOrderedActor", properties, ""));
+  ASSERT_NE(nullptr, actor);
+  EXPECT_EQ(typeid(*actor), typeid(QS::GreedyOrderedActor));
   EXPECT_NO_THROW(actorDestructor(actor));
 
   // Test catching an exception on Actor construction
@@ -79,9 +95,21 @@ GTEST_TEST(CreatorDestructor, testBehaviorSet)
   QS::BehaviorSet *behaviorSet;
 
   ASSERT_NO_THROW(behaviorSet = behaviorSetCreator(
+                    "GreedyOrdering", properties, ""));
+  EXPECT_NE(nullptr, behaviorSet);
+  EXPECT_EQ(typeid(*behaviorSet), typeid(QS::GreedyOrdering));
+  EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
+
+  ASSERT_NO_THROW(behaviorSet = behaviorSetCreator(
                     "LooseOrdering", properties, ""));
   EXPECT_NE(nullptr, behaviorSet);
   EXPECT_EQ(typeid(*behaviorSet), typeid(QS::LooseOrdering));
+  EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
+
+  ASSERT_NO_THROW(behaviorSet = behaviorSetCreator(
+                    "SemiRationalOrdering", properties, ""));
+  EXPECT_NE(nullptr, behaviorSet);
+  EXPECT_EQ(typeid(*behaviorSet), typeid(QS::SemiRationalOrdering));
   EXPECT_NO_THROW(behaviorSetDestructor(behaviorSet));
 
   // Test invalid name
@@ -99,15 +127,31 @@ GTEST_TEST(CreatorDestructor, testBehavior)
   EXPECT_EQ(typeid(*behavior), typeid(QS::CollisionAvoidance));
   EXPECT_NO_THROW(behaviorDestructor(behavior));
 
+  ASSERT_NO_THROW(behavior = behaviorCreator("ExitFlee", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::ExitFlee));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
   ASSERT_NO_THROW(behavior = behaviorCreator("ExitSeek", properties, ""));
   EXPECT_NE(nullptr, behavior);
   EXPECT_EQ(typeid(*behavior), typeid(QS::ExitSeek));
   EXPECT_NO_THROW(behaviorDestructor(behavior));
 
   ASSERT_NO_THROW(behavior = behaviorCreator(
+                    "NearExitArrival", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::NearExitArrival));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator(
                     "OrderedLeaderFollow", properties, ""));
   EXPECT_NE(nullptr, behavior);
   EXPECT_EQ(typeid(*behavior), typeid(QS::OrderedLeaderFollow));
+  EXPECT_NO_THROW(behaviorDestructor(behavior));
+
+  ASSERT_NO_THROW(behavior = behaviorCreator("Separation", properties, ""));
+  EXPECT_NE(nullptr, behavior);
+  EXPECT_EQ(typeid(*behavior), typeid(QS::Separation));
   EXPECT_NO_THROW(behaviorDestructor(behavior));
 
   // Test invalid name

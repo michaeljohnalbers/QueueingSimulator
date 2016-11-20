@@ -22,14 +22,11 @@ bool QS::OrderedExit::canActorExit(const Actor *theActor) noexcept
   // Non-ordered Actors can exit if they overlap.
   bool canExit = overlap;
 
-  // According to:
-  // http://stackoverflow.com/questions/579887/how-expensive-is-rtti
-  // typeid comparsion & static_cast is faster than dynamic cast
-  if (typeid(*theActor) == typeid(QS::OrderedActor))
-  {
-    const QS::OrderedActor *actor =
-      static_cast<const QS::OrderedActor*>(theActor);
+  const QS::OrderedActor *actor =
+    dynamic_cast<const QS::OrderedActor*>(theActor);
 
+  if (nullptr != actor)
+  {
     bool orderMatches = actor->getRank() == myRank;
 
     canExit = orderMatches && canExit;

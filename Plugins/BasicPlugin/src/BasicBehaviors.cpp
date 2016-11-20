@@ -61,23 +61,23 @@ Eigen::Vector2f QS::BasicBehaviors::evadePursuitHelper(
   Eigen::Vector2f steeringForce;
   if (theEvade)
   {
-    steeringForce = flee(theActor, futurePosition);
+    steeringForce = flee(theActor, futurePosition, theActor->getMaximumSpeed());
   }
   else
   {
-    steeringForce = seek(theActor, futurePosition);
+    steeringForce = seek(theActor, futurePosition, theActor->getMaximumSpeed());
   }
   return steeringForce;
 }
 
 Eigen::Vector2f QS::BasicBehaviors::flee(const Actor *theActor,
-                                         const Eigen::Vector2f &thePosition)
-  noexcept
+                                         const Eigen::Vector2f &thePosition,
+                                         float theDesiredSpeed) noexcept
 {
   Eigen::Vector2f desiredVelocity =
      theActor->getPosition() - thePosition;
 
-  return seekFleeHelper(theActor, desiredVelocity);
+  return seekFleeHelper(theActor, desiredVelocity, theDesiredSpeed);
 }
 
 Eigen::Vector2f QS::BasicBehaviors::pursuit(const Actor *theActor,
@@ -88,18 +88,19 @@ Eigen::Vector2f QS::BasicBehaviors::pursuit(const Actor *theActor,
 }
 
 Eigen::Vector2f QS::BasicBehaviors::seek(const Actor *theActor,
-                                         const Eigen::Vector2f &thePosition)
-  noexcept
+                                         const Eigen::Vector2f &thePosition,
+                                         float theDesiredSpeed) noexcept
 {
   Eigen::Vector2f desiredVelocity =
      thePosition - theActor->getPosition();
 
-  return seekFleeHelper(theActor, desiredVelocity);
+  return seekFleeHelper(theActor, desiredVelocity, theDesiredSpeed);
 }
 
 Eigen::Vector2f QS::BasicBehaviors::seekFleeHelper(
   const Actor *theActor,
-  Eigen::Vector2f theDesiredVelocity) noexcept
+  Eigen::Vector2f theDesiredVelocity,
+  float theDesiredSpeed) noexcept
 {
   float length = theDesiredVelocity.norm();
 
@@ -117,7 +118,7 @@ Eigen::Vector2f QS::BasicBehaviors::seekFleeHelper(
     theDesiredVelocity /= length;
   }
 
-  theDesiredVelocity *= theActor->getMaximumSpeed();
+  theDesiredVelocity *= theDesiredSpeed;
 
   Eigen::Vector2f steeringForce = theDesiredVelocity - theActor->getVelocity();
 

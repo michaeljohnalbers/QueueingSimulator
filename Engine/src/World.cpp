@@ -263,8 +263,8 @@ Eigen::Vector2f QS::World::collisionDetection(
       float dx = lineEnd.x() - lineStart.x();
       float dy = lineEnd.y() - lineStart.y();
       float dr = std::sqrt((dx * dx) + (dy * dy));
-      float D = (lineStart.x() * lineEnd.y()) - (lineEnd.x() * lineStart.y());
       float drSquared = dr * dr;
+      float D = (lineStart.x() * lineEnd.y()) - (lineEnd.x() * lineStart.y());
       float discriminant = ((r * r) * (drSquared)) - (D * D);
 
       // This should never happen, but if it does, need to make sure there is
@@ -273,15 +273,19 @@ Eigen::Vector2f QS::World::collisionDetection(
       {
         std::ostringstream error;
         error << "Unexpected value in collision resolution. " << std::endl
-              << "  discriminant == " << std::fixed << discriminant << std::endl
+              << std::fixed << std::setprecision(10)
+              << "  discriminant == " << discriminant << std::endl
               << "  Line start: " << lineStart.format(EigenHelper::prettyPrint)
               << std::endl
               << "  Line end: " << lineEnd.format(EigenHelper::prettyPrint)
               << std::endl
               << "  Original circle center: "
               << collidedActor->getPosition().format(EigenHelper::prettyPrint)
-              << std::endl
-              << "  Radius: " << std::fixed << r;
+              << std::endl << std::fixed << std::setprecision(10)
+              << "  Radius: " << r << std::endl
+              << "  dx: " << dx << ", dy: " << dy << std::endl
+              << "  dr: " << dr << ", drSquared: " << drSquared << std::endl
+              << "  D: " << D << std::endl;
         // Not all of this information may be displayed in an error dialog so
         // dump it to stderr.
         // TODO: if/when messages are implemented, log this

@@ -59,7 +59,7 @@ Eigen::Vector2f QS::CollisionAvoidance::evaluate(const Actor *theActor)
 
   Eigen::Vector2f otherPositionAtNearestApproach;
 
-  float distanceThreshold = theActor->getRadius() * 2;
+  float distanceThreshold = theActor->getRadius() * 2.1;
 
   for (auto actor : nearestActors)
   {

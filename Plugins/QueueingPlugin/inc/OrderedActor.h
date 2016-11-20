@@ -13,6 +13,7 @@
 namespace QS
 {
   /**
+   * An Actor that has a numeric order.
    */
   class OrderedActor: public Actor
   {

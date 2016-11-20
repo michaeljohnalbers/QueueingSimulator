@@ -12,7 +12,7 @@
     <Actors>
 
       <!-- Heading towards upper left (QueueingPlugin) Exit -->
-      <Actor type="OrderedActor" source="QueueingPlugin">
+      <Actor type="LooseOrderedActor" source="QueueingPlugin">
 	<Property key="mass" value="1.0" />
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="3" />
@@ -38,7 +38,7 @@
 	</BehaviorSet>
       </Actor>
 
-      <Actor type="OrderedActor" source="QueueingPlugin">
+      <Actor type="LooseOrderedActor" source="QueueingPlugin">
 	<Property key="mass" value="1.0" />
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="5" />
@@ -64,7 +64,7 @@
 	</BehaviorSet>
       </Actor>
 
-      <Actor type="OrderedActor" source="QueueingPlugin">
+      <Actor type="LooseOrderedActor" source="QueueingPlugin">
 	<Property key="mass" value="1.0" />
 	<Property key="radius" value="1.0" />
 	<Property key="x" value="7" />

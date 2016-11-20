@@ -9,16 +9,31 @@
 <Plugin name="QueueingPlugin" library="libqs-queueing-plugin.so">
 
   <Actors creator="actorCreator" destructor="actorDestructor">
-    <Actor name="OrderedActor">
+    <Actor name="GreedyOrderedActor">
+      <BehaviorSet name="GreedyOrdering" />
+      <BehaviorSet name="SemiRationalOrdering" />
+    </Actor>
+    <Actor name="LooseOrderedActor">
       <BehaviorSet name="LooseOrdering" />
     </Actor>
   </Actors>
 
   <BehaviorSets creator="behaviorSetCreator" destructor="behaviorSetDestructor">
+    <BehaviorSet name="GreedyOrdering">
+      <Behavior name="CollisionAvoidance" />
+      <Behavior name="ExitSeek" />
+      <Behavior name="NearExitArrival" />
+    </BehaviorSet>
     <BehaviorSet name="LooseOrdering">
       <Behavior name="CollisionAvoidance" />
       <Behavior name="ExitSeek" />
       <Behavior name="OrderedLeaderFollow" />
+    </BehaviorSet>
+    <BehaviorSet name="SemiRationalOrdering">
+      <Behavior name="CollisionAvoidance" />
+      <Behavior name="ExitFlee" />
+      <Behavior name="ExitSeek" />
+      <Behavior name="Separation" />
     </BehaviorSet>
   </BehaviorSets>
 
@@ -26,10 +41,19 @@
     <Behavior name="CollisionAvoidance">
       <Sensor name="NearestN" />
     </Behavior>
+    <Behavior name="ExitFlee">
+      <Sensor name="FindExitSensor" />
+    </Behavior>
     <Behavior name="ExitSeek">
       <Sensor name="FindExitSensor" />
     </Behavior>
+    <Behavior name="NearExitArrival">
+      <Sensor name="FindExitSensor" />
+    </Behavior>
     <Behavior name="OrderedLeaderFollow">
+      <Sensor name="NearestN" />
+    </Behavior>
+    <Behavior name="Separation">
       <Sensor name="NearestN" />
     </Behavior>
   </Behaviors>
