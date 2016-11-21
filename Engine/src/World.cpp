@@ -12,6 +12,7 @@
 #include "Eigen/Core"
 #include "Actor.h"
 #include "ActorMetrics.h"
+#include "ActorUpdateCallback.h"
 #include "EigenHelper.h"
 #include "Exit.h"
 #include "Metrics.h"
@@ -484,7 +485,8 @@ void QS::World::setSeed(uint64_t theSeed)
   myRNGEngine.seed(theSeed);
 }
 
-bool QS::World::update(float theIntervalInSeconds)
+bool QS::World::update(float theIntervalInSeconds,
+                       ActorUpdateCallback &theActorUpdateCallback)
 {
   auto actorIter = myActorsInWorld.begin();
 
@@ -569,6 +571,7 @@ bool QS::World::update(float theIntervalInSeconds)
     }
     else
     {
+      theActorUpdateCallback.actorUpdate(*actorIter);
       ++actorIter;
     }
   }

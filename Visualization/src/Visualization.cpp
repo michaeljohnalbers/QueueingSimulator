@@ -295,20 +295,21 @@ void QS::Visualization::visualize()
 
     if (0.0 != updateInterval)
     {
-      worldContinue = (! myWorld.update(static_cast<float>(updateInterval)));
+      myActors->resetColorsAndModels();
+      worldContinue = (! myWorld.update(static_cast<float>(updateInterval),
+                                        *myActors));
     }
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //https://www.opengl.org/discussion_boards/showthread.php/171541-glm-Triangle-with-perspective
-    myViewMatrix = glm::lookAt(myCameraPosition, myCameraCenter, 
+    myViewMatrix = glm::lookAt(myCameraPosition, myCameraCenter,
                                glm::vec3(0.0f, 1.0f, 0.0f));
 
     myWorldBox->draw(myViewMatrix, myProjectionMatrix);
 
-    const std::vector<const Actor*> &actors = myWorld.getActorsInWorld();
-    myActors->draw(myViewMatrix, myProjectionMatrix, actors);
+    myActors->draw(myViewMatrix, myProjectionMatrix);
 
     const std::vector<Exit*> &exits = myWorld.getExits();
     myExits->draw(myViewMatrix, myProjectionMatrix, exits);

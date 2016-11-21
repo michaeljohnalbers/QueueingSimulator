@@ -17,6 +17,7 @@
 namespace QS
 {
   class Actor;
+  class ActorUpdateCallback;
   class Exit;
   class Metrics;
 
@@ -215,9 +216,13 @@ namespace QS
      *
      * @param theIntervalInSeconds
      *          amount of time elapsed since last update
+     * @param theActorUpdateCallback
+     *          callback to be used after each Actor is updated (this won't
+     *          be called if the Actor exits the World)
      * @return true if the simulation has finished, false otherwise
      */
-    bool update(float theIntervalInSeconds);
+    bool update(float theIntervalInSeconds,
+                ActorUpdateCallback &theActorUpdateCallback);
 
     protected:
 
