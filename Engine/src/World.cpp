@@ -152,31 +152,33 @@ bool QS::World::checkOverlap(Eigen::Vector2f thePosition1, float theRadius1,
 
 Eigen::Vector2f QS::World::collisionDetection(
   Actor *theActor,
-  Eigen::Vector2f theNewPosition) const
+  Eigen::Vector2f theMotionVector) const
 {
   float actorRadius = theActor->getRadius();
+  Eigen::Vector2f actorPosition = theActor->getPosition();
 
-  // Yes, adding 0.0 + actorRadius is meaningless. However, as I write this it
+  // Yes, subtracting from 0.0 is overly verbose. However, as I write this it
   // helps to show that the coordinate is being moved back in from the lower
   // world boundaries.
-  if (theNewPosition.x() + actorRadius > myWidth_m)
+  if (actorPosition.x() + actorRadius + theMotionVector.x() > myWidth_m)
   {
-    theNewPosition.x() = myWidth_m - actorRadius;
+    theMotionVector.x() = myWidth_m - actorPosition.x() - actorRadius;
   }
-  else if (theNewPosition.x() - actorRadius < 0.0)
+  else if ((actorPosition.x() - actorRadius) + theMotionVector.x() < 0.0)
   {
-    theNewPosition.x() = 0.0 + actorRadius;
-  }
-
-  if (theNewPosition.y() + actorRadius > myLength_m)
-  {
-    theNewPosition.y() = myLength_m - actorRadius;
-  }
-  else if(theNewPosition.y() - actorRadius < 0.0)
-  {
-    theNewPosition.y() = 0.0 + actorRadius;
+    theMotionVector.x() = 0.0 - (actorPosition.x() - actorRadius);
   }
 
+  if (actorPosition.y() + actorRadius + theMotionVector.y() > myLength_m)
+  {
+    theMotionVector.y() = myLength_m - actorPosition.y() - actorRadius;
+  }
+  else if((actorPosition.y() - actorRadius) + theMotionVector.y() < 0.0)
+  {
+    theMotionVector.y() = 0.0 - (actorPosition.y() - actorRadius);
+  }
+
+  // Check for collisions with other Actors.
   for (const Actor *collidedActor : myActorsInWorld)
   {
     // Don't check theActor against itself.
@@ -185,154 +187,77 @@ Eigen::Vector2f QS::World::collisionDetection(
       continue;
     }
 
-    // Not using checkOverlap since the radius sum will be used later on. No
-    // sense calculating it twice (or using the extra function overhead either.
-    Eigen::Vector2f distanceVector =
-      collidedActor->getPosition() - theNewPosition;
-    float distance = distanceVector.norm();
-    float r = collidedActor->getRadius() + actorRadius;
-    if (distance < r)
+    if (theMotionVector.x() < EigenHelper::FLOAT_TOLERANCE &&
+        theMotionVector.x() > -EigenHelper::FLOAT_TOLERANCE &&
+        theMotionVector.y() < EigenHelper::FLOAT_TOLERANCE &&
+        theMotionVector.y() > -EigenHelper::FLOAT_TOLERANCE)
     {
-#if 0
-      Eigen::Vector2f motionVector = theNewPosition - theActor->getPosition();
-      motionVector.normalize();
-      distanceVector.normalize();
-      auto cosTheta = motionVector.dot(distanceVector);
-      auto theta = std::acos(cosTheta);
-
-      Eigen::Vector2f motionVector2 = theActor->getPosition() - theNewPosition;
-      motionVector2.normalize();
-      auto cosTheta2 = motionVector2.dot(distanceVector);
-      auto theta2 = std::acos(cosTheta2);
-
-      // Only check collisions happening on the "front" of the circle (i.e.,
-      // the 180 degrees in the direction of motion)
-      std::cout << "Theta: " << std::fixed << theta
-                << ", theta2: " << std::fixed << theta2
-                << " (" << std::fixed << (M_PI/2) << "," << std::fixed
-                << (3*M_PI/2) << ")"
-                << ". Actor: " << theActor->getProperties()["color"]
-                << ". Collided: "<< collidedActor->getProperties()["color"]
-                << std::endl;
-      if (theta >= M_PI/2 && theta < 3 * M_PI / 2)
-      {
-        continue;
-      }
-#endif
-
-      // The current Actor (A1) has collided with some other Actor (A2).
-      //
-      // A1 needs to be backed up to the point where it is just touching
-      // A2. (That is, the position at which A1 has bumped into A2.) The line
-      // from A1's former position to its current (albeit invalid) position is
-      // used. This line will intersect with a circle of radius R1 + R2 (A1's
-      // radius + A2's radius) centered at A2's center.
-      //
-      // The circumference of this circle is all points where A1's center can
-      // be such that A1 is just touching A2. For the collision resolution the
-      // points of intersection with the line are needed.
-      //
-      // The line will intersect the circle at 1 or 2 places. If just one
-      // point, A1 will be moved to this spot. If two points A1 will be moved
-      // to the closest point to A1's former position. This moves A1 to the
-      // furthest valid position along its desired path of motion.
-
-
-      // The following is taken from
-      // http://mathworld.wolfram.com/Circle-LineIntersection.html
-      // This is based off a circle at (0,0), hence the initial vector
-      // subtraction and later addition. (I did try it without these
-      // corrections thinking that since all points are equally relative to
-      // each other regardless of the circle origin the math would work out. It
-      // doesn't.)
-
-      // Actor hasn't moved (or essentially hasn't moved) or has been adjusted
-      // to the point of not moving (which is why this check is here and not up
-      // top). No further need to check for collisions. When there is no change
-      // in position, the line/circle intersection code breaks down.
-      float movement = (theActor->getPosition() - theNewPosition).norm();
-      if (movement < EigenHelper::FLOAT_TOLERANCE)
-      {
-        break;
-      }
-
-      Eigen::Vector2f lineStart =
-        theActor->getPosition() - collidedActor->getPosition();
-      Eigen::Vector2f lineEnd =
-        theNewPosition - collidedActor->getPosition();
-
-      float dx = lineEnd.x() - lineStart.x();
-      float dy = lineEnd.y() - lineStart.y();
-      float dr = std::sqrt((dx * dx) + (dy * dy));
-      float drSquared = dr * dr;
-      float D = (lineStart.x() * lineEnd.y()) - (lineEnd.x() * lineStart.y());
-      float discriminant = ((r * r) * (drSquared)) - (D * D);
-
-      // This should never happen, but if it does, need to make sure there is
-      // enough information for diagnosis.
-      if (discriminant < 0.0f)
-      {
-        std::ostringstream error;
-        error << "Unexpected value in collision resolution. " << std::endl
-              << std::fixed << std::setprecision(10)
-              << "  discriminant == " << discriminant << std::endl
-              << "  Line start: " << lineStart.format(EigenHelper::prettyPrint)
-              << std::endl
-              << "  Line end: " << lineEnd.format(EigenHelper::prettyPrint)
-              << std::endl
-              << "  Original circle center: "
-              << collidedActor->getPosition().format(EigenHelper::prettyPrint)
-              << std::endl << std::fixed << std::setprecision(10)
-              << "  Radius: " << r << std::endl
-              << "  dx: " << dx << ", dy: " << dy << std::endl
-              << "  dr: " << dr << ", drSquared: " << drSquared << std::endl
-              << "  D: " << D << std::endl;
-        // Not all of this information may be displayed in an error dialog so
-        // dump it to stderr.
-        // TODO: if/when messages are implemented, log this
-        std::cerr << error.str() << std::endl;
-
-        // Something went wrong with the math, try to keep going by just keeping
-        // the Actor in place.
-        theNewPosition = theActor->getPosition();
-        break;
-      }
-
-      auto sgn = [](float val) {return (val < 0.0f ? -1.0f : 1.0);};
-
-      float discriminantSqrt = std::sqrt(discriminant);
-
-      float x1 = ((D * dy) + (sgn(dy) * dx * discriminantSqrt)) /
-        drSquared;
-      float x2 = ((D * dy) - (sgn(dy) * dx * discriminantSqrt)) /
-        drSquared;
-
-      float y1 = ((-D * dx) + (std::abs(dy) * discriminantSqrt)) /
-        drSquared;
-      float y2 = ((-D * dx) - (std::abs(dy) * discriminantSqrt)) /
-        drSquared;
-
-      Eigen::Vector2f intersection1(x1, y1);
-      Eigen::Vector2f intersection2(x2, y2);
-
-      intersection1 += collidedActor->getPosition();
-      intersection2 += collidedActor->getPosition();
-
-      float d1 = (theActor->getPosition() - intersection1).norm();
-      float d2 = (theActor->getPosition() - intersection2).norm();
-
-      if (d1 < d2)
-      {
-        theNewPosition = intersection1;
-      }
-      else
-      {
-        theNewPosition = intersection2;
-      }
+      // At this point the Actor is essentially not moving, so just skip the
+      // rest of the collision detection and return a motionless motion vector.
+      theMotionVector << 0.0, 0.0;
+      return theMotionVector;
     }
+
+    // Collision detection/resolution taken from:
+    // http://www.gamasutra.com/view/feature/131424/pool_hall_lessons_fast_accurate_.php?page=2
+
+    // Have to recalculate each time as it could have been clipped in the
+    // previous iteration.
+    float motionVectorLength = theMotionVector.norm();
+    Eigen::Vector2f vectorBetweenActors =
+      collidedActor->getPosition() - actorPosition;
+
+    // First check if the length of the motion vector is enough to cause an
+    // collision.
+    float distanceBetweenActors = vectorBetweenActors.norm();
+    float sumRadii = collidedActor->getRadius() + actorRadius;
+    if (motionVectorLength < distanceBetweenActors - sumRadii)
+    {
+      continue;
+    }
+
+    Eigen::Vector2f N = theMotionVector;
+    N.normalize();
+    float D = N.dot(vectorBetweenActors);
+
+    // Check if theActor is moving towards collidedActor. If D <= 0, it isn't.
+    if (D <= 0.0)
+    {
+      continue;
+    }
+
+    // Check if the closest theActor will get to collidedActor is enough to
+    // cause a collision.
+    float F = (distanceBetweenActors * distanceBetweenActors) -
+      (D * D);
+    float sumRadiiSquared = sumRadii * sumRadii;
+    if (F >= sumRadiiSquared)
+    {
+      continue;
+    }
+
+    // No such right triange with sides of length sumRadiiSquared and F. Avoids
+    // sqrt of a negative number.
+    float T = sumRadiiSquared - F;
+    if (T < 0)
+    {
+      continue;
+    }
+
+    float distance = D - std::sqrt(T);
+
+    // If the motion vector is less than the clipping distance, then there is
+    // no collision.
+    if (motionVectorLength < distance)
+    {
+      continue;
+    }
+
+    theMotionVector.normalize();
+    theMotionVector *= distance;
   }
 
-  return theNewPosition;
+  return theMotionVector;
 }
 
 Eigen::Vector2f QS::World::convertPointToWorld(const Actor *theActor,
@@ -540,11 +465,14 @@ bool QS::World::update(float theIntervalInSeconds,
     }
 
     Eigen::Vector2f currentPosition = actor->getPosition();
-    // Finally, multiplying velocity by time gives meters.
-    Eigen::Vector2f newPosition = currentPosition +
-      (newVelocity * theIntervalInSeconds);
 
-    newPosition = collisionDetection(actor, newPosition);
+    // Multiplying velocity by time gives a vector, in meters, to where the
+    // Actor, ideally, will move.
+    Eigen::Vector2f motionVector = newVelocity * theIntervalInSeconds;
+
+    // Make sure this motion vector doesn't cause any collisions.
+    motionVector = collisionDetection(actor, motionVector);
+    Eigen::Vector2f newPosition = currentPosition + motionVector;
 
     float grossDistance = (currentPosition - newPosition).norm();
     myMetrics.getActorMetrics(actor).addGrossDistance(grossDistance);
