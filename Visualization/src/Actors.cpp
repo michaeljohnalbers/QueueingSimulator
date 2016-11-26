@@ -78,6 +78,30 @@ QS::Actors::~Actors()
   glDeleteBuffers(1, &myCircleVertexBuffer);
 }
 
+void QS::Actors::actorUpdate(const Actor *theActor) noexcept
+{
+  // === Color
+  Eigen::Vector3f color = theActor->getColor();
+  // x == r, y == g, z == b
+  myColorVectors.push_back(glm::vec3(color.x(), color.y(), color.z()));
+
+  // === Position
+  float actorRadius = theActor->getRadius();
+  Eigen::Vector2f position = theActor->getPosition();
+  float orientation = theActor->getOrientation();
+
+  glm::mat4 modelMatrix;
+  modelMatrix = glm::translate(modelMatrix,
+                               glm::vec3(position.x(), position.y(), 0.0));
+  modelMatrix = glm::scale(
+    modelMatrix, glm::vec3(actorRadius, actorRadius, 1.0));
+  
+  constexpr glm::vec3 rotationAxis(0.0, 0.0, 1.0);
+  modelMatrix = glm::rotate(modelMatrix, orientation, rotationAxis);
+
+  myModelMatrices.push_back(modelMatrix);
+}
+
 void QS::Actors::createShader()
 {
   std::string vertexShaderSource =
@@ -102,8 +126,7 @@ void QS::Actors::createShader()
 }
 
 void QS::Actors::draw(glm::mat4 &theViewMatrix,
-                      glm::mat4 &theProjectionMatrix,
-                      const std::vector<const Actor*> &theActors)
+                      glm::mat4 &theProjectionMatrix)
 {
   glBindVertexArray(myVAO);
   myShaderProgram.use();
@@ -116,44 +139,14 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   glUniformMatrix4fv(projectionLocation, 1, GL_FALSE,
                      glm::value_ptr(theProjectionMatrix));
 
-  std::unique_ptr<glm::vec3[]> colorVectors{new glm::vec3[theActors.size()]};
-  std::unique_ptr<glm::mat4[]> modelMatrices{new glm::mat4[theActors.size()]};
-
-  constexpr glm::vec3 rotationAxis(0.0, 0.0, 1.0);
-
-  auto numActors = theActors.size();
-#pragma omp parallel for shared(theActors, modelMatrices)
-  for (auto ii = 0u; ii < numActors; ++ii)
-  {
-    const Actor &actor = *theActors[ii];
-
-    // === Color
-    Eigen::Vector3f color = actor.getColor();
-    // x == r, y == g, z == b
-    colorVectors[ii] = glm::vec3(color.x(), color.y(), color.z());
-
-    // === Position
-    float actorRadius = actor.getRadius();
-    Eigen::Vector2f position = actor.getPosition();
-    float orientation = actor.getOrientation();
-
-    glm::mat4 modelMatrix;
-    modelMatrix = glm::translate(modelMatrix,
-                                 glm::vec3(position.x(), position.y(), 0.0));
-    modelMatrix = glm::scale(
-      modelMatrix, glm::vec3(actorRadius, actorRadius, 1.0));
-
-    modelMatrix = glm::rotate(modelMatrix, orientation, rotationAxis);
-
-    modelMatrices[ii] = modelMatrix;
-  }
+  auto numActors = myModelMatrices.size();
 
   // === Color
   GLuint colorVectorsBuffer;
   glGenBuffers(1, &colorVectorsBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, colorVectorsBuffer);
-  glBufferData(GL_ARRAY_BUFFER, theActors.size() * sizeof(glm::vec3),
-               &colorVectors[0], GL_STREAM_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, numActors * sizeof(glm::vec3),
+               &myColorVectors[0], GL_STREAM_DRAW);
 
   GLint colorLocation = glGetAttribLocation(myShaderProgram, "inColor");
   glEnableVertexAttribArray(colorLocation);
@@ -165,8 +158,8 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
   GLuint modelMatricesBuffer;
   glGenBuffers(1, &modelMatricesBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, modelMatricesBuffer);
-  glBufferData(GL_ARRAY_BUFFER, theActors.size() * sizeof(glm::mat4),
-               &modelMatrices[0], GL_STREAM_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, numActors * sizeof(glm::mat4),
+               &myModelMatrices[0], GL_STREAM_DRAW);
 
   GLint modelLocation = glGetAttribLocation(myShaderProgram, "inModelMatrix");
 
@@ -193,13 +186,17 @@ void QS::Actors::draw(glm::mat4 &theViewMatrix,
                         reinterpret_cast<GLvoid*>(3 * vec4Size));
   glVertexAttribDivisor(modelLocation, 1);
 
-  glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, NUM_CIRCLE_VERTICES,
-                        theActors.size());
+  glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, NUM_CIRCLE_VERTICES, numActors);
 
   glDrawArraysInstanced(GL_LINE_LOOP, NUM_CIRCLE_VERTICES,
-                        NUM_ORIENTATION_IND_VERTICES,
-                        theActors.size());
+                        NUM_ORIENTATION_IND_VERTICES, numActors);
 
   glBindVertexArray(0);
   glUseProgram(0);
 }
+
+void QS::Actors::resetColorsAndModels() noexcept
+{
+  myColorVectors.clear();
+  myModelMatrices.clear();
+};

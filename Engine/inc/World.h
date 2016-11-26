@@ -17,6 +17,7 @@
 namespace QS
 {
   class Actor;
+  class ActorUpdateCallback;
   class Exit;
   class Metrics;
 
@@ -215,9 +216,13 @@ namespace QS
      *
      * @param theIntervalInSeconds
      *          amount of time elapsed since last update
+     * @param theActorUpdateCallback
+     *          callback to be used after each Actor is updated (this won't
+     *          be called if the Actor exits the World)
      * @return true if the simulation has finished, false otherwise
      */
-    bool update(float theIntervalInSeconds);
+    bool update(float theIntervalInSeconds,
+                ActorUpdateCallback &theActorUpdateCallback);
 
     protected:
 
@@ -237,19 +242,19 @@ namespace QS
 
     /**
      * Detects if the Actor has collided with anything in the world. And, if so
-     * modifies the position vector to the closest non-collision position. This
-     * function will not change the direction of the Actor, just the
-     * magnitude, possibly reducing it to zero (i.e., not moving).
+     * modifies the motion vector so that the Actor will be placed at the
+     * closest non-collision position. This function will not change the
+     * direction of the Actor, just the magnitude, possibly reducing it to zero
+     * (i.e., not moving).
      *
      * @param theActor
      *          Actor to check for collisions
-     * @param theNewPosition
-     *          new position of the Actor in the world
-     * @return possibly modified position vector based on any collisions
+     * @param theMotionVector
+     *          motion vector of the Actor (velocity * time)
+     * @return possibly modified motion vector based on any collisions
      */
     Eigen::Vector2f collisionDetection(Actor *theActor,
-                                       Eigen::Vector2f theNewPosition)
-      const;
+                                       Eigen::Vector2f theMotionVector) const;
 
     /**
      * Checks if the given entity is wholly within the world.
