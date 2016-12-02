@@ -17,6 +17,7 @@
 #include "Exit.h"
 #include "Metrics.h"
 #include "Sensable.h"
+#include "SpatialHash.h"
 #include "World.h"
 
 QS::World::World(Metrics &theMetrics) :
@@ -30,6 +31,7 @@ void QS::World::addActor(Actor *theActor)
   checkInitialPlacement(theActor);
   myActors.push_back(theActor);
   myActorsInWorld.push_back(theActor);
+  myActorAverageDiameter += theActor->getRadius() * 2;
 }
 
 void QS::World::addExit(Exit *theExit)
@@ -152,7 +154,8 @@ bool QS::World::checkOverlap(Eigen::Vector2f thePosition1, float theRadius1,
 
 Eigen::Vector2f QS::World::collisionDetection(
   Actor *theActor,
-  Eigen::Vector2f theMotionVector) const
+  Eigen::Vector2f theMotionVector,
+  SpatialHash &theHash) const
 {
   float actorRadius = theActor->getRadius();
   Eigen::Vector2f actorPosition = theActor->getPosition();
@@ -178,8 +181,12 @@ Eigen::Vector2f QS::World::collisionDetection(
     theMotionVector.y() = 0.0 - (actorPosition.y() - actorRadius);
   }
 
+  Eigen::Vector2f possibleNewPosition = actorPosition + theMotionVector;
+  std::set<const Actor*> possibleCollisionActors = theHash.getActors(
+    possibleNewPosition, actorRadius);
+
   // Check for collisions with other Actors.
-  for (const Actor *collidedActor : myActorsInWorld)
+  for (const Actor *collidedActor : possibleCollisionActors)
   {
     // Don't check theActor against itself.
     if (theActor == collidedActor)
@@ -413,6 +420,18 @@ void QS::World::setSeed(uint64_t theSeed)
 bool QS::World::update(float theIntervalInSeconds,
                        ActorUpdateCallback &theActorUpdateCallback)
 {
+  if (myFirstUpdate)
+  {
+    myActorAverageDiameter /= myActors.size();
+    myFirstUpdate = false;
+  }
+
+  SpatialHash hash(myWidth_m, myLength_m, myActorAverageDiameter);
+  for (auto actor : myActorsInWorld)
+  {
+    hash.hashActor(actor);
+  }
+
   auto actorIter = myActorsInWorld.begin();
 
   while (actorIter != myActorsInWorld.end())
@@ -471,7 +490,7 @@ bool QS::World::update(float theIntervalInSeconds,
     Eigen::Vector2f motionVector = newVelocity * theIntervalInSeconds;
 
     // Make sure this motion vector doesn't cause any collisions.
-    motionVector = collisionDetection(actor, motionVector);
+    motionVector = collisionDetection(actor, motionVector, hash);
     Eigen::Vector2f newPosition = currentPosition + motionVector;
 
     float grossDistance = (currentPosition - newPosition).norm();
@@ -495,10 +514,15 @@ bool QS::World::update(float theIntervalInSeconds,
 
     if (actorExited)
     {
+      hash.removeActor(*actorIter);
       actorIter = myActorsInWorld.erase(actorIter);
     }
     else
     {
+      // Rehash Actor at new position. This could leave the Actor in two
+      // different cells, but there shouldn't be any performance degredation.
+      hash.hashActor(*actorIter);
+
       theActorUpdateCallback.actorUpdate(*actorIter);
       ++actorIter;
     }

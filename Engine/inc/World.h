@@ -20,6 +20,7 @@ namespace QS
   class ActorUpdateCallback;
   class Exit;
   class Metrics;
+  class SpatialHash;
 
   /**
    * The world in the base of a simulation. It contains all of the pieces of
@@ -251,10 +252,13 @@ namespace QS
      *          Actor to check for collisions
      * @param theMotionVector
      *          motion vector of the Actor (velocity * time)
+     * @param theHash
+     *          spatial hash to narrow down necessary collision checks
      * @return possibly modified motion vector based on any collisions
      */
     Eigen::Vector2f collisionDetection(Actor *theActor,
-                                       Eigen::Vector2f theMotionVector) const;
+                                       Eigen::Vector2f theMotionVector,
+                                       SpatialHash &theHash) const;
 
     /**
      * Checks if the given entity is wholly within the world.
@@ -273,11 +277,17 @@ namespace QS
     /** Actors which are still in the world. */
     std::vector<const Actor*> myActorsInWorld;
 
+    /** Average Actor diameter for spatial hashing. */
+    float myActorAverageDiameter = 0.0;
+
     /** All of the Exits in the simulation. */
     std::vector<Exit*> myExits;
 
     /** Exits specifically for Sensable*/
     std::vector<const Exit*> myExitsForSensable;
+
+    /** Fist update of the simulation? */
+    bool myFirstUpdate = true;
 
     /** World length (y dimension), in meters.*/
     float myLength_m = 0.0;
